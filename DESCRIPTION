@@ -1,4 +1,4 @@
-Package: MVPLNClust
+Package: mixMVPLN
 Type: Package
 Title: Clustering via matrix-variate Poisson-log normal mixture model
 Version: 0.0.0.9000
