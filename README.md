@@ -1,4 +1,4 @@
-# MVPLNClust
+# mixMVPLN
 
 For clustering three-way count data using mixtures of matrix-variate Poisson-log normal distributions.
 
