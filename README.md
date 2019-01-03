@@ -100,7 +100,7 @@ simulated_counts <- Datagenerator(i=1, r=true_r, p=true_p, n=true_n, pi_g=c(0.79
 # Clustering data for G = 1:3
 
 testing_dataset <- simulated_counts # Assign test dataset using the variable name 'testing_dataset'
-clustering_results <- MVPLNClustering(dataset=testing_dataset, membership=simulated_counts$truemembership, Gmin=1, Gmax=3, n_chains=3, n_iterations=300, init_method="kmeans", n_init_iterations=5)
+clustering_results <- MVPLNClustering(dataset=testing_dataset$dataset, membership=simulated_counts$truemembership, Gmin=1, Gmax=3, n_chains=3, n_iterations=300, init_method="kmeans", n_init_iterations=5)
 
 ```
 
