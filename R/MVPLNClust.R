@@ -354,7 +354,7 @@ cluster_mpln <- function(r,p,z,dataset,G,mod,norm_factors,n_chains,n_iterations,
 }
 
 # calling the clustering function
-calling_clustering <- function(dataset, Gmin, Gmax, n_chains, n_iterations=NA, init_method=NA, n_init_iterations=NA, norm_factors, mod){
+calling_clustering <- function(n, r, p, d, dataset, Gmin, Gmax, n_chains, n_iterations=NA, init_method=NA, n_init_iterations=NA, norm_factors, mod){
   ptm_inner = proc.time() 
   
   for (gmodel in 1:(Gmax-Gmin+1)){
@@ -570,7 +570,7 @@ MVPLNClustering <- function(dataset, membership=NA, Gmin, Gmax, n_chains=3, n_it
   cl = makeCluster(no_cores-1) 
   
   # Doing clusterExport
-  clusterExport(cl,c("mod", "testing_dataset", "n", "p", "r", "d", "initialization_function", "initialization_run", "zvalue_calculation", "calc_loglikelihood", "parameter_estimation", "stanrun", "cluster_mpln", "calling_clustering", "calculate_parameters", "BIC_function", "ICL_function", "AIC_function", "AIC3_function"))
+  clusterExport(cl,c("mod", "testing_dataset", "initialization_function", "initialization_run", "zvalue_calculation", "calc_loglikelihood", "parameter_estimation", "stanrun", "cluster_mpln", "calling_clustering", "calculate_parameters", "BIC_function", "ICL_function", "AIC_function", "AIC3_function"))
   
   # Packages need to be downloaded using clusterEvalQ
   clusterEvalQ(cl, library(rstan))
@@ -586,7 +586,7 @@ MVPLNClustering <- function(dataset, membership=NA, Gmin, Gmax, n_chains=3, n_it
     ## ** Never use set.seed(), use clusterSetRNGStream() instead,
     # to set the cluster seed if you want reproducible results
     #clusterSetRNGStream(cl=cl, iseed=g)
-    test = calling_clustering(dataset=normfactor_dataset, Gmin=g, Gmax=g, n_chains=n_chains, n_iterations=n_iterations, init_method=init_method, n_init_iterations=n_init_iterations, norm_factors=norm_factors, mod=mod)
+    test = calling_clustering(n=n, r=r, p=p, d=d, dataset=normfactor_dataset, Gmin=g, Gmax=g, n_chains=n_chains, n_iterations=n_iterations, init_method=init_method, n_init_iterations=n_init_iterations, norm_factors=norm_factors, mod=mod)
     return(test)
   }
   # empty list to save output
@@ -622,9 +622,9 @@ MVPLNClustering <- function(dataset, membership=NA, Gmin, Gmax, n_chains=3, n_it
     variables = p,
     occassions = n,
     normalization_factors = norm_factors,
-    G = G,
+    Gmin = Gmin,
+    Gmax = Gmax,
     initalization_method = init_method,
-    initialization_results=initializeruns,
     allresults = parallel.Wei_2,
     loglikelihood = ll, 
     numbofparameters = k,
