@@ -88,7 +88,7 @@ true_M2 <- matrix(rep(1,(true_r*true_p)), ncol=true_p, nrow=true_r, byrow=TRUE)
 true_M_all <- rbind(true_M1, true_M2)
 
 # Phi is a r x r matrix
-# Covariance matrix containing variances and covariances btw r occasions
+# Covariance matrix containing variances and covariances between r occasions
 true_Phi1 <- genPositiveDefMat("unifcorrmat",dim=true_r, rangeVar=c(1,1.7))$Sigma
 true_Phi1[1,1] <- 1 # for identifiability issues
 true_Phi2 = genPositiveDefMat("unifcorrmat",dim=true_r, rangeVar=c(0.7,0.7))$Sigma
@@ -96,7 +96,7 @@ true_Phi2[1,1] = 1 # for identifiability issues
 true_Phi_all = rbind(true_Phi1,true_Phi2)
 
 # Omega is a p x p matrix 
-# Covariance matrix containing variances and covariances btw p responses
+# Covariance matrix containing variances and covariances between p responses
 true_Omega1 <- genPositiveDefMat("unifcorrmat",dim=true_p, rangeVar=c(1,1.7))$Sigma
 true_Omega2 <- genPositiveDefMat("unifcorrmat",dim=true_p, rangeVar=c(0.7,0.7))$Sigma
 true_Omega_all <- rbind(true_Omega1,true_Omega2)
