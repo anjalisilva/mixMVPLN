@@ -125,6 +125,8 @@ This project is licensed under the MIT License.
 
 ## References
 
+[Silva, A., S. J. Rothstein, P. D. McNicholas, and S. Subedi (2018). Finite mixtures of matrix-variate Poisson-log normal distributions for three-way count data. arXiv preprint arXiv:1807.08380.](https://arxiv.org/abs/1807.08380)
+
 [Silva, A., S. J. Rothstein, P. D. McNicholas, and S. Subedi (2017). A multivariate Poisson-log normal mixture model for clustering transcriptome sequencing data. arXiv preprint arXiv:1711.11190.](https://arxiv.org/abs/1711.11190v1)
 
 ## Maintainer
