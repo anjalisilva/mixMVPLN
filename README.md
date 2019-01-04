@@ -1,6 +1,6 @@
 # mixMVPLN
 
-For clustering three-way count data using mixtures of matrix-variate Poisson-log normal distributions.
+For clustering three-way count data using mixtures of matrix variate Poisson-log normal distributions.
 
 ### Announcements
 
@@ -10,7 +10,7 @@ Version 1.0 was released.
 
 ### Description
 
-Carries out model-based clustering using mixtures of matrix-variate Poisson-log normal (MVPLN) model. Markov chain Monte Carlo expectation-maximization algorithm (MCMC-EM) is used for parameter estimation. Information criteria (AIC, BIC, AIC3 and ICL) are offered for model selection. 
+Carries out model-based clustering using mixtures of matrix variate Poisson-log normal (MVPLN) model. Markov chain Monte Carlo expectation-maximization algorithm (MCMC-EM) is used for parameter estimation. Information criteria (AIC, BIC, AIC3 and ICL) are offered for model selection. 
 
 ### Usage
 
@@ -35,7 +35,7 @@ n_init_iterations   Number of runs to be used for the init_method, with a defaul
 
 Output of MVPLNClustering() is an S3 object of class MVPLN. 
 
-Matrix-variate distributions offer a natural way for modeling matrices. Extensions of matrix-variate distributions in the context of mixture models have given rise to mixtures of matrix-variate distributions. The mixture of matrix-variate Poisson-log normal (MVPLN) distribution is a multivariate log normal mixture of independent Poisson distributions. The MVPLN distribution can account for both the correlations between variables (p) and the correlations between occasions (r), as two different covariance matrices are used for the two modes. 
+Matrix variate distributions offer a natural way for modeling matrices. Extensions of matrix variate distributions in the context of mixture models have given rise to mixtures of matrix variate distributions. The mixture of matrix variate Poisson-log normal (MVPLN) distribution is a multivariate log normal mixture of independent Poisson distributions. The MVPLN distribution can account for both the correlations between variables (p) and the correlations between occasions (r), as two different covariance matrices are used for the two modes. 
 
 The mixtures of MVPLN distribution is used for clustering count data from RNA sequencing using the approach of [Silva et al., 2017](https://arxiv.org/abs/1711.11190v1). The MCMC-EM algorithm via Stan is used for parameter estimation. Coarse grain parallelization is employed, such that when a range of components/clusters (G) are considered, each G is run on a different processor. To check the convergence of MCMC chains, the potential scale reduction factor and the effective number of samples are used. The Heidelberger and Welch’s convergence diagnostic (Heidelberger and Welch, 1983) is used to check the convergence of the MCMC-EM algorithm. 
 
@@ -100,7 +100,7 @@ simulated_counts <- Datagenerator(i=1, r=true_r, p=true_p, n=true_n, pi_g=c(0.79
 # Clustering data for G = 1:3
 
 testing_dataset <- simulated_counts # Assign test dataset using the variable name 'testing_dataset'
-clustering_results <- MVPLNClustering(dataset=testing_dataset, membership=simulated_counts$truemembership, Gmin=1, Gmax=3, n_chains=3, n_iterations=300, init_method="kmeans", n_init_iterations=5)
+clustering_results <- MVPLNClustering(dataset=testing_dataset$dataset, membership=simulated_counts$truemembership, Gmin=1, Gmax=3, n_chains=3, n_iterations=300, init_method="kmeans", n_init_iterations=5)
 
 ```
 
