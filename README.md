@@ -76,6 +76,12 @@ true_r <- 2
 true_p <- 3 
 true_n <- 100 
 
+# loading needed packages for generating data
+if (!require(clusterGeneration)) install.packages("clusterGeneration") 
+if (!require(mvtnorm)) install.packages("mvtnorm") 
+if (!require(edgeR)) install.packages("edgeR") 
+if (!require(mclust)) install.packages("mclust") 
+
 # Mu is a r x p matrix
 true_M1 <- matrix(rep(6,(true_r*true_p)), ncol=true_p, nrow=true_r, byrow=TRUE)
 true_M2 <- matrix(rep(1,(true_r*true_p)), ncol=true_p, nrow=true_r, byrow=TRUE)
