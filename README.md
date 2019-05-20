@@ -94,6 +94,7 @@ totaltime               Total time.
 ## Examples
 
 ```R
+
 #####################################  Running via R Console #####################################
 # Read all the necessary functions and check that packages needed are present
 source("Setup.R")
@@ -141,6 +142,7 @@ clustering_results <- MVPLNClustering(dataset=testing_dataset$dataset, membershi
 #####################################  Running via Terminal #####################################
 
 Rscript Running_code.R
+
 ```
 
 ## Authors
