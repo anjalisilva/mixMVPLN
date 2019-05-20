@@ -94,9 +94,14 @@ totaltime               Total time.
 ## Examples
 
 ```R
-# Generating data
-set.seed(1)
+# Read all the necessary functions and check that packages needed are present
+source("Setup.R")
 
+
+#####################################  DATA GENERATION  #####################################
+# Generating simulated data
+
+set.seed(1)
 true_G <- 2 # number of total G
 true_r <- 2 # number of total occasions
 true_p <- 3 # number of total responses
@@ -129,9 +134,12 @@ true_Omega_all <- rbind(true_Omega1,true_Omega2)
 
 simulated_counts <- Datagenerator(i=1, r=true_r, p=true_p, n=true_n, pi_g=c(0.79,0.21), mu=true_M_all, phi=true_Phi_all, omega=true_Omega_all)
 
+
+#####################################################################################################
 # Clustering data for G = 1:3
 testing_dataset <- simulated_counts # Assign test dataset using the variable name 'testing_dataset'
 clustering_results <- MVPLNClustering(dataset=testing_dataset$dataset, membership=simulated_counts$truemembership, Gmin=1, Gmax=3, n_chains=3, n_iterations=300, init_method="kmeans", n_init_iterations=5)
+
 
 ```
 
