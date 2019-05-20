@@ -94,11 +94,10 @@ totaltime               Total time.
 ## Examples
 
 ```R
+#####################################  Running via R Console #####################################
 # Read all the necessary functions and check that packages needed are present
 source("Setup.R")
 
-
-#####################################  DATA GENERATION  #####################################
 # Generating simulated data
 
 set.seed(1)
@@ -139,9 +138,7 @@ simulated_counts <- Datagenerator(i=1, r=true_r, p=true_p, n=true_n, pi_g=c(0.79
 testing_dataset <- simulated_counts # Assign test dataset using the variable name 'testing_dataset'
 clustering_results <- MVPLNClustering(dataset=testing_dataset$dataset, membership=simulated_counts$truemembership, Gmin=1, Gmax=3, n_chains=3, n_iterations=300, init_method="kmeans", n_init_iterations=5)
 
-#####################################################################################################
-
-# Runnign via terminal
+#####################################  Running via Terminal #####################################
 
 Rscript Running_code.R
 ```
