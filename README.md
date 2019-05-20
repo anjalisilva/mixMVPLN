@@ -12,6 +12,32 @@ Version 1.0 was released.
 
 Carries out model-based clustering using mixtures of matrix variate Poisson-log normal (MVPLN) model. Markov chain Monte Carlo expectation-maximization algorithm (MCMC-EM) is used for parameter estimation. Information criteria (AIC, BIC, AIC3 and ICL) are offered for model selection. 
 
+### Requirements
+
+Require R, git and a list of R packages. See below in the Installation section.
+
+### Installation
+
+To obtain and install a copy of mixMVPLN, open a terminal (need git and a internet connection!) and type:
+
+```
+git clone https://github.com/anjalisilva/mixMVPLN.git
+```
+
+To ensure that all required R-packages are loaded for successfully running of mixMVPLN, a setup script has been included. To run the script, type:
+
+```
+Rscript Setup.R
+```
+
+### Updating mixMVPLN
+
+Get the updates and the latest additions to mixMVPLN by typing the following command in the mixMVPLN directory:
+
+```
+git pull
+```
+
 ### Usage
 
 ```R
