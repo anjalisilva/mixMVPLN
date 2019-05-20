@@ -14,19 +14,19 @@ Carries out model-based clustering using mixtures of matrix variate Poisson-log 
 
 ### Requirements
 
-Require R, git and a list of R packages. See below in the Installation section.
+Require R, git and a list of R packages. See below for Installation instructions.
 
 ### Installation
 
-To obtain and install a copy of mixMVPLN, open a terminal (need git and a internet connection!) and type:
+To obtain and install a copy of mixMVPLN, open a terminal (need git and a internet connection) and type:
 
-```
+```bash
 git clone https://github.com/anjalisilva/mixMVPLN.git
 ```
 
 To ensure that all required R-packages are loaded for successfully running of mixMVPLN, a setup script has been included. To run the script, type:
 
-```
+```bash
 Rscript Setup.R
 ```
 
@@ -34,7 +34,7 @@ Rscript Setup.R
 
 Get the updates and the latest additions to mixMVPLN by typing the following command in the mixMVPLN directory:
 
-```
+```bash
 git pull
 ```
 
