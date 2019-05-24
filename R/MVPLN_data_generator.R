@@ -60,5 +60,7 @@ Datagenerator <- function(i, r, p, n, pi_g, mu, phi, omega){
     psi = omega)
   class(results) <- "MVPLN_datagenerator"
   return(results)
+  
+  # Developed by Anjali Silva
 }  
 

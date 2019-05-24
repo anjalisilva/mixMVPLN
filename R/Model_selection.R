@@ -81,4 +81,7 @@ ICL_function <- function(bIc, gmax, gmin, run){
     ICLMessage=ICLMessage)
   class(ICLresults) <- "ICL"
   return(ICLresults)
+  
+  # Developed by Anjali Silva
+  
 }

@@ -71,6 +71,8 @@ CheckPackageOnly <- function(RegularPckgs=NA, BioManagerPckgs=NA){
   }
   
   if (fail) stop()
+  # Developed by Anjali Silva and Marcelo Ponce
+  
 }
 
 CheckVersion <- function(Pckges) {

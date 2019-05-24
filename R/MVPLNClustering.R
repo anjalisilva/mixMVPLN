@@ -1,4 +1,4 @@
-# main function
+# Main function
 MVPLNClustering <- function(dataset, membership=NA, Gmin, Gmax, n_chains=3, n_iterations=NA, init_method="kmeans", n_init_iterations=5){
   
   ptm <- proc.time() 
@@ -154,4 +154,5 @@ MVPLNClustering <- function(dataset, membership=NA, Gmin, Gmax, n_chains=3, n_it
   
   class(RESULTS) = "MVPLN"
   return(RESULTS)
+  # Developed by Anjali Silva
 }

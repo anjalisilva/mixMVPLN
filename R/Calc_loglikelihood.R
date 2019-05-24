@@ -1,4 +1,4 @@
-# likelihood calculation function
+# Likelihood calculation function
 calc_loglikelihood <- function(dataset,z,G,PI,norm_factors,M,Sigma,theta_Stan){
   n <- nrow(dataset)
   like <- matrix(NA, nrow=n, ncol=G)
@@ -8,4 +8,5 @@ calc_loglikelihood <- function(dataset,z,G,PI,norm_factors,M,Sigma,theta_Stan){
       d/2*log(2*pi)-1/2*log(det(Sigma[((g-1)*d+1):(g*d),]))-0.5*t(theta_Stan[[g]][i,]-M[g,])%*%solve(Sigma[((g-1)*d+1):(g*d),])%*%(theta_Stan[[g]][i,]-M[g,])) ) )
   loglike <- sum(rowSums(like))
   return(loglike)
+  # Developed by Anjali Silva
 }

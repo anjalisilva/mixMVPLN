@@ -43,6 +43,6 @@ parameter_estimation <- function(r, p, G, z, fit, n_iterations, n_chains){
     theta = theta_Stan)
   class(results) <- "RStan"
   return(results)
-  
+  # Developed by Anjali Silva
 }
 

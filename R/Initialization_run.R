@@ -1,4 +1,4 @@
-# calling initialization function
+# Calling initialization function
 initialization_run <- function(r,p,z,dataset,G,mod,norm_factors,n_chains,n_iterations){
   n=nrow(z)
   
@@ -66,4 +66,5 @@ initialization_run <- function(r,p,z,dataset,G,mod,norm_factors,n_chains,n_itera
   
   class(results) <- "MPLN_initialization"
   return(results)
+  # Developed by Anjali Silva
 }

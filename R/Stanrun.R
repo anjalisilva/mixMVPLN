@@ -37,4 +37,5 @@ stanrun <- function(r,p,dataset,G,n_chains,n_iterations,mod,Mu,Sigma,norm_factor
     n_iterations = n_iterations)
   class(results) <- "RStan"
   return(results)
+  # Developed by Anjali Silva
 }

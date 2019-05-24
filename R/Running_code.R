@@ -7,7 +7,6 @@ source("Setup.R")
 # Generating simulated data
 
 set.seed(1)
-
 true_G <- 2 # number of total G
 true_r <- 2 # number of total occasions
 true_p <- 3 # number of total responses

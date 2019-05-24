@@ -13,4 +13,5 @@ zvalue_calculation <- function(PI,dataset,M,G,Sigma,theta_Stan,norm_factors){
   }else {zvalue <- forz/rowSums(forz)}
   
   return(zvalue)
+  # Developed by Anjali Silva
 }

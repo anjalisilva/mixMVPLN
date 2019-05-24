@@ -1,4 +1,4 @@
-# calling the clustering function
+# Calling the clustering function
 calling_clustering <- function(n, r, p, d, dataset, Gmin, Gmax, n_chains, n_iterations=NA, init_method=NA, n_init_iterations=NA, norm_factors, mod){
   ptm_inner = proc.time() 
   
@@ -28,4 +28,5 @@ calling_clustering <- function(n, r, p, d, dataset, Gmin, Gmax, n_chains, n_iter
   
   class(RESULTS) <- "MPLN"
   return(RESULTS)
+  # Developed by Anjali Silva
 }

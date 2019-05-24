@@ -107,5 +107,5 @@ cluster_mpln <- function(r,p,z,dataset,G,mod,norm_factors,n_chains,n_iterations,
   
   class(results) <- "MPLNcluster"
   return(results)
-  
+  # Developed by Anjali Silva
 }

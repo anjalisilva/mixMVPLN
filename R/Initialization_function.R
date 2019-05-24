@@ -1,4 +1,4 @@
-# initialization function
+# Initialization function
 initialization_function <- function(r,p,dataset,gmodel,mod,norm_factors,n_chains,n_iterations,init_method,n_init_iterations){
   z <- init_runs <- list()
   logL_init <- vector()
@@ -48,4 +48,5 @@ initialization_function <- function(r,p,dataset,gmodel,mod,norm_factors,n_chains
   initialization <- init_runs[[which(logL_init==max(logL_init, na.rm = TRUE))[1]]]
 
   return(initialization)
+  # Developed by Anjali Silva
 }
