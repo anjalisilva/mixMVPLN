@@ -1,0 +1,25 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1585001105487.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "0",
+    "id" : "32910D1E",
+    "lastKnownWriteTime" : 1585001115,
+    "last_content_update" : 1585001115948,
+    "path" : "~/Desktop/mixMVPLN/R/mvplnDataGenerator.R",
+    "project_path" : "R/mvplnDataGenerator.R",
+    "properties" : {
+        "cursorPosition" : "103,81",
+        "scrollLine" : "94"
+    },
+    "read_only" : false,
+    "read_only_alternatives" : [
+    ],
+    "relative_order" : 2,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

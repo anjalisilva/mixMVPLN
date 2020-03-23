@@ -1,4 +1,9 @@
-.Rproj.user
-.Rhistory
-.RData
-.Ruserdata
+*.csv
+*.RData
+*.txt
+*.png
+*.jpg
+*.idat
+*.Rhistory
+*.psdb
+*.Ruserdata
