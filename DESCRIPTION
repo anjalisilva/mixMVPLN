@@ -1,0 +1,27 @@
+Package: mixMVPLN
+Type: Package
+Title: Mixtures of Matrix Variate Poisson-log Normal Distributions
+Version: 0.1.0
+Authors@R: c(
+    person("Anjali", "Silva", email = "anjali.silva@uhnresearch.ca", role = c("aut", "cre")),
+    person("Sanjeena", "Dang", role = "aut")
+    )
+Maintainer: Anjali Silva <anjali.silva@uhnresearch.ca>
+Description: Performs model-based clustering using mixtures of matrix variate Poisson-log 
+    normal (MVPLN) model. Markov chain Monte Carlo expectation-maximization algorithm 
+    (MCMC-EM) is used for parameter estimation. Information criteria (AIC, BIC, AIC3 and 
+    ICL) are offered for model selection.
+License: MIT + file LICENSE
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 7.1.0
+Imports: 
+    coda,
+    cluster,
+    edgeR,
+    mclust,
+    mvtnorm,
+    Rcpp,
+    rstan,
+    parallel,
+    utils
