@@ -25,3 +25,5 @@ Imports:
     rstan,
     parallel,
     utils
+Suggests: 
+    testthat
