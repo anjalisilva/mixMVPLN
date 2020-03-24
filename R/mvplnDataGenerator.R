@@ -128,11 +128,11 @@ mvplnDataGenerator <- function(nOccasions,
   }
 
   if((class(nResponses) != "numeric") || (nResponses%%1 != 0) || (length(nResponses) >1)) {
-    stop("nResponses argument should be of class numeric.")
+    stop("nResponses argument should be be an integer of class numeric.")
   }
 
   if((class(nUnits) != "numeric") || (nUnits%%1 != 0) || (length(nUnits) >1)) {
-    stop("nResponses argument should be of class numeric.")
+    stop("nResponses argument should be be an integer of class numeric.")
   }
 
   if (sum(mixingProportions) != 1) {
