@@ -55,9 +55,18 @@ test_that("Data generation is as expected", {
 context("Checking for invalid user input")
 test_that("Data generate error upon invalid user input", {
 
-  # nObservations provided as character
+  # nOccasions provided as character
   expect_error(simulatedMVdata <- mvplnDataGenerator(nOccasions = "true_r",
                                                      nResponses = true_p,
+                                                     nUnits = true_n,
+                                                     mixingProportions = c(0.79, 0.21),
+                                                     matrixMean = true_M_all,
+                                                     phi = true_Phi_all,
+                                                     omega = true_Omega_all))
+
+  # nOccasions provided as character
+  expect_error(simulatedMVdata <- mvplnDataGenerator(nOccasions = true_r,
+                                                     nResponses = c(true_p, true_p),
                                                      nUnits = true_n,
                                                      mixingProportions = c(0.79, 0.21),
                                                      matrixMean = true_M_all,
