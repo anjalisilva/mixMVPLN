@@ -130,178 +130,175 @@ test_that("Data clustering error upon invalid user input", {
 
   # dataset provided as character
   testthat::expect_error(mvplnClustering(
-                               dataset = "simulatedMVdata$dataset",
-                               membership = simulatedMVdata$truemembership,
-                               gmin = 1,
-                               gmax = 2,
-                               nChains = 3,
-                               nIterations = 300,
-                               initMethod = "kmeans",
-                               nInitIterations = 1,
-                               normalize = "Yes",
-                               numNodes = 2))
+    dataset = "simulatedMVdata$dataset",
+    membership = simulatedMVdata$truemembership,
+    gmin = 1,
+    gmax = 2,
+    nChains = 3,
+    nIterations = 300,
+    initMethod = "kmeans",
+    nInitIterations = 1,
+    normalize = "Yes",
+    numNodes = 2))
 
   # dataset provided as logical
   testthat::expect_error(mvplnClustering(
-                              dataset = NA,
-                              membership = simulatedMVdata$truemembership,
-                              gmin = 1,
-                              gmax = 2,
-                              nChains = 3,
-                              nIterations = 300,
-                              initMethod = "kmeans",
-                              nInitIterations = 1,
-                              normalize = "Yes",
-                              numNodes = 2))
+    dataset = NA,
+    membership = simulatedMVdata$truemembership,
+    gmin = 1,
+    gmax = 2,
+    nChains = 3,
+    nIterations = 300,
+    initMethod = "kmeans",
+    nInitIterations = 1,
+    normalize = "Yes",
+    numNodes = 2))
 
   # Incorrect size for true membership
   testthat::expect_error(mvplnClustering(
-                               dataset = simulatedMVdata$dataset,
-                               membership = simulatedMVdata$truemembership[-1],
-                               gmin = 1,
-                               gmax = 2,
-                               nChains = 3,
-                               nIterations = 300,
-                               initMethod = "kmeans",
-                               nInitIterations = 1,
-                               normalize = "Yes",
-                               numNodes = 2))
+    dataset = simulatedMVdata$dataset,
+    membership = simulatedMVdata$truemembership[-1],
+    gmin = 1,
+    gmax = 2,
+    nChains = 3,
+    nIterations = 300,
+    initMethod = "kmeans",
+    nInitIterations = 1,
+    normalize = "Yes",
+    numNodes = 2))
 
   # Incorrect class for true membership
   testthat::expect_error(mvplnClustering(
-                              dataset = simulatedMVdata$dataset,
-                              membership = "trueMembership",
-                              gmin = 1,
-                              gmax = 2,
-                              nChains = 3,
-                              nIterations = 300,
-                              initMethod = "kmeans",
-                              nInitIterations = 1,
-                              normalize = "Yes",
-                              numNodes = 2))
+    dataset = simulatedMVdata$dataset,
+    membership = "trueMembership",
+    gmin = 1,
+    gmax = 2,
+    nChains = 3,
+    nIterations = 300,
+    initMethod = "kmeans",
+    nInitIterations = 1,
+    normalize = "Yes",
+    numNodes = 2))
 
   # Incorrect input type for gmin
   testthat::expect_error(mvplnClustering(
-                              dataset = simulatedMVdata$dataset,
-                              membership = simulatedMVdata$truemembership,
-                              gmin = "1",
-                              gmax = 2,
-                              nChains = 3,
-                              nIterations = 300,
-                              initMethod = "kmeans",
-                              nInitIterations = 1,
-                              normalize = "Yes",
-                              numNodes = 2))
+    dataset = simulatedMVdata$dataset,
+    membership = simulatedMVdata$truemembership,
+    gmin = "1",
+    gmax = 2,
+    nChains = 3,
+    nIterations = 300,
+    initMethod = "kmeans",
+    nInitIterations = 1,
+    normalize = "Yes",
+    numNodes = 2))
 
   # Incorrect input for gmin and gmax
   testthat::expect_error(mvplnClustering(
-                              dataset = simulatedMVdata$dataset,
-                              membership = simulatedMVdata$truemembership,
-                              gmin = 5,
-                              gmax = 2,
-                              nChains = 3,
-                              nIterations = 300,
-                              initMethod = "kmeans",
-                              nInitIterations = 1,
-                              normalize = "Yes",
-                              numNodes = 2))
+    dataset = simulatedMVdata$dataset,
+    membership = simulatedMVdata$truemembership,
+    gmin = 5,
+    gmax = 2,
+    nChains = 3,
+    nIterations = 300,
+    initMethod = "kmeans",
+    nInitIterations = 1,
+    normalize = "Yes",
+    numNodes = 2))
 
 
   # Incorrect input type for nChains
   testthat::expect_error(mvplnClustering(
-                              dataset = simulatedMVdata$dataset,
-                              membership = simulatedMVdata$truemembership,
-                              gmin = 1,
-                              gmax = 2,
-                              nChains = "3",
-                              nIterations = 300,
-                              initMethod = "kmeans",
-                              nInitIterations = 1,
-                              normalize = "Yes",
-                              numNodes = 2))
+    dataset = simulatedMVdata$dataset,
+    membership = simulatedMVdata$truemembership,
+    gmin = 1,
+    gmax = 2,
+    nChains = "3",
+    nIterations = 300,
+    initMethod = "kmeans",
+    nInitIterations = 1,
+    normalize = "Yes",
+    numNodes = 2))
 
   # Incorrect input type for nIterations
   testthat::expect_error(mvplnClustering(
-                              dataset = simulatedMVdata$dataset,
-                              membership = simulatedMVdata$truemembership,
-                              gmin = 1,
-                              gmax = 2,
-                              nChains = 3,
-                              nIterations = "300",
-                              initMethod = "kmeans",
-                              nInitIterations = 1,
-                              normalize = "Yes",
-                              numNodes = 2))
+    dataset = simulatedMVdata$dataset,
+    membership = simulatedMVdata$truemembership,
+    gmin = 1,
+    gmax = 2,
+    nChains = 3,
+    nIterations = "300",
+    initMethod = "kmeans",
+    nInitIterations = 1,
+    normalize = "Yes",
+    numNodes = 2))
 
   # Incorrect input type for initMethod
   testthat::expect_error(mvplnClustering(
-                              dataset = simulatedMVdata$dataset,
-                              membership = simulatedMVdata$truemembership,
-                              gmin = 1,
-                              gmax = 2,
-                              nChains = 3,
-                              nIterations = 300,
-                              initMethod = "other",
-                              nInitIterations = 1,
-                              normalize = "Yes",
-                              numNodes = 2))
+    dataset = simulatedMVdata$dataset,
+    membership = simulatedMVdata$truemembership,
+    gmin = 1,
+    gmax = 2,
+    nChains = 3,
+    nIterations = 300,
+    initMethod = "other",
+    nInitIterations = 1,
+    normalize = "Yes",
+    numNodes = 2))
 
 
   # Incorrect input type for initMethod
   testthat::expect_error(mvplnClustering(
-                              dataset = simulatedMVdata$dataset,
-                              membership = simulatedMVdata$truemembership,
-                              gmin = 1,
-                              gmax = 2,
-                              nChains = 3,
-                              nIterations = 300,
-                              initMethod = NA,
-                              nInitIterations = 1,
-                              normalize = "Yes",
-                              numNodes = 2))
+    dataset = simulatedMVdata$dataset,
+    membership = simulatedMVdata$truemembership,
+    gmin = 1,
+    gmax = 2,
+    nChains = 3,
+    nIterations = 300,
+    initMethod = NA,
+    nInitIterations = 1,
+    normalize = "Yes",
+    numNodes = 2))
 
   # Incorrect input type for nInitIterations
   testthat::expect_error(mvplnClustering(
-                              dataset = simulatedMVdata$dataset,
-                              membership = simulatedMVdata$truemembership,
-                              gmin = 1,
-                              gmax = 2,
-                              nChains = 3,
-                              nIterations = 300,
-                              initMethod = "kmeans",
-                              nInitIterations = "1",
-                              normalize = "Yes",
-                              numNodes = 2))
+    dataset = simulatedMVdata$dataset,
+    membership = simulatedMVdata$truemembership,
+    gmin = 1,
+    gmax = 2,
+    nChains = 3,
+    nIterations = 300,
+    initMethod = "kmeans",
+    nInitIterations = "1",
+    normalize = "Yes",
+    numNodes = 2))
 
   # Incorrect input type for normalize
   testthat::expect_error(mvplnClustering(
-                              dataset = simulatedMVdata$dataset,
-                              membership = simulatedMVdata$truemembership,
-                              gmin = 1,
-                              gmax = 2,
-                              nChains = 3,
-                              nIterations = 300,
-                              initMethod = "kmeans",
-                              nInitIterations = 1,
-                              normalize = "other",
-                              numNodes = 2))
+    dataset = simulatedMVdata$dataset,
+    membership = simulatedMVdata$truemembership,
+    gmin = 1,
+    gmax = 2,
+    nChains = 3,
+    nIterations = 300,
+    initMethod = "kmeans",
+    nInitIterations = 1,
+    normalize = "other",
+    numNodes = 2))
 
   # Incorrect input type for numNodes
   testthat::expect_error(mvplnClustering(
-                              dataset = simulatedMVdata$dataset,
-                              membership = simulatedMVdata$truemembership,
-                              gmin = 1,
-                              gmax = 2,
-                              nChains = 3,
-                              nIterations = 300,
-                              initMethod = "kmeans",
-                              nInitIterations = 1,
-                              normalize = "Yes",
-                              numNodes = "2"))
+    dataset = simulatedMVdata$dataset,
+    membership = simulatedMVdata$truemembership,
+    gmin = 1,
+    gmax = 2,
+    nChains = 3,
+    nIterations = 300,
+    initMethod = "kmeans",
+    nInitIterations = 1,
+    normalize = "Yes",
+    numNodes = "2"))
 
 
 })
-
-
-
 
