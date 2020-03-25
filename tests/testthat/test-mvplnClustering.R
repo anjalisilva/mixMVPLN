@@ -7,7 +7,7 @@ test_that("Checking clustering results", {
   true_G <- 2 # number of total G
   true_r <- 2 # number of total occasions
   true_p <- 3 # number of total responses
-  true_n <- 70 # number of total units
+  true_n <- 50 # number of total units
 
   # M is a r x p matrix
   true_M1 <- matrix(rep(6, (true_r * true_p)),
@@ -54,11 +54,11 @@ test_that("Checking clustering results", {
   clusteringResults <- mvplnClustering(dataset = simulatedMVdata$dataset,
                                        membership = simulatedMVdata$truemembership,
                                        gmin = 1,
-                                       gmax = 2,
+                                       gmax = 1,
                                        nChains = 3,
-                                       nIterations = 300,
+                                       nIterations = 250,
                                        initMethod = "kmeans",
-                                       nInitIterations = 1,
+                                       nInitIterations = 0,
                                        normalize = "Yes",
                                        numNodes = 2)
 
@@ -68,15 +68,13 @@ test_that("Checking clustering results", {
   # take more than 5s."
   # https://stackoverflow.com/questions/41307178/error-processing-vignette-failed-with-diagnostics-4-simultaneous-processes-spa
 
-  expect_that(length(clusteringResults), equals(16))
-  expect_that(clusteringResults, is_a("mplnParallel"))
-  expect_that(clusteringResults$initalization_method, equals("kmeans"))
-  numPara <- c(27)
-  expect_that(clusteringResults$numb_of_parameters, equals(numPara))
-  expect_that(clusteringResults$true_labels, equals(simulatedCounts$trueMembership))
-  expect_that(trunc(clusteringResults$ICL_all$ICLmodelselected), equals(2))
-  expect_that(trunc(clusteringResults$AIC_all$AICmodelselected), equals(2))
-  expect_that(trunc(clusteringResults$BIC_all$BICmodelselected), equals(2))
+  testthat::expect_that(length(clusteringResults), equals(17))
+  testthat::expect_that(clusteringResults, is_a("mvplnParallel"))
+  testthat::expect_that(clusteringResults$initalizationMethod, equals("kmeans"))
+  testthat::expect_that(clusteringResults$true_labels, equals(simulatedMVdata$trueMembership))
+  testthat::expect_that(trunc(clusteringResults$ICL.all$ICLmodelselected), equals(1))
+  testthat::expect_that(trunc(clusteringResults$AIC.all$AICmodelselected), equals(1))
+  testthat::expect_that(trunc(clusteringResults$BIC.all$BICmodelselected), equals(1))
 })
 
 context("Checking for invalid user input")
@@ -129,18 +127,6 @@ test_that("Data clustering error upon invalid user input", {
                                         matrixMean = true_M_all,
                                         phi = true_Phi_all,
                                         omega = true_Omega_all)
-
-  # Clustering simulated matrix variate count data
-  clusteringResults <- mvplnClustering(dataset = simulatedMVdata$dataset,
-                                       membership = simulatedMVdata$truemembership,
-                                       gmin = 1,
-                                       gmax = 2,
-                                       nChains = 3,
-                                       nIterations = 300,
-                                       initMethod = "kmeans",
-                                       nInitIterations = 1,
-                                       normalize = "Yes",
-                                       numNodes = 2)
 
   # dataset provided as character
   testthat::expect_error(mvplnClustering(
@@ -299,6 +285,20 @@ test_that("Data clustering error upon invalid user input", {
                               nInitIterations = 1,
                               normalize = "other",
                               numNodes = 2))
+
+  # Incorrect input type for numNodes
+  testthat::expect_error(mvplnClustering(
+                              dataset = simulatedMVdata$dataset,
+                              membership = simulatedMVdata$truemembership,
+                              gmin = 1,
+                              gmax = 2,
+                              nChains = 3,
+                              nIterations = 300,
+                              initMethod = "kmeans",
+                              nInitIterations = 1,
+                              normalize = "Yes",
+                              numNodes = "2"))
+
 
 })
 
