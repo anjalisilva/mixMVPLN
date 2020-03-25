@@ -158,14 +158,14 @@ mvplnClustering <- function(dataset,
 
   # Performing checks
   if (typeof(unlist(dataset)) != "double" & typeof(unlist(dataset)) != "integer") {
-    stop("Units should be count matrices");}
+    stop("dataset should be a list of count matrices.");}
 
   if (any((unlist(dataset) %% 1 == 0) == FALSE)) {
-    stop("Units should be count matrices.")
+    stop("dataset should be a list of count matrices.")
   }
 
   if (class(dataset) != "list") {
-    stop("Dataset needs to be a list of matrices.")
+    stop("dataset needs to be a list of matrices.")
   }
 
   if(class(gmin) != "numeric" || class(gmax) != "numeric") {
@@ -239,6 +239,12 @@ mvplnClustering <- function(dataset,
   if (normalize != "Yes" && normalize != "No") {
     stop("normalize should be a string indicating Yes or No, specifying
        if normalization should be performed.")
+  }
+
+  if((class(numNodes) != "logical") && (class(numNodes) != "numeric")) {
+    stop("numNodes should be a positive integer indicating the number
+         of nodes to be used from the local machine to run the
+         clustering algorithm. Else leave as NA.")
   }
 
 
