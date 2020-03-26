@@ -26,4 +26,7 @@ Imports:
     parallel,
     utils
 Suggests: 
-    testthat
+    testthat,
+    knitr,
+    rmarkdown
+VignetteBuilder: knitr
