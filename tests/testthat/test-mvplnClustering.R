@@ -105,7 +105,7 @@ test_that("Data clustering error upon invalid user input", {
   true_M_all <- rbind(true_M1, true_M2)
 
   # Phi is a r x r matrix
-  library(clusterGeneration)
+  # library(clusterGeneration)
   # Covariance matrix containing variances and covariances between r occasions
   # true_Phi1 <- clusterGeneration::genPositiveDefMat(covMethod = "unifcorrmat",
   #                                                   dim = true_r,

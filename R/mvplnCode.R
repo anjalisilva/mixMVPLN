@@ -367,7 +367,10 @@ mvplnClustering <- function(dataset,
                                       "nChains",
                                       "nIterations",
                                       "parameterEstimation",
-                                      "stanRun"),
+                                      "p",
+                                      "r",
+                                      "stanRun",
+                                      "TwoDdataset"),
                           envir = environment())
 
   # Doing clusterEvalQ
@@ -383,9 +386,9 @@ mvplnClustering <- function(dataset,
 
 
 
-  parallelRun = list()
-  cat("\nRunning parallel code now.")
-  parallelRun = parallel::clusterMap(cl = cl,
+  parallelRun <- list()
+  cat("\nRunning parallel code...")
+  parallelRun <- parallel::clusterMap(cl = cl,
                                      fun = mvplnParallelCode,
                                      g = gmin:gmax)
   cat("\nDone parallel code.")
