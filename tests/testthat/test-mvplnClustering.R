@@ -70,6 +70,7 @@ test_that("Checking clustering results", {
                                        normalize = "Yes",
                                        numNodes = 2)
 
+
   # Setting numNodes = 2 based on the following entry, otherwise error.
   # "NB: you can’t use unexported functions and you shouldn’t open new graphics
   # devices or use more than two cores. Individual examples shouldn’t

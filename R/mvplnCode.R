@@ -392,7 +392,7 @@ mvplnClustering <- function(dataset,
                                      fun = mvplnParallelCode,
                                      g = gmin:gmax)
   cat("\nDone parallel code.")
-  parallel::stopCluster(cl)
+  #parallel::stopCluster(cl)
 
 
   BIC <- ICL <- AIC <- AIC3 <- Djump <- DDSE <- k <- ll <- vector()
