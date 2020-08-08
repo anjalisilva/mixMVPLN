@@ -75,48 +75,53 @@ the number of responses/variables.
 }
 \examples{
 # Generating simulated data
-# set.seed(1)
-# true_G <- 2 # number of total G
-# true_r <- 2 # number of total occasions
-# true_p <- 3 # number of total responses
-# true_n <- 100 # number of total units
+set.seed(1234)
+true_G <- 2 # number of total G
+true_r <- 2 # number of total occasions
+true_p <- 3 # number of total responses
+true_n <- 100 # number of total units
+
 # M is a r x p matrix
-# true_M1 <- matrix(rep(6, (true_r*true_p)), ncol = true_p, nrow = true_r, byrow = TRUE)
-# true_M2 <- matrix(rep(1, (true_r*true_p)), ncol = true_p, nrow = true_r, byrow = TRUE)
-# true_M_all <- rbind(true_M1, true_M2)
+true_M1 <- matrix(rep(6, (true_r*true_p)),
+                  ncol = true_p, nrow = true_r, byrow = TRUE)
+true_M2 <- matrix(rep(1, (true_r*true_p)),
+                  ncol = true_p, nrow = true_r, byrow = TRUE)
+true_M_all <- rbind(true_M1, true_M2)
+
 # Phi is a r x r matrix
-# library(clusterGeneration)
+library(clusterGeneration)
 # Covariance matrix containing variances and covariances between r occasions
-# true_Phi1 <- clusterGeneration::genPositiveDefMat(covMethod = "unifcorrmat",
-#                                                   dim=true_r,
-#                                                   rangeVar = c(1, 1.7))$Sigma
-# true_Phi1[1, 1] <- 1 # for identifiability issues
-# true_Phi2 <- clusterGeneration::genPositiveDefMat(covMethod = "unifcorrmat",
-#                                                   dim = true_r,
-#                                                   rangeVar = c(0.7, 0.7))$Sigma
-# true_Phi2[1, 1] <- 1 # for identifiability issues
-# true_Phi_all <- rbind(true_Phi1, true_Phi2)
+true_Phi1 <- clusterGeneration::genPositiveDefMat(covMethod = "unifcorrmat",
+                                                  dim=true_r,
+                                                  rangeVar = c(1, 1.7))$Sigma
+true_Phi1[1, 1] <- 1 # for identifiability issues
+true_Phi2 <- clusterGeneration::genPositiveDefMat(covMethod = "unifcorrmat",
+                                                  dim = true_r,
+                                                  rangeVar = c(0.7, 0.7))$Sigma
+true_Phi2[1, 1] <- 1 # for identifiability issues
+true_Phi_all <- rbind(true_Phi1, true_Phi2)
+
 # Omega is a p x p matrix
 # Covariance matrix containing variance and covariances of p responses/variables
-# true_Omega1 <- clusterGeneration::genPositiveDefMat(covMethod = "unifcorrmat",
-#                                                     dim = true_p,
-#                                                     rangeVar = c(1, 1.7))$Sigma
-# true_Omega2 <- clusterGeneration::genPositiveDefMat(covMethod = "unifcorrmat",
-#                                                     dim = true_p,
-#                                                     rangeVar = c(0.7, 0.7))$Sigma
-# true_Omega_all <- rbind(true_Omega1, true_Omega2)
+true_Omega1 <- clusterGeneration::genPositiveDefMat(covMethod = "unifcorrmat",
+                                                    dim = true_p,
+                                                    rangeVar = c(1, 1.7))$Sigma
+true_Omega2 <- clusterGeneration::genPositiveDefMat(covMethod = "unifcorrmat",
+                                                    dim = true_p,
+true_Omega_all <- rbind(true_Omega1, true_Omega2)
 
-# sampleData <- mvplnDataGenerator(nOccasions = true_r,
-#                                  nResponses = true_p,
-#                                  nUnits = true_n,
-#                                  mixingProportions = c(0.79, 0.21),
-#                                  matrixMean = true_M_all,
-#                                  phi = true_Phi_all,
-#                                  omega = true_Omega_all)
+
+sampleData <- mixMVPLN::mvplnDataGenerator(nOccasions = true_r,
+                                           nResponses = true_p,
+                                           nUnits = true_n,
+                                           mixingProportions = c(0.79, 0.21),
+                                           matrixMean = true_M_all,
+                                           phi = true_Phi_all,
+                                           omega = true_Omega_all)
 
 }
 \references{
-Silva, A. et al. (2019). Finite Mixtures of Matrix Variate Poisson-Log Normal Distributions
+Silva, A. et al. (2018). Finite Mixtures of Matrix Variate Poisson-Log Normal Distributions
 for Three-Way Count Data. \href{https://arxiv.org/abs/1807.08380}{arXiv preprint arXiv:1807.08380}.
 
 Aitchison, J. and C. H. Ho (1989). The multivariate Poisson-log normal distribution.
