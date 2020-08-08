@@ -76,7 +76,7 @@ A BibTeX entry for LaTeX users is
 
 ## Contributions
 
-`MPLNClust` welcomes issues, enhancement requests, and other contributions. To submit an issue, use the [GitHub issues](https://github.com/anjalisilva/MPLNClust/issues).
+`mixMVPLN` welcomes issues, enhancement requests, and other contributions. To submit an issue, use the [GitHub issues](https://github.com/anjalisilva/mixMVPLN/issues).
 
 ## Acknowledgments
 
