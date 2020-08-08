@@ -66,27 +66,28 @@
 #' true_M_all <- rbind(true_M1, true_M2)
 #'
 #' # Phi is a r x r matrix
-#' library(clusterGeneration)
 #' # Covariance matrix containing variances and covariances between r occasions
-#' true_Phi1 <- clusterGeneration::genPositiveDefMat(covMethod = "unifcorrmat",
-#'                                                   dim=true_r,
-#'                                                   rangeVar = c(1, 1.7))$Sigma
+#'
+#' true_Phi1 <- matrix(c(1.435610, -1.105615, -1.105615,  1.426492), nrow = 2)
 #' true_Phi1[1, 1] <- 1 # for identifiability issues
-#' true_Phi2 <- clusterGeneration::genPositiveDefMat(covMethod = "unifcorrmat",
-#'                                                   dim = true_r,
-#'                                                   rangeVar = c(0.7, 0.7))$Sigma
+#'
+#' true_Phi2 <- matrix(c(0.7000000, 0.1727312, 0.1727312, 0.7000000), nrow = 2)
 #' true_Phi2[1, 1] <- 1 # for identifiability issues
 #' true_Phi_all <- rbind(true_Phi1, true_Phi2)
+
 #'
 #' # Omega is a p x p matrix
 #' # Covariance matrix containing variance and covariances of p responses/variables
-#' true_Omega1 <- clusterGeneration::genPositiveDefMat(covMethod = "unifcorrmat",
-#'                                                     dim = true_p,
-#'                                                     rangeVar = c(1, 1.7))$Sigma
-#' true_Omega2 <- clusterGeneration::genPositiveDefMat(covMethod = "unifcorrmat",
-#'                                                     dim = true_p,
-#                                                      rangeVar = c(0.7, 0.7))$Sigma
-#' true_Omega_all <- rbind(true_Omega1, true_Omega2)
+#'
+#'   true_Omega1 <- matrix(c(1.4855139,  0.9049113, -0.9063446,
+#'                           0.9049113,  1.3814824, -1.2298301,
+#'                           -0.9063446, -1.2298301,  1.1979135), nrow = 3)
+#'
+#'  true_Omega2 <- matrix(c(0.7000000, 0.5379098, 0.4837924,
+#'                          0.5379098, 0.7000000, 0.4089374,
+#'                          0.4837924, 0.4089374, 0.7000000), nrow = 3)
+#'  true_Omega_all <- rbind(true_Omega1, true_Omega2)
+#'
 #'
 #' sampleData <- mixMVPLN::mvplnDataGenerator(nOccasions = true_r,
 #'                                            nResponses = true_p,
