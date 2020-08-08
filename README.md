@@ -54,7 +54,7 @@ A BibTeX entry for LaTeX users is
     title = {Finite mixtures of matrix-variate Poisson-log normal distributions for three-way count data},
     author = {A. Silva and S. J. Rothstein and P. D. McNicholas and S. Subedi},
     note = {arXiv preprint arXiv:1206.4768},
-	  year = {2018},
+    year = {2018},
     url = {https://arxiv.org/abs/1807.08380},
   }
 ```
