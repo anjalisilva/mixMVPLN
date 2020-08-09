@@ -123,15 +123,39 @@ mvplnDataGenerator <- function(nOccasions,
                                phi,
                                omega) {
   # Checking user input
-  if((is.numeric(nOccasions) != TRUE) || (nOccasions%%1 != 0) || (length(nOccasions) >1)) {
+  if(is.numeric(nOccasions) != TRUE) {
     stop("nOccasions argument should be an integer of class numeric.")
   }
 
-  if((is.numeric(nResponses) != TRUE) || (nResponses%%1 != 0) || (length(nResponses) >1)) {
+  if(nOccasions%%1 != 0) {
+    stop("nOccasions argument should be an integer of class numeric.")
+  }
+
+  if(length(nOccasions) > 1) {
+    stop("nOccasions argument should be an integer of class numeric.")
+  }
+
+  if(is.numeric(nResponses) != TRUE) {
+     stop("nResponses argument should be an integer of class numeric.")
+  }
+
+  if(nResponses%%1 != 0) {
     stop("nResponses argument should be an integer of class numeric.")
   }
 
-  if((is.numeric(nUnits) != TRUE) || (nUnits%%1 != 0) || (length(nUnits) >1)) {
+  if(length(nResponses) > 1) {
+    stop("nResponses argument should be an integer of class numeric.")
+  }
+
+  if(is.numeric(nUnits) != TRUE) {
+    stop("nUnits argument should be an integer of class numeric.")
+  }
+
+  if(nUnits%%1 != 0) {
+    stop("nUnits argument should be an integer of class numeric.")
+  }
+
+  if(length(nUnits) > 1) {
     stop("nUnits argument should be an integer of class numeric.")
   }
 
