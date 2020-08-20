@@ -22,7 +22,7 @@ library("mixMVPLN")
 To list all functions available in the package:
 
 ``` r
-lsf.str("package:mixMVPLN")
+ls("package:mixMVPLN")
 ```
 
 For tutorials, refer to the vignette:
