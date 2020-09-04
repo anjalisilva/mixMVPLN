@@ -25,12 +25,6 @@ To list all functions available in the package:
 ls("package:mixMVPLN")
 ```
 
-For tutorials, refer to the vignette:
-
-``` r
-browseVignettes("mixMVPLN")
-```
-
 ## Details
 
 Matrix variate distributions offer a natural way for modeling matrices. Extensions of matrix variate distributions in the context of mixture models have given rise to mixtures of matrix variate distributions.
@@ -40,6 +34,18 @@ The multivariate Poisson-log normal (MPLN) distribution was proposed in 1989 ([A
 The MCMC-EM algorithm via Stan is used for parameter estimation. Coarse grain parallelization is employed, such that when a range of components/clusters (g = 1,...,G) are considered, each component/cluster is run on a different processor. This can be performed because each component/cluster size is independent from another. All components/clusters in the range to be tested have been parallelized to run on a seperate core using the *parallel* R package. The number of cores used for clustering is can be user-specified or calculated using *parallel::detectCores() - 1*. To check the convergence of MCMC chains, the potential scale reduction factor and the effective number of samples are used. The Heidelberger and Welch’s convergence diagnostic (Heidelberger and Welch, 1983) is used to check the convergence of the MCMC-EM algorithm. 
 
 The AIC, BIC, AIC3 and ICL are used for model selection. Starting values (argument: initMethod) and the number of iterations for each chain (argument: nInitIterations) play an important role to the successful operation of this algorithm.
+
+  
+## Tutorials  
+
+For tutorials, refer to the vignette:
+
+``` r
+browseVignettes("mixMVPLN")
+```
+
+or see [A tour of mixMVPLN](https://github.com/anjalisilva/MPLNClust/blob/master/vignettes/Introduction_MPLNClust_MCMCEM.md).
+  
 
 
 ## Citation for Package
@@ -70,13 +76,16 @@ A BibTeX entry for LaTeX users is
 
 * For others, refer to help page of inidividual functions via `?function` or `help(function)`.
 
+
 ## Maintainer
 
 * Anjali Silva (anjali.silva@uhnresearch.ca). 
 
+
 ## Contributions
 
 `mixMVPLN` welcomes issues, enhancement requests, and other contributions. To submit an issue, use the [GitHub issues](https://github.com/anjalisilva/mixMVPLN/issues).
+
 
 ## Acknowledgments
 
