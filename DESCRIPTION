@@ -23,7 +23,6 @@ Imports:
     edgeR,
     mclust,
     mvtnorm,
-    Rcpp,
     rstan (>= 2.18.1),
     parallel,
     utils
