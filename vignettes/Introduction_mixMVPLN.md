@@ -1,5 +1,8 @@
-
 # A quick tour of mixMVPLN
+
+### Anjali Silva
+
+### 2 Sept 2020
 
 ## Introduction
 
