@@ -44,7 +44,7 @@ For tutorials, refer to the vignette:
 browseVignettes("mixMVPLN")
 ```
 
-or see [A tour of mixMVPLN](https://github.com/anjalisilva/MPLNClust/blob/master/vignettes/Introduction_MPLNClust_MCMCEM.md).
+or see [A tour of mixMVPLN](https://github.com/anjalisilva/mixMVPLN/blob/master/vignettes/Introduction_mixMVPLN.md).
   
 
 
