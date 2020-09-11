@@ -4,59 +4,59 @@ library(mixMVPLN)
 test_that("Checking clustering results", {
 
   set.seed(1234)
-  true_G <- 2 # number of total G
-  true_r <- 2 # number of total occasions
-  true_p <- 3 # number of total responses
-  true_n <- 50 # number of total units
+  trueG <- 2 # number of total G
+  truer <- 2 # number of total occasions
+  truep <- 3 # number of total responses
+  trueN <- 50 # number of total units
 
   # M is a r x p matrix
-  true_M1 <- matrix(rep(6, (true_r * true_p)),
-                    ncol = true_p, nrow = true_r,
+  trueM1 <- matrix(rep(6, (truer * truep)),
+                    ncol = truep, nrow = truer,
                     byrow = TRUE)
-  true_M2 <- matrix(rep(1, (true_r * true_p)),
-                    ncol = true_p, nrow = true_r,
+  trueM2 <- matrix(rep(1, (truer * truep)),
+                    ncol = truep, nrow = truer,
                     byrow = TRUE)
-  true_M_all <- rbind(true_M1, true_M2)
+  trueMall <- rbind(trueM1, trueM2)
 
   # Phi is a r x r matrix
   # Covariance matrix containing variances and covariances between r occasions
-  # true_Phi1 <- clusterGeneration::genPositiveDefMat(covMethod = "unifcorrmat",
-  #                                                   dim = true_r,
+  # truePhi1 <- clusterGeneration::genPositiveDefMat(covMethod = "unifcorrmat",
+  #                                                   dim = truer,
   #                                                   rangeVar = c(1, 1.7))$Sigma
-  true_Phi1 <- matrix(c(1.435610, -1.105615, -1.105615,  1.426492), nrow = 2)
-  true_Phi1[1, 1] <- 1 # for identifiability issues
+  truePhi1 <- matrix(c(1.435610, -1.105615, -1.105615,  1.426492), nrow = 2)
+  truePhi1[1, 1] <- 1 # for identifiability issues
 
-  # true_Phi2 <- clusterGeneration::genPositiveDefMat(covMethod = "unifcorrmat",
-  #                                                   dim = true_r,
+  # truePhi2 <- clusterGeneration::genPositiveDefMat(covMethod = "unifcorrmat",
+  #                                                   dim = truer,
   #                                                   rangeVar = c(0.7, 0.7))$Sigma
-  true_Phi2 <- matrix(c(0.7000000, 0.1727312, 0.1727312, 0.7000000), nrow = 2)
-  true_Phi2[1, 1] <- 1 # for identifiability issues
-  true_Phi_all <- rbind(true_Phi1, true_Phi2)
+  truePhi2 <- matrix(c(0.7000000, 0.1727312, 0.1727312, 0.7000000), nrow = 2)
+  truePhi2[1, 1] <- 1 # for identifiability issues
+  truePhiAll <- rbind(truePhi1, truePhi2)
 
   # Omega is a p x p matrix
   # Covariance matrix containing variance and covariances of p responses/variables
-  # true_Omega1 <- clusterGeneration::genPositiveDefMat(covMethod = "unifcorrmat",
-  #                                                     dim = true_p,
+  # trueOmega1 <- clusterGeneration::genPositiveDefMat(covMethod = "unifcorrmat",
+  #                                                     dim = truep,
   #                                                     rangeVar = c(1, 1.7))$Sigma
-  true_Omega1 <- matrix(c(1.4855139,  0.9049113, -0.9063446,
+  trueOmega1 <- matrix(c(1.4855139,  0.9049113, -0.9063446,
                           0.9049113,  1.3814824, -1.2298301,
                           -0.9063446, -1.2298301,  1.1979135), nrow = 3)
 
-  # true_Omega2 <- clusterGeneration::genPositiveDefMat(covMethod = "unifcorrmat",
-  #                                                     dim = true_p,
+  # trueOmega2 <- clusterGeneration::genPositiveDefMat(covMethod = "unifcorrmat",
+  #                                                     dim = truep,
   #                                                     rangeVar = c(0.7, 0.7))$Sigma
-  true_Omega2 <- matrix(c(0.7000000, 0.5379098, 0.4837924,
+  trueOmega2 <- matrix(c(0.7000000, 0.5379098, 0.4837924,
                           0.5379098, 0.7000000, 0.4089374,
                           0.4837924, 0.4089374, 0.7000000), nrow = 3)
-  true_Omega_all <- rbind(true_Omega1, true_Omega2)
+  trueOmegaAll <- rbind(trueOmega1, trueOmega2)
 
-  simulatedMVdata <- mvplnDataGenerator(nOccasions = true_r,
-                                        nResponses = true_p,
-                                        nUnits = true_n,
+  simulatedMVdata <- mvplnDataGenerator(nOccasions = truer,
+                                        nResponses = truep,
+                                        nUnits = trueN,
                                         mixingProportions = c(0.79, 0.21),
-                                        matrixMean = true_M_all,
-                                        phi = true_Phi_all,
-                                        omega = true_Omega_all)
+                                        matrixMean = trueMall,
+                                        phi = truePhiAll,
+                                        omega = trueOmegaAll)
 
   # Clustering simulated matrix variate count data
   clusteringResults <- mvplnClustering(dataset = simulatedMVdata$dataset,
@@ -91,60 +91,60 @@ test_that("Data clustering error upon invalid user input", {
 
   # Generating simulated data
   set.seed(1234)
-  true_G <- 2 # number of total G
-  true_r <- 2 # number of total occasions
-  true_p <- 3 # number of total responses
-  true_n <- 70 # number of total units
+  trueG <- 2 # number of total G
+  truer <- 2 # number of total occasions
+  truep <- 3 # number of total responses
+  trueN <- 70 # number of total units
 
   # M is a r x p matrix
-  true_M1 <- matrix(rep(6, (true_r * true_p)),
-                    ncol = true_p, nrow = true_r,
+  trueM1 <- matrix(rep(6, (truer * truep)),
+                    ncol = truep, nrow = truer,
                     byrow = TRUE)
-  true_M2 <- matrix(rep(1, (true_r * true_p)),
-                    ncol = true_p, nrow = true_r,
+  trueM2 <- matrix(rep(1, (truer * truep)),
+                    ncol = truep, nrow = truer,
                     byrow = TRUE)
-  true_M_all <- rbind(true_M1, true_M2)
+  trueMall <- rbind(trueM1, trueM2)
 
   # Phi is a r x r matrix
   # library(clusterGeneration)
   # Covariance matrix containing variances and covariances between r occasions
-  # true_Phi1 <- clusterGeneration::genPositiveDefMat(covMethod = "unifcorrmat",
-  #                                                   dim = true_r,
+  # truePhi1 <- clusterGeneration::genPositiveDefMat(covMethod = "unifcorrmat",
+  #                                                   dim = truer,
   #                                                   rangeVar = c(1, 1.7))$Sigma
-  true_Phi1 <- matrix(c(1.435610, -1.105615, -1.105615,  1.426492), nrow = 2)
-  true_Phi1[1, 1] <- 1 # for identifiability issues
+  truePhi1 <- matrix(c(1.435610, -1.105615, -1.105615,  1.426492), nrow = 2)
+  truePhi1[1, 1] <- 1 # for identifiability issues
 
-  # true_Phi2 <- clusterGeneration::genPositiveDefMat(covMethod = "unifcorrmat",
-  #                                                   dim = true_r,
+  # truePhi2 <- clusterGeneration::genPositiveDefMat(covMethod = "unifcorrmat",
+  #                                                   dim = truer,
   #                                                   rangeVar = c(0.7, 0.7))$Sigma
-  true_Phi2 <- matrix(c(0.7000000, 0.1727312, 0.1727312, 0.7000000), nrow = 2)
-  true_Phi2[1, 1] <- 1 # for identifiability issues
-  true_Phi_all <- rbind(true_Phi1, true_Phi2)
+  truePhi2 <- matrix(c(0.7000000, 0.1727312, 0.1727312, 0.7000000), nrow = 2)
+  truePhi2[1, 1] <- 1 # for identifiability issues
+  truePhiAll <- rbind(truePhi1, truePhi2)
 
   # Omega is a p x p matrix
   # Covariance matrix containing variance and covariances of p responses/variables
-  # true_Omega1 <- clusterGeneration::genPositiveDefMat(covMethod = "unifcorrmat",
-  #                                                     dim = true_p,
+  # trueOmega1 <- clusterGeneration::genPositiveDefMat(covMethod = "unifcorrmat",
+  #                                                     dim = truep,
   #                                                     rangeVar = c(1, 1.7))$Sigma
-  true_Omega1 <- matrix(c(1.4855139,  0.9049113, -0.9063446,
+  trueOmega1 <- matrix(c(1.4855139,  0.9049113, -0.9063446,
                           0.9049113,  1.3814824, -1.2298301,
                           -0.9063446, -1.2298301,  1.1979135), nrow = 3)
 
-  # true_Omega2 <- clusterGeneration::genPositiveDefMat(covMethod = "unifcorrmat",
-  #                                                     dim = true_p,
+  # trueOmega2 <- clusterGeneration::genPositiveDefMat(covMethod = "unifcorrmat",
+  #                                                     dim = truep,
   #                                                     rangeVar = c(0.7, 0.7))$Sigma
-  true_Omega2 <- matrix(c(0.7000000, 0.5379098, 0.4837924,
+  trueOmega2 <- matrix(c(0.7000000, 0.5379098, 0.4837924,
                           0.5379098, 0.7000000, 0.4089374,
                           0.4837924, 0.4089374, 0.7000000), nrow = 3)
-  true_Omega_all <- rbind(true_Omega1, true_Omega2)
+  trueOmegaAll <- rbind(trueOmega1, trueOmega2)
 
-  simulatedMVdata <- mvplnDataGenerator(nOccasions = true_r,
-                                        nResponses = true_p,
-                                        nUnits = true_n,
+  simulatedMVdata <- mvplnDataGenerator(nOccasions = truer,
+                                        nResponses = truep,
+                                        nUnits = trueN,
                                         mixingProportions = c(0.79, 0.21),
-                                        matrixMean = true_M_all,
-                                        phi = true_Phi_all,
-                                        omega = true_Omega_all)
+                                        matrixMean = trueMall,
+                                        phi = truePhiAll,
+                                        omega = trueOmegaAll)
 
   # dataset provided as character
   testthat::expect_error(mvplnClustering(

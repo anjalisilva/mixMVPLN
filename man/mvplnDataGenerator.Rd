@@ -76,48 +76,50 @@ the number of responses/variables.
 \examples{
 # Generating simulated data
 set.seed(1234)
-true_G <- 2 # number of total G
-true_r <- 2 # number of total occasions
-true_p <- 3 # number of total responses
-true_n <- 100 # number of total units
+trueG <- 2 # number of total G
+truer <- 2 # number of total occasions
+truep <- 3 # number of total responses
+trueN <- 100 # number of total units
 
 # M is a r x p matrix
-true_M1 <- matrix(rep(6, (true_r*true_p)),
-                  ncol = true_p, nrow = true_r, byrow = TRUE)
-true_M2 <- matrix(rep(1, (true_r*true_p)),
-                  ncol = true_p, nrow = true_r, byrow = TRUE)
-true_M_all <- rbind(true_M1, true_M2)
+trueM1 <- matrix(rep(6, (truer * truep)),
+                  ncol = truep, nrow = truer, byrow = TRUE)
+trueM2 <- matrix(rep(1, (truer * truep)),
+                  ncol = truep, nrow = truer, byrow = TRUE)
+trueMall <- rbind(trueM1, trueM2)
 
 # Phi is a r x r matrix
 # Covariance matrix containing variances and covariances between r occasions
 
-true_Phi1 <- matrix(c(1.435610, -1.105615, -1.105615,  1.426492), nrow = 2)
-true_Phi1[1, 1] <- 1 # for identifiability issues
+truePhi1 <- matrix(c(1.435610, -1.105615, -1.105615,  1.426492),
+                    nrow = 2)
+truePhi1[1, 1] <- 1 # for identifiability issues
 
-true_Phi2 <- matrix(c(0.7000000, 0.1727312, 0.1727312, 0.7000000), nrow = 2)
-true_Phi2[1, 1] <- 1 # for identifiability issues
-true_Phi_all <- rbind(true_Phi1, true_Phi2)
+truePhi2 <- matrix(c(0.7000000, 0.1727312, 0.1727312, 0.7000000),
+                   nrow = 2)
+truePhi2[1, 1] <- 1 # for identifiability issues
+truePhiAll <- rbind(truePhi1, truePhi2)
 
 # Omega is a p x p matrix
 # Covariance matrix containing variance and covariances of p responses/variables
 
-  true_Omega1 <- matrix(c(1.4855139,  0.9049113, -0.9063446,
+trueOmega1 <- matrix(c(1.4855139,  0.9049113, -0.9063446,
                           0.9049113,  1.3814824, -1.2298301,
                           -0.9063446, -1.2298301,  1.1979135), nrow = 3)
 
- true_Omega2 <- matrix(c(0.7000000, 0.5379098, 0.4837924,
+trueOmega2 <- matrix(c(0.7000000, 0.5379098, 0.4837924,
                          0.5379098, 0.7000000, 0.4089374,
                          0.4837924, 0.4089374, 0.7000000), nrow = 3)
- true_Omega_all <- rbind(true_Omega1, true_Omega2)
+trueOmegaAll <- rbind(trueOmega1, trueOmega2)
 
 
-sampleData <- mixMVPLN::mvplnDataGenerator(nOccasions = true_r,
-                                           nResponses = true_p,
-                                           nUnits = true_n,
+sampleData <- mixMVPLN::mvplnDataGenerator(nOccasions = truer,
+                                           nResponses = truep,
+                                           nUnits = trueN,
                                            mixingProportions = c(0.79, 0.21),
-                                           matrixMean = true_M_all,
-                                           phi = true_Phi_all,
-                                           omega = true_Omega_all)
+                                           matrixMean = trueMall,
+                                           phi = truePhiAll,
+                                           omega = trueOmegaAll)
 
 }
 \references{
