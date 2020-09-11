@@ -103,7 +103,7 @@
 #' # trueOmega2 <- clusterGeneration::genPositiveDefMat("unifcorrmat", dim = truep,
 #' #                                   rangeVar = c(0.7, 0.7))$Sigma
 #'
-#' # true_Omega_all <- rbind(trueOmega1, trueOmega2)
+#' # trueOmegaAll <- rbind(trueOmega1, trueOmega2)
 #'
 #' # sampleData <- mixMVPLN::mvplnDataGenerator(nOccasions = truer,
 #' #                                            nResponses = truep,
@@ -111,7 +111,7 @@
 #' #                                            mixingProportions = c(0.79, 0.21),
 #' #                                            matrixMean = trueMall,
 #' #                                            phi = truePhiall,
-#' #                                            omega = true_Omega_all)
+#' #                                            omega = trueOmegaAll)
 #'
 #' # Clustering simulated matrix variate count data
 #' # clusteringResults <- mixMVPLN::mvplnClustering(dataset = sampleData$dataset,
