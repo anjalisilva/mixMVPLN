@@ -17,6 +17,7 @@ LazyData: true
 RoxygenNote: 7.1.1
 Depends: R (>= 3.4.0),
          Rcpp (>= 0.12.0)
+biocViews: Software, StatisticalMethod         
 Imports: 
     coda,
     cluster,
