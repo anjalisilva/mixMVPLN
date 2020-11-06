@@ -45,7 +45,7 @@ An overview of the package is illustrated below:
 
 <div style="text-align:center">
 
-<img src="inst/extdata/Overview_mixMVPLN.png" width="800" height="450"/>
+<img src="inst/extdata/Overview_mixMVPLN.png" width="800" height="400"/>
 
 <div style="text-align:left">
 
