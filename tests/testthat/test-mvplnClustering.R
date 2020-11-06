@@ -7,7 +7,7 @@ test_that("Checking clustering results", {
   trueG <- 2 # number of total G
   truer <- 2 # number of total occasions
   truep <- 3 # number of total responses
-  trueN <- 50 # number of total units
+  trueN <- 20 # number of total units
 
   # M is a r x p matrix
   trueM1 <- matrix(rep(6, (truer * truep)),
@@ -77,13 +77,23 @@ test_that("Checking clustering results", {
   # take more than 5s."
   # https://stackoverflow.com/questions/41307178/error-processing-vignette-failed-with-diagnostics-4-simultaneous-processes-spa
 
-  testthat::expect_that(length(clusteringResults), equals(17))
-  testthat::expect_that(clusteringResults, is_a("mvplnParallel"))
-  testthat::expect_that(clusteringResults$initalizationMethod, equals("kmeans"))
-  testthat::expect_that(clusteringResults$true_labels, equals(simulatedMVdata$trueMembership))
-  testthat::expect_that(trunc(clusteringResults$ICL.all$ICLmodelselected), equals(1))
-  testthat::expect_that(trunc(clusteringResults$AIC.all$AICmodelselected), equals(1))
-  testthat::expect_that(trunc(clusteringResults$BIC.all$BICmodelselected), equals(1))
+  expect_type(clusteringResults, "list")
+  expect_length(clusteringResults, 17)
+  expect_s3_class(clusteringResults, "mvplnParallel")
+  expect_identical(clusteringResults$nUnits, 20L)
+  expect_identical(clusteringResults$nVariables, 3L)
+  expect_identical(clusteringResults$nOccassions, 2L)
+  expect_named(clusteringResults, c("dataset", "nUnits",
+                                  "nVariables", "nOccassions",
+                                  "normFactors", "gmin", "gmax",
+                                  "initalizationMethod", "allResults",
+                                  "loglikelihood", "nParameters",
+                                  "trueLabels", "ICL.all",
+                                  "BIC.all", "AIC.all",
+                                  "AIC3.all", "totalTime"))
+  expect_output(str(clusteringResults), "List of 17")
+  expect_vector(clusteringResults$trueLabels, ptype = double(), size = 20)
+  expect_identical(clusteringResults$BIC.all$BICmodelselected, 1)
 })
 
 context("Checking for invalid user input")
@@ -316,7 +326,5 @@ test_that("Data clustering error upon invalid user input", {
     nInitIterations = 1,
     normalize = "Yes",
     numNodes = "2"))
-
-
 })
-
+# [END]

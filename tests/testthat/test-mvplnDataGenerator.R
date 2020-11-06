@@ -64,6 +64,22 @@ test_that("Data generation is as expected", {
   testthat::expect_that(trunc(simulatedMVdata$units), equals(trueN))
   testthat::expect_that(trunc(simulatedMVdata$occassions), equals(truer))
   testthat::expect_that(trunc(simulatedMVdata$variables), equals(truep))
+
+  expect_type(simulatedMVdata, "list")
+  expect_length(simulatedMVdata, 9)
+  expect_s3_class(simulatedMVdata, "mvplnDataGenerator")
+  expect_identical(simulatedMVdata$units, 1000)
+  expect_identical(simulatedMVdata$variables, 3)
+  expect_identical(simulatedMVdata$occassions, 2)
+  expect_named(simulatedMVdata, c("dataset", "truemembership",
+                                    "units", "occassions",
+                                    "variables", "mixingProportions",
+                                    "means", "phi",
+                                    "psi"))
+  expect_output(str(simulatedMVdata), "List of 9")
+  expect_vector(simulatedMVdata$truemembership, ptype = double(), size = 1000)
+  expect_vector(simulatedMVdata$mixingProportions, c(0.79, 0.21))
+  expect_identical(simulatedMVdata$mixingProportions, c(0.79, 0.21))
 })
 
 
@@ -249,5 +265,5 @@ test_that("Data generate error upon invalid user input", {
     matrixMean = trueMall,
     phi = truePhiAll,
     omega = data.frame(trueOmegaAll)))
-
 })
+# [END]
