@@ -93,6 +93,7 @@ dim(simulatedMVData$dataset[[1]]) # dimension of first unit is 2 x 3
 <br>
 
 <div style="text-align:left">
+
 ## Clustering
 <div style="text-align:left">
 Once the count data is available, clustering can be performed using the *mvplnClustering* function. See *?mvplnClustering* for more information, an example, and references. Here, clustering will be performed using the above generated dataset. 
