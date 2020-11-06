@@ -59,70 +59,71 @@
 #' }
 #'
 #' @examples
-#' # Not run
+#' \dontrun{
 #' # Generating simulated matrix variate count data
-#' # set.seed(1234)
-#' # trueG <- 2 # number of total G
-#' # truer <- 2 # number of total occasions
-#' # truep <- 3 # number of total responses
-#' # trueN <- 100 # number of total units
+#' set.seed(1234)
+#' trueG <- 2 # number of total G
+#' truer <- 2 # number of total occasions
+#' truep <- 3 # number of total responses
+#' trueN <- 100 # number of total units
 #'
 #' # Mu is a r x p matrix
-#' # trueM1 <- matrix(rep(6, (truer * truep)),
-#' #                   ncol = truep,
-#' #                   nrow = truer, byrow = TRUE)
+#' trueM1 <- matrix(rep(6, (truer * truep)),
+#'                  ncol = truep,
+#'                  nrow = truer, byrow = TRUE)
 #'
-#' # trueM2 <- matrix(rep(1, (truer * truep)),
-#' #                   ncol = truep,
-#' #                   nrow = truer,
-#' #                   byrow = TRUE)
+#' trueM2 <- matrix(rep(1, (truer * truep)),
+#'                  ncol = truep,
+#'                  nrow = truer,
+#'                  byrow = TRUE)
 #'
-#' # trueMall <- rbind(trueM1, trueM2)
+#' trueMall <- rbind(trueM1, trueM2)
 #'
 #' # Phi is a r x r matrix
 #' # Loading needed packages for generating data
-#' # if (!require(clusterGeneration)) install.packages("clusterGeneration")
+#' if (!require(clusterGeneration)) install.packages("clusterGeneration")
+#'
 #' # Covariance matrix containing variances and covariances between r occasions
-#' # truePhi1 <- clusterGeneration::genPositiveDefMat("unifcorrmat",
-#' #                                                    dim = truer,
-#' #                                                    rangeVar = c(1, 1.7))$Sigma
-#' # truePhi1[1, 1] <- 1 # For identifiability issues
+#' truePhi1 <- clusterGeneration::genPositiveDefMat("unifcorrmat",
+#'                                                   dim = truer,
+#'                                                   rangeVar = c(1, 1.7))$Sigma
+#' truePhi1[1, 1] <- 1 # For identifiability issues
 #'
-#' # truePhi2 <- clusterGeneration::genPositiveDefMat("unifcorrmat",
-#' #                                                   dim = truer,
-#' #                                                   rangeVar = c(0.7, 0.7))$Sigma
-#' # truePhi2[1, 1] <- 1 # For identifiability issues
-#'
-#' # truePhiall <- rbind(truePhi1, truePhi2)
+#' truePhi2 <- clusterGeneration::genPositiveDefMat("unifcorrmat",
+#'                                                   dim = truer,
+#'                                                   rangeVar = c(0.7, 0.7))$Sigma
+#' truePhi2[1, 1] <- 1 # For identifiability issues
+#' truePhiall <- rbind(truePhi1, truePhi2)
 #'
 #' # Omega is a p x p matrix
 #' # Covariance matrix containing variances and covariances between p responses
-#' # trueOmega1 <- clusterGeneration::genPositiveDefMat("unifcorrmat", dim = truep,
-#' #                                   rangeVar = c(1, 1.7))$Sigma
+#' trueOmega1 <- clusterGeneration::genPositiveDefMat("unifcorrmat", dim = truep,
+#'                                    rangeVar = c(1, 1.7))$Sigma
 #'
-#' # trueOmega2 <- clusterGeneration::genPositiveDefMat("unifcorrmat", dim = truep,
-#' #                                   rangeVar = c(0.7, 0.7))$Sigma
+#' trueOmega2 <- clusterGeneration::genPositiveDefMat("unifcorrmat", dim = truep,
+#'                                    rangeVar = c(0.7, 0.7))$Sigma
+#' trueOmegaAll <- rbind(trueOmega1, trueOmega2)
 #'
-#' # trueOmegaAll <- rbind(trueOmega1, trueOmega2)
-#'
-#' # sampleData <- mixMVPLN::mvplnDataGenerator(nOccasions = truer,
-#' #                                            nResponses = truep,
-#' #                                            nUnits = trueN,
-#' #                                            mixingProportions = c(0.79, 0.21),
-#' #                                            matrixMean = trueMall,
-#' #                                            phi = truePhiall,
-#' #                                            omega = trueOmegaAll)
+#' # Generated simulated data
+#' sampleData <- mixMVPLN::mvplnDataGenerator(nOccasions = truer,
+#'                                            nResponses = truep,
+#'                                            nUnits = trueN,
+#'                                            mixingProportions = c(0.79, 0.21),
+#'                                            matrixMean = trueMall,
+#'                                            phi = truePhiall,
+#'                                            omega = trueOmegaAll)
 #'
 #' # Clustering simulated matrix variate count data
-#' # clusteringResults <- mixMVPLN::mvplnClustering(dataset = sampleData$dataset,
-#' #                                      membership = sampleData$truemembership,
-#' #                                      gmin = 1,
-#' #                                      gmax = 3,
-#' #                                      nChains = 3,
-#' #                                      nIterations = 300,
-#' #                                      initMethod = "kmeans",
-#' #                                      nInitIterations = 1,
-#' #                                      normalize = "Yes")
+#' clusteringResults <- mixMVPLN::mvplnClustering(dataset = sampleData$dataset,
+#'                                       membership = sampleData$truemembership,
+#'                                       gmin = 1,
+#'                                       gmax = 3,
+#'                                       nChains = 3,
+#'                                       nIterations = 300,
+#'                                       initMethod = "kmeans",
+#'                                       nInitIterations = 1,
+#'                                       normalize = "Yes")
+#' }
 #'
 #' @author {Anjali Silva, \email{anjali.silva@uhnresearch.ca}, Sanjeena Dang,
 #'          \email{sdang@math.binghamton.edu}. }

@@ -258,4 +258,4 @@ mvplnDataGenerator <- function(nOccasions,
   class(results) <- "mvplnDataGenerator"
   return(results)
 }
-
+# [END]
