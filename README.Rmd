@@ -19,9 +19,7 @@ knitr::opts_chunk$set(
 <!-- badges: end -->
 
 ## Description
-`mixMVPLN` is an R package for performing model-based clustering of three-way count data using mixtures of matrix variate Poisson-log normal (MVPLN) distributions proposed by [Silva et al., 2018](https://arxiv.org/abs/1807.08380).
-
-Main function, __*mvplnClustering*__, can be used to carry out model-based clustering using mixtures of MVPLN model. Markov chain Monte Carlo expectation-maximization algorithm (MCMC-EM) is used for parameter estimation. Information criteria (AIC, BIC, AIC3 and ICL) are offered for model selection. Function __*mvplnDataGenerator*__ is available to generate simlulation data. For more information, see details section below.
+`mixMVPLN` is an R package for performing model-based clustering of three-way count data using mixtures of matrix variate Poisson-log normal (MVPLN) distributions proposed by [Silva et al., 2018](https://arxiv.org/abs/1807.08380). Markov chain Monte Carlo expectation-maximization algorithm (MCMC-EM) is used for parameter estimation. Information criteria (AIC, BIC, AIC3 and ICL) are offered for model selection. Also included is a function for simulating data from this model.
 
 ## Installation
 
@@ -35,13 +33,27 @@ library("mixMVPLN")
 
 ## Overview
 
-`mixMVPLN` contains 2 functions. For the purpose of generating simulation data via mixtures of MVPLN: *mvplnDataGenerator*. For carrying out clustering of count data using mixtures of MVPLN with parallelization: *mvplnClustering*. 
-
 To list all functions available in the package:
 
 ``` r
 ls("package:mixMVPLN")
 ```
+
+`mixMVPLN` contains 2 functions. For the purpose of generating simulation data via mixtures of MVPLN: *mvplnDataGenerator*. For carrying out clustering of count data using mixtures of MVPLN with parallelization: *mvplnClustering*. 
+
+
+An overview of the package is illustrated below:
+
+<div style="text-align:center">
+
+<img src="inst/extdata/Overview_mixMVPLN.png" width="800" height="450"/>
+
+<div style="text-align:left">
+
+<div style="text-align:left">
+
+<div style="text-align:left">
+
 
 ## Details
 
