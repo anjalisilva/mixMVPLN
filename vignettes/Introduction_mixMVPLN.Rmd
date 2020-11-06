@@ -47,7 +47,7 @@ This document gives a quick tour of [**mixMVPLN**](https://arxiv.org/abs/1807.08
 
 ``` r
 require("devtools")
-install_github("anjalisilva/mixMVPLN", build_vignettes = TRUE)
+devtools::install_github("anjalisilva/mixMVPLN", build_vignettes = TRUE)
 library("mixMVPLN")
 ```
 
@@ -104,7 +104,7 @@ trueOmega2 <- clusterGeneration::genPositiveDefMat("unifcorrmat", dim = truep,
 trueOmegaAll <- rbind(trueOmega1, trueOmega2)
 
 # Simulating data 
-simulatedMVData <- mvplnDataGenerator(nOccasions = truer,
+simulatedMVData <- mixMVPLN::mvplnDataGenerator(nOccasions = truer,
                                  nResponses = truep,
                                  nUnits = truen,
                                  mixingProportions = c(0.79, 0.21),
@@ -137,24 +137,57 @@ Coarse grain parallelization is employed in *mvplnClustering*, such that when a 
 Below, clustering of *simulatedMVData$dataset* is performed for g = 1:2 with 300 iterations and *kmeans* initialization with 2 initialization runs. 
 
 ``` r
-clusteringResults <- mvplnClustering(dataset = simulatedMVData$dataset,
+clusteringResults <- mixMVPLN::mvplnClustering(
+                                     dataset = simulatedMVData$dataset,
                                      membership = simulatedMVData$truemembership,
                                      gmin = 1,
                                      gmax = 2,
                                      nChains = 3,
-                                     nIterations = 300,
+                                     nIterations = 400,
                                      initMethod = "kmeans",
-                                     nInitIterations = 2,
+                                     nInitIterations = 1,
                                      normalize = "Yes")
 ```
 
-The model selected by BIC for this dataset can be viewed as follows.
+The model selected by BIC for this dataset can be further analyzed.
 
 ``` r
 clusteringResults$BIC.all$BICmodelselected
 
 # Cross tabulation of BIC selected model labels with true lables
 table(mplnResults$BIC.all$BICmodelselected_labels, simulatedMVData$truemembership)
+```
+
+## Visualize Results
+
+Clustering results can be viewed as a barplot of probabilities. For this, select a model of interest and use *MPLNClust::mplnVisualize()* function from `MPLNClust` R package. 
+
+``` r
+#  Visualizing probabilities for 2 components 
+MPLNVisuals <- MPLNClust::mplnVisualize(
+                    dataset = simulatedMVData$dataset,
+                    plots = 'bar',
+                    probabilities =  simulatedMVData$allResults[[2]]$probaPost,
+                    clusterMembershipVector = simulatedMVData$allResults[[2]]$clusterlabels,
+                    LinePlotColours = "multicolour",
+                    fileName = 'ProbabilityPlotG2',
+                    format = 'png')
+```
+
+Log-likelihood and information criteria value at each run can be plotted as follows.
+``` r
+par(mfrow = c(1, 2))
+graphics::matplot(simulatedMVData$logLikelihood, xlab = "Run",
+                  ylab = "logL", type = c("b"), pch = 1, lty = 2) 
+ICvalues <- matrix(c(simulatedMVData$BICresults$allBICvalues,
+              simulatedMVData$ICLresults$allICLvalues,
+              simulatedMVData$AICresults$allAICvalues,
+              simulatedMVData$AIC3results$allAIC3values),
+              ncol=4) 
+graphics::matplot(ICvalues, xlab = "Run", ylab = "Information criteria value", 
+                  type = c("b"), pch = 1, col = 1:4) 
+legend("top", inset = c(- 0.4, 0), legend = c("BIC", "ICL", "AIC", "AIC3"), 
+        col = 1:4, pch = 1, horiz = TRUE, bty = "n")
 ```
 
 <br>
