@@ -63,7 +63,7 @@ set.seed(1234) # for reproducibility, setting seed
 trueG <- 2 # number of total components/clusters
 truer <- 2 # number of total occasions
 truep <- 3 # number of total responses
-truen <- 50 # number of total units
+truen <- 70 # number of total units
 
 
 # Mu is a r x p matrix
@@ -107,7 +107,7 @@ trueOmegaAll <- rbind(trueOmega1, trueOmega2)
 simulatedMVData <- mixMVPLN::mvplnDataGenerator(nOccasions = truer,
                                  nResponses = truep,
                                  nUnits = truen,
-                                 mixingProportions = c(0.79, 0.21),
+                                 mixingProportions = c(0.55, 0.45),
                                  matrixMean = trueMall,
                                  phi = truePhiAll,
                                  omega = trueOmegaAll)
@@ -155,7 +155,7 @@ The model selected by BIC for this dataset can be further analyzed.
 clusteringResults$BIC.all$BICmodelselected
 
 # Cross tabulation of BIC selected model labels with true lables
-table(mplnResults$BIC.all$BICmodelselected_labels, simulatedMVData$truemembership)
+table(clusteringResults$BIC.all$BICmodelselectedLabels, simulatedMVData$truemembership)
 ```
 
 ## Visualize Results

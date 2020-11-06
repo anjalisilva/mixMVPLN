@@ -2,7 +2,7 @@
 
 ### Anjali Silva
 
-### 2 Sept 2020
+### 2 November 2020
 
 ## Introduction
 
@@ -12,7 +12,7 @@ This document gives a quick tour of [**mixMVPLN**](https://arxiv.org/abs/1807.08
 
 ``` r
 require("devtools")
-install_github("anjalisilva/mixMVPLN", build_vignettes = TRUE)
+devtools::install_github("anjalisilva/mixMVPLN", build_vignettes = TRUE)
 library("mixMVPLN")
 ```
 
@@ -28,7 +28,7 @@ set.seed(1234) # for reproducibility, setting seed
 trueG <- 2 # number of total components/clusters
 truer <- 2 # number of total occasions
 truep <- 3 # number of total responses
-truen <- 50 # number of total units
+truen <- 70 # number of total units
 
 
 # Mu is a r x p matrix
@@ -69,10 +69,10 @@ trueOmega2 <- clusterGeneration::genPositiveDefMat("unifcorrmat", dim = truep,
 trueOmegaAll <- rbind(trueOmega1, trueOmega2)
 
 # Simulating data 
-simulatedMVData <- mvplnDataGenerator(nOccasions = truer,
+simulatedMVData <- mixMVPLN::mvplnDataGenerator(nOccasions = truer,
                                  nResponses = truep,
                                  nUnits = truen,
-                                 mixingProportions = c(0.79, 0.21),
+                                 mixingProportions = c(0.55, 0.45),
                                  matrixMean = trueMall,
                                  phi = truePhiAll,
                                  omega = trueOmegaAll)
@@ -93,9 +93,7 @@ dim(simulatedMVData$dataset[[1]]) # dimension of first unit is 2 x 3
 <br>
 
 <div style="text-align:left">
-
 ## Clustering
-
 <div style="text-align:left">
 Once the count data is available, clustering can be performed using the *mvplnClustering* function. See *?mvplnClustering* for more information, an example, and references. Here, clustering will be performed using the above generated dataset. 
 
@@ -104,33 +102,72 @@ Coarse grain parallelization is employed in *mvplnClustering*, such that when a 
 Below, clustering of *simulatedMVData$dataset* is performed for g = 1:2 with 300 iterations and *kmeans* initialization with 2 initialization runs. 
 
 ``` r
-clusteringResults <- mvplnClustering(dataset = simulatedMVData$dataset,
+clusteringResults <- mixMVPLN::mvplnClustering(
+                                     dataset = simulatedMVData$dataset,
                                      membership = simulatedMVData$truemembership,
                                      gmin = 1,
                                      gmax = 2,
                                      nChains = 3,
-                                     nIterations = 300,
+                                     nIterations = 400,
                                      initMethod = "kmeans",
-                                     nInitIterations = 2,
+                                     nInitIterations = 1,
                                      normalize = "Yes")
 ```
 
-The model selected by BIC for this dataset can be viewed as follows.
+The model selected by BIC for this dataset can be further analyzed.
 
 ``` r
 clusteringResults$BIC.all$BICmodelselected
 
 # Cross tabulation of BIC selected model labels with true lables
-table(mplnResults$BIC.all$BICmodelselected_labels, simulatedMVData$truemembership)
+table(clusteringResults$BIC.all$BICmodelselectedLabels, simulatedMVData$truemembership)
+```
+
+## Visualize Results
+
+Clustering results can be viewed as a barplot of probabilities. For this, select a model of interest and use *MPLNClust::mplnVisualize()* function from `MPLNClust` R package. 
+
+``` r
+#  Visualizing probabilities for 2 components 
+MPLNVisuals <- MPLNClust::mplnVisualize(
+                    dataset = simulatedMVData$dataset,
+                    plots = 'bar',
+                    probabilities =  simulatedMVData$allResults[[2]]$probaPost,
+                    clusterMembershipVector = simulatedMVData$allResults[[2]]$clusterlabels,
+                    LinePlotColours = "multicolour",
+                    fileName = 'ProbabilityPlotG2',
+                    format = 'png')
+```
+
+Log-likelihood and information criteria value at each run can be plotted as follows.
+``` r
+par(mfrow = c(1, 2))
+graphics::matplot(simulatedMVData$logLikelihood, xlab = "Run",
+                  ylab = "logL", type = c("b"), pch = 1, lty = 2) 
+ICvalues <- matrix(c(simulatedMVData$BICresults$allBICvalues,
+              simulatedMVData$ICLresults$allICLvalues,
+              simulatedMVData$AICresults$allAICvalues,
+              simulatedMVData$AIC3results$allAIC3values),
+              ncol=4) 
+graphics::matplot(ICvalues, xlab = "Run", ylab = "Information criteria value", 
+                  type = c("b"), pch = 1, col = 1:4) 
+legend("top", inset = c(- 0.4, 0), legend = c("BIC", "ICL", "AIC", "AIC3"), 
+        col = 1:4, pch = 1, horiz = TRUE, bty = "n")
 ```
 
 <br>
 
 <div style="text-align:left">
-
 ## References
 
 [Silva, A., S. J. Rothstein, P. D. McNicholas, and S. Subedi (2018). Finite mixtures of matrix-variate Poisson-log normal distributions for three-way count data. arXiv preprint arXiv:1807.08380.](https://arxiv.org/abs/1807.08380)
+
+----
+
+```{r} 
+sessionInfo()
+```
+
 
 
 
