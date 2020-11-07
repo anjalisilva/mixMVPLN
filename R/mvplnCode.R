@@ -1209,6 +1209,7 @@ stanRun <- function(r,
 #' @importFrom grDevices dev.off
 #' @importFrom RColorBrewer brewer.pal.info
 #' @importFrom RColorBrewer brewer.pal
+#' @importFrom reshape melt
 mvplnVisualize <- function(dataset,
                            plots = 'bar',
                            probabilities = NA,

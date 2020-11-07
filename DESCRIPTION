@@ -26,6 +26,7 @@ Imports:
     mclust,
     mvtnorm,
     RColorBrewer, 
+    reshape,
     rstan (>= 2.18.1),
     parallel,
     utils

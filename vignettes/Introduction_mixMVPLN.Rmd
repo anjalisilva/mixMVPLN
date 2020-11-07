@@ -214,6 +214,7 @@ graphics::legend("top", inset = c(- 0.4, 0),
 <br>
 
 <div style="text-align:left">
+
 ## References
 
 [Silva, A., S. J. Rothstein, P. D. McNicholas, and S. Subedi (2018). Finite mixtures of matrix-variate Poisson-log normal distributions for three-way count data. arXiv preprint arXiv:1807.08380.](https://arxiv.org/abs/1807.08380)
