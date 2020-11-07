@@ -22,8 +22,10 @@ Imports:
     coda,
     cluster,
     edgeR,
+    ggplot2,
     mclust,
     mvtnorm,
+    RColorBrewer, 
     rstan (>= 2.18.1),
     parallel,
     utils
