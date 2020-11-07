@@ -63,7 +63,7 @@ set.seed(1234) # for reproducibility, setting seed
 trueG <- 2 # number of total components/clusters
 truer <- 2 # number of total occasions
 truep <- 3 # number of total responses
-truen <- 70 # number of total units
+truen <- 100 # number of total units
 
 
 # Mu is a r x p matrix
@@ -128,6 +128,7 @@ dim(simulatedMVData$dataset[[1]]) # dimension of first unit is 2 x 3
 <br>
 
 <div style="text-align:left">
+
 ## Clustering
 <div style="text-align:left">
 Once the count data is available, clustering can be performed using the *mvplnClustering* function. See *?mvplnClustering* for more information, an example, and references. Here, clustering will be performed using the above generated dataset. 
@@ -145,7 +146,7 @@ clusteringResults <- mixMVPLN::mvplnClustering(
                                      nChains = 3,
                                      nIterations = 400,
                                      initMethod = "kmeans",
-                                     nInitIterations = 1,
+                                     nInitIterations = 0,
                                      normalize = "Yes")
 ```
 
@@ -164,31 +165,51 @@ Clustering results can be viewed as a barplot of probabilities. For this, select
 
 ``` r
 #  Visualizing probabilities for 2 components 
-MPLNVisuals <- MPLNClust::mplnVisualize(
-                    dataset = simulatedMVData$dataset,
-                    plots = 'bar',
-                    probabilities =  simulatedMVData$allResults[[2]]$probaPost,
-                    clusterMembershipVector = simulatedMVData$allResults[[2]]$clusterlabels,
-                    LinePlotColours = "multicolour",
-                    fileName = 'ProbabilityPlotG2',
-                    format = 'png')
+                    
+mvplnClustVisuals <- mixMVPLN::mvplnVisualize(
+                      dataset = simulatedMVData$dataset,
+                      plots = 'bar',
+                      probabilities = clusteringResults$allResults[[2]]$allresults$probaPost,
+                      clusterMembershipVector = clusteringResults$allResults[[2]]$allresults$clusterlabels,
+                      fileName = paste0('Plot_',date()),
+                      printPlot = TRUE,
+                      format = 'png')
+                    
 ```
+
+<img src="barplotProbabilityMVPLN.png" alt="barplot" width="500"/>
+
+<div style="text-align:left">
+
+The above plot illustrates, for each observation, the probability of belonging to component/cluster 1 (P1) or probability of belonging to component/cluster 2 (P2). In this example, there were 100 observations in the dataset. The bar for each observation look monotone, indicating high confidence in belonging to the indicated component/cluster. 
+
+<br>
 
 Log-likelihood and information criteria value at each run can be plotted as follows.
 ``` r
 par(mfrow = c(1, 2))
-graphics::matplot(simulatedMVData$logLikelihood, xlab = "Run",
-                  ylab = "logL", type = c("b"), pch = 1, lty = 2) 
-ICvalues <- matrix(c(simulatedMVData$BICresults$allBICvalues,
-              simulatedMVData$ICLresults$allICLvalues,
-              simulatedMVData$AICresults$allAICvalues,
-              simulatedMVData$AIC3results$allAIC3values),
+graphics::matplot(clusteringResults$loglikelihood, xlab = "Run",
+                  ylab = "logL", type = c("b"), pch = 1, lty = 2, xaxt="n") 
+graphics::axis(1, xaxp=c(min(clusteringResults$BIC.all$BICmodelselectedLabels), 
+               max(clusteringResults$BIC.all$BICmodelselectedLabels), 1), 
+               las=2)
+               
+ICvalues <- matrix(c(clusteringResults$BIC.all$allBICvalues,   
+              clusteringResults$ICL.all$allICLvalues,
+              clusteringResults$AIC.all$allAICvalues,
+              clusteringResults$AIC3.all$allAIC3values),
               ncol=4) 
 graphics::matplot(ICvalues, xlab = "Run", ylab = "Information criteria value", 
-                  type = c("b"), pch = 1, col = 1:4) 
-legend("top", inset = c(- 0.4, 0), legend = c("BIC", "ICL", "AIC", "AIC3"), 
-        col = 1:4, pch = 1, horiz = TRUE, bty = "n")
+                  type = c("b"), pch = 1, col = 1:4, xaxt="n") 
+graphics::axis(1, xaxp=c(min(clusteringResults$BIC.all$BICmodelselectedLabels), 
+               max(clusteringResults$BIC.all$BICmodelselectedLabels), 1), 
+               las=2)
+graphics::legend("top", inset = c(- 0.4, 0), 
+                 legend = c("BIC", "ICL", "AIC", "AIC3"), 
+                 col = 1:4, pch = 1, horiz = TRUE, bty = "n")
 ```
+
+<img src="LinePlotMVPLN.png" alt="LinePlotMVPLN" width="800"/>
 
 <br>
 
