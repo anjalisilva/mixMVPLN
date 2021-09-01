@@ -4,15 +4,14 @@
 # mixMVPLN
 
 <!-- badges: start -->
-
 <!-- badges: end -->
 
 ## Description
 
 `mixMVPLN` is an R package for performing model-based clustering of
 three-way count data using mixtures of matrix variate Poisson-log normal
-(MVPLN) distributions proposed by [Silva et
-al., 2018](https://arxiv.org/abs/1807.08380). Markov chain Monte Carlo
+(MVPLN) distributions proposed by [Silva et al.,
+2018](https://arxiv.org/abs/1807.08380). Markov chain Monte Carlo
 expectation-maximization algorithm (MCMC-EM) is used for parameter
 estimation. Information criteria (AIC, BIC, AIC3 and ICL) are offered
 for model selection. Also included is a function for simulating data
@@ -53,6 +52,7 @@ An overview of the package is illustrated below:
 
 <div style="text-align:left">
 
+
 ## Details
 
 Matrix variate distributions offer a natural way for modeling matrices.
@@ -60,11 +60,11 @@ Extensions of matrix variate distributions in the context of mixture
 models have given rise to mixtures of matrix variate distributions.
 
 The multivariate Poisson-log normal (MPLN) distribution was proposed in
-1989 ([Aitchison and
-Ho, 1989](https://www.jstor.org/stable/2336624?seq=1)). A multivariate
+1989 ([Aitchison and Ho,
+1989](https://www.jstor.org/stable/2336624?seq=1)). A multivariate
 Poisson-log normal mixture model for clustering of count data was
-proposed by [Silva et
-al., 2019](https://pubmed.ncbi.nlm.nih.gov/31311497/). Here this work is
+proposed by [Silva et al.,
+2019](https://pubmed.ncbi.nlm.nih.gov/31311497/). Here this work is
 extended and a mixture of matrix variate Poisson-log normal (MVPLN)
 distribution for clustering three-way count data is proposed by [Silva
 et al., 2018](https://arxiv.org/abs/1807.08380). A mixture of MVPLN
@@ -170,7 +170,7 @@ Bioinformatics.*](https://pubmed.ncbi.nlm.nih.gov/31311497/)
 
 ## Maintainer
 
-  - Anjali Silva (<anjali.silva@uhnresearch.ca>).
+-   Anjali Silva (<anjali@alumni.uoguelph.ca>).
 
 ## Contributions
 
@@ -180,7 +180,7 @@ issues](https://github.com/anjalisilva/mixMVPLN/issues).
 
 ## Acknowledgments
 
-  - This work was funded by Natural Sciences and Engineering Research
+-   This work was funded by Natural Sciences and Engineering Research
     Council of Canada, Queen Elizabeth II Graduate Scholarship, and
     Arthur Richmond Memorial Scholarship. This work was conducted at the
     University of Guelph, Ontario, Canada.
