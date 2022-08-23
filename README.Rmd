@@ -52,7 +52,7 @@ To list all functions available in the package:
 ls("package:mixMVPLN")
 ```
 
-`mixMVPLN` contains 2 functions. For the purpose of generating simulation data via mixtures of MVPLN: *mvplnDataGenerator*. For carrying out clustering of count data using mixtures of MVPLN with parallelization: *mvplnClustering*. 
+`mixMVPLN` contains 3 functions. For the purpose of generating simulation data via mixtures of MVPLN: *mvplnDataGenerator*. For carrying out clustering of count data using mixtures of MVPLN with parallelization: *mvplnClustering*. For visualization of results: *mvplnVisualize*.  
 
 
 An overview of the package is illustrated below:
