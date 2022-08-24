@@ -1,8 +1,8 @@
-#' Model-Based Clustering Using mixtures of MVPLN
+#' Clustering Using mixtures of MVPLN via MCMC-EM
 #'
 #' Performs clustering using mixtures of matrix variate Poisson-log normal
-#' (MVPLN) distribution and model selection using AIC, AIC3,
-#' BIC and ICL.
+#' (MVPLN) via MCMC-EM with parallelization. Model selection can be done
+#' using AIC, AIC3, BIC and ICL.
 #'
 #' @param dataset A list of length nUnits, containing Y_j matrices.
 #'    A matrix Y_j has size r x p, and the dataset will have 'j' such
@@ -114,7 +114,7 @@
 #'                                            omega = trueOmegaAll)
 #'
 #' # Clustering simulated matrix variate count data
-#' clusteringResults <- mixMVPLN::mvplnClustering(dataset = sampleData$dataset,
+#' clusteringResults <- mixMVPLN::mvplnMCMCclus(dataset = sampleData$dataset,
 #'                                       membership = sampleData$truemembership,
 #'                                       gmin = 1,
 #'                                       gmax = 3,
@@ -125,8 +125,8 @@
 #'                                       normalize = "Yes")
 #' }
 #'
-#' @author {Anjali Silva, \email{anjali.silva@uhnresearch.ca}, Sanjeena Dang,
-#'          \email{sdang@math.binghamton.edu}. }
+#' @author {Anjali Silva, \email{anjali@alumni.uoguelph.ca}, Sanjeena Dang,
+#'          \email{sanjeenadang@cunet.carleton.ca}. }
 #'
 #' @references
 #' Silva, A. et al. (2018). Finite Mixtures of Matrix Variate Poisson-Log Normal Distributions
@@ -145,7 +145,7 @@
 #' @import parallel
 #' @importFrom utils tail
 #'
-mvplnClustering <- function(dataset,
+mvplnMCMCclus <- function(dataset,
                             membership = "none",
                             gmin,
                             gmax,

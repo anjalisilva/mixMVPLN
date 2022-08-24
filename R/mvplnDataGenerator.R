@@ -99,7 +99,8 @@
 #'                                            phi = truePhiAll,
 #'                                            omega = trueOmegaAll)
 #'
-#' @author Anjali Silva, \email{anjali.silva@uhnresearch.ca}
+#' @author {Anjali Silva, \email{anjali@alumni.uoguelph.ca}, Sanjeena Dang,
+#'          \email{sanjeenadang@cunet.carleton.ca}. }
 #'
 #' @references
 #' Silva, A. et al. (2018). Finite Mixtures of Matrix Variate Poisson-Log Normal Distributions
@@ -205,7 +206,8 @@ mvplnDataGenerator <- function(nOccasions,
                                                       sigma = kronecker(phi[((g - 1) * nOccasions + 1):(g * nOccasions), ],
                                                                         omega[((g - 1) * nResponses + 1):(g * nResponses), ]) ),
                                      nrow = nOccasions,
-                                     ncol = nResponses)
+                                     ncol = nResponses,
+                                     byrow=TRUE)
 
       # Adding M1
       theta[[n_g[[g]][u]]] <-  theta[[n_g[[g]][u]]] + matrixMean[((g - 1) * nOccasions + 1):(g * nOccasions), ]

@@ -160,6 +160,6 @@ Silva, A. et al. (2018). Finite Mixtures of Matrix Variate Poisson-Log Normal Di
 for Three-Way Count Data. \href{https://arxiv.org/abs/1807.08380}{arXiv preprint arXiv:1807.08380}.
 }
 \author{
-{Anjali Silva, \email{anjali.silva@uhnresearch.ca}, Sanjeena Dang,
-         \email{sdang@math.binghamton.edu}. }
+{Anjali Silva, \email{anjali@alumni.uoguelph.ca}, Sanjeena Dang,
+         \email{sanjeenadang@cunet.carleton.ca}. }
 }
