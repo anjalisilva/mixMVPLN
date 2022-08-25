@@ -370,11 +370,9 @@ mvplnVGAclus <- function(dataset,
     }
 
 
-
     checks <- 0
     it <- 1
-    aloglik <- NULL
-    loglik <- NULL
+    aloglik <- loglik <- NULL
     aloglik[c(1, 2, 3, 4, 5)] <- 0
     itMax <- 200
 
@@ -497,10 +495,10 @@ mvplnVGAclus <- function(dataset,
         finalOmega[[g]] <- omega[[g]] * diag(phi[[g]])[1]
       }
     }
-}
+  }
 
-    # clustering
 
+    # cluster data extracting
     for(g in seq_along(1:(gmax - gmin + 1))) {
 
       if(length(1:(gmax - gmin + 1)) == gmax) {
