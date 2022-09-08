@@ -10,3 +10,5 @@
 *.Rproj.user
 .Rproj.user
 inst/doc
+/ignoreFolder
+\ignoreFolder
