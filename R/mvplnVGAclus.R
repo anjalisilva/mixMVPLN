@@ -495,7 +495,11 @@ mvplnVGAclus <- function(dataset,
         finalOmega[[g]] <- omega[[g]] * diag(phi[[g]])[1]
       }
     }
-  }
+    }
+
+
+    for(g in seq_along(1:(gmax - gmin + 1))) {
+    }
 
 
     # cluster data extracting
