@@ -10,7 +10,7 @@ mvplnVGAclus(
   gmin,
   gmax,
   initMethod = "kmeans",
-  nInitIterations = 2,
+  nInitIterations = 0,
   normalize = "Yes"
 )
 }
@@ -30,8 +30,9 @@ to be considered in the clustering run.}
 \item{gmax}{A positive integer, >gmin, specifying the maximum number of
 components to be considered in the clustering run.}
 
-\item{initMethod}{An algorithm for initialization. Current options are
-"kmeans", "random", "medoids", "clara", or "fanny". Default is "kmeans".}
+\item{initMethod}{A method for initialization. Current options are
+"none", "kmeans", "random", "medoids", "clara", or "fanny".
+Default is "none".}
 
 \item{nInitIterations}{A positive integer or zero, specifying the number
 of initialization runs to be considered. Default is 0.}
@@ -46,11 +47,6 @@ Default is 3, the recommended minimum number.}
 \item{nIterations}{A positive integer specifying the number of iterations
 for each MCMC chain (including warmup). The value should be greater than
 40. The upper limit will depend on size of dataset.}
-
-\item{numNodes}{A positive integer indicating the number of nodes to be
-used from the local machine to run the clustering algorithm. Else
-leave as NA, so default will be detected as
-parallel::makeCluster(parallel::detectCores() - 1).}
 }
 \value{
 Returns an S3 object of class mvplnParallel with results.
@@ -144,7 +140,7 @@ clusteringResults <- mixMVPLN::mvplnVGAclus(dataset = sampleData$dataset,
                                       membership = sampleData$truemembership,
                                       gmin = 1,
                                       gmax = 3,
-                                      initMethod = "kmeans",
+                                      initMethod = "none",
                                       nInitIterations = 1,
                                       normalize = "Yes")
 }

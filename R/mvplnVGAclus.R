@@ -22,16 +22,12 @@
 #'    40. The upper limit will depend on size of dataset.
 #' @param initMethod A method for initialization. Current options are
 #'    "none", "kmeans", "random", "medoids", "clara", or "fanny".
-#'    Default is "kmeans".
+#'    Default is "none".
 #' @param nInitIterations A positive integer or zero, specifying the number
 #'    of initialization runs to be considered. Default is 0.
 #' @param normalize A string with options "Yes" or "No" specifying
 #'     if normalization should be performed. Currently, normalization factors
 #'     are calculated using TMM method of edgeR package. Default is "Yes".
-#' @param numNodes A positive integer indicating the number of nodes to be
-#'     used from the local machine to run the clustering algorithm. Else
-#'     leave as NA, so default will be detected as
-#'     parallel::makeCluster(parallel::detectCores() - 1).
 #'
 #' @return Returns an S3 object of class mvplnParallel with results.
 #' \itemize{
@@ -115,13 +111,14 @@
 #'                                            omega = trueOmegaAll)
 #'
 #' # Clustering simulated matrix variate count data
-#' clusteringResults <- mixMVPLN::mvplnVGAclus(dataset = sampleData$dataset,
-#'                                       membership = sampleData$truemembership,
-#'                                       gmin = 1,
-#'                                       gmax = 3,
-#'                                       initMethod = "kmeans",
-#'                                       nInitIterations = 1,
-#'                                       normalize = "Yes")
+#' clusteringResults <- mixMVPLN::mvplnVGAclus(dataset = dataset,
+#'                                             membership = sampleData$truemembership,
+#'                                             gmin = 1,
+#'                                             gmax = 3,
+#'                                             initMethod = "fanny",
+#'                                             nInitIterations = 2,
+#'                                             normalize = "Yes")
+#'
 #' }
 #'
 #' @author {Anjali Silva, \email{anjali@alumni.uoguelph.ca}, Sanjeena Dang,
@@ -143,7 +140,7 @@ mvplnVGAclus <- function(dataset,
                           gmin,
                           gmax,
                           initMethod = "kmeans",
-                          nInitIterations = 2,
+                          nInitIterations = 0,
                           normalize = "Yes") {
 
   ptm <- base::proc.time()
@@ -516,8 +513,8 @@ mvplnVGAclus <- function(dataset,
                  G = clustersize,
                  dataset = dataset,
                  TwoDdataset = TwoDdataset,
-                 r = r, # variety
-                 p = p, # growth stages
+                 r = r,
+                 p = p,
                  d = d,
                  N = n,
                  normFactors = normFactors,
@@ -529,7 +526,7 @@ mvplnVGAclus <- function(dataset,
     # cluster data result extracting
     BIC <- ICL <- AIC <- AIC3 <- k <- ll <- vector()
     for(g in seq_along(1:(gmax - gmin + 1))) {
-       print(g)
+      #print(g)
       if(length(1:(gmax - gmin + 1)) == gmax) {
         clustersize <- g
       } else if(length(1:(gmax - gmin + 1)) < gmax) {
@@ -641,10 +638,12 @@ initializationRun <- function(G,
 
 
       if (initMethod == "kmeans") {
+        # cat("\n initMethod == kmeans \n")
         zValue <- mclust::unmap(stats::kmeans(x = log(TwoDdataset + 1 / 3),
                                               centers = G)$cluster)
 
       } else if (initMethod == "random") {
+        # cat("\n initMethod == random \n")
         if(G == 1) { # generating z if g = 1
           zValue <- as.matrix(rep.int(1, times = n),
                                        ncol = G,
@@ -662,12 +661,15 @@ initializationRun <- function(G,
           }
         }
       } else if (initMethod == "medoids") {
+        # cat("\n initMethod == medoids \n")
         zValue <- mclust::unmap(cluster::pam(x = log(TwoDdataset + 1 / 3),
                                                       k = G)$cluster)
       } else if (initMethod == "clara") {
+        # cat("\n initMethod == clara \n")
         zValue <- mclust::unmap(cluster::clara(x = log(TwoDdataset + 1 / 3),
                                                         k = G)$cluster)
       } else if (initMethod == "fanny") {
+        # cat("\n initMethod == fanny \n")
         zValue <- mclust::unmap(cluster::fanny(x = log(TwoDdataset + 1 / 3),
                                                         k = G)$cluster)
       }
