@@ -325,7 +325,7 @@ mvplnVGAclus <- function(dataset,
     checks <- aloglik[c(1:5)] <- 0
     itMax <- 200
 
-    while (checks==0) {
+    while (checks == 0) {
 
       for (g in 1:G) {
         GX[[g]] <- dGX[[g]] <- zS[[g]] <- list()
@@ -448,23 +448,27 @@ mvplnVGAclus <- function(dataset,
       }
     }
 
-    FinalGResults <- list(piG = piG,
-                         mu = mu,
+    programclust <- map(zValue)
+
+    FinalGResults <- list(mu = mu,
                          sigma = sigma,
-                         zValue = zValue,
-                         loglik = loglik,
+                         probaPost = zValue,
+                         loglikelihood = loglik,
+                         proportion = piG,
+                         clusterlabels = programclust,
                          kmeans = kMeansResults,
                          phi = finalPhi,
-                         omega = finalOmega)
+                         omega = finalOmega,
+                         iterations = it)
 
     class(FinalGResults) <- "FinalGResults"
 
     return(FinalGResults)
   }
 
-
+  parallelFAOutput <- list()
   for(g in seq_along(1:(gmax - gmin + 1))) {
-    parallelFAOutput <- parallelFA(G = g,
+    parallelFAOutput[[g]] <- parallelFA(G = g,
                  dataset = dataset,
                  TwoDdataset = TwoDdataset,
                  r = r, # variety
@@ -476,6 +480,7 @@ mvplnVGAclus <- function(dataset,
 
 
     # cluster data result extracting
+    BIC <- ICL <- AIC <- AIC3 <- k <- ll <- vector()
     for(g in seq_along(1:(gmax - gmin + 1))) {
 
       if(length(1:(gmax - gmin + 1)) == gmax) {
@@ -498,30 +503,35 @@ mvplnVGAclus <- function(dataset,
                            n = n,
                            run = parallelFAOutput,
                            gmin = gmin,
-                           gmax = gmax)
+                           gmax = gmax,
+                           parallel = FALSE)
 
         icl <- ICLFunction(bIc = bic,
                            gmin = gmin,
                            gmax = gmax,
-                           run = parallelFAOutput)
+                           run = parallelFAOutput,
+                           parallel = FALSE)
 
         aic <- AICFunction(ll = ll,
                            k = k,
                            run = parallelFAOutput,
                            gmin = gmin,
-                           gmax = gmax )
+                           gmax = gmax,
+                           parallel = FALSE)
 
         aic3 <- AIC3Function(ll = ll,
                              k = k,
                              run = parallelFAOutput,
                              gmin = gmin,
-                             gmax = gmax)
+                             gmax = gmax,
+                             parallel = FALSE)
       }
     }
 
 
 
-    final <- proc.time() - ptm
+    final <- base::proc.time() - ptm
+
     RESULTS <- list(dataset = dataset,
                     nUnits = n,
                     nVariables = p,
@@ -529,19 +539,15 @@ mvplnVGAclus <- function(dataset,
                     normFactors = normFactors,
                     gmin = gmin,
                     gmax = gmax,
-                    mu = mu,
-                    sigma = sigma,
-                    z = zValue,
-                    kmeans = kMeans,
-                    phi = finalPhi,
-                    omega = finalOmega,
-                    loglikelihood = loglik,
+                    initalizationMethod = initMethod,
+                    allResults = parallelFAOutput,
+                    loglikelihood = ll,
                     nParameters = k,
                     trueLabels = membership,
-                    ICL.all = icl,
-                    BIC.all = bic,
-                    AIC.all = aic,
-                    AIC3.all = aic3,
+                    ICLAll = icl,
+                    BICAll = bic,
+                    AICAll = aic,
+                    AIC3All = aic3,
                     totalTime = final)
 
     class(RESULTS) <- "mvplnParallel"
