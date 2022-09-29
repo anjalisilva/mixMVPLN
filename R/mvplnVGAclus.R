@@ -307,8 +307,8 @@ mvplnVGAclus <- function(dataset,
       libMatList[[i]] <- t(matrix(libMat[i, ], nrow = p))
     }
 
-
-    parallel_FA<-function(G, TwoDdataset, r, p, n, d, normFactors){
+    # doesn't work
+    parallel_FA <- function(G, TwoDdataset, r, p, n, d, normFactors){
 
       # parameter updates
 
@@ -536,7 +536,13 @@ mvplnVGAclus <- function(dataset,
 
 
     for(g in seq_along(1:(gmax - gmin + 1))) {
-      clusteringVGA(G = g, TwoDdataset = TwoDdataset, n = n, d = d)
+      parallel_FA(G = g,
+                  TwoDdataset = TwoDdataset,
+                  r = r,
+                  p = p,
+                  n = n,
+                  d = d,
+                  normFactors = normFactors)
     }
 
 
