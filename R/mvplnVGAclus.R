@@ -20,8 +20,9 @@
 #' @param nIterations A positive integer specifying the number of iterations
 #'    for each MCMC chain (including warmup). The value should be greater than
 #'    40. The upper limit will depend on size of dataset.
-#' @param initMethod An algorithm for initialization. Current options are
-#'    "kmeans", "random", "medoids", "clara", or "fanny". Default is "kmeans".
+#' @param initMethod A method for initialization. Current options are
+#'    "none", "kmeans", "random", "medoids", "clara", or "fanny".
+#'    Default is "kmeans".
 #' @param nInitIterations A positive integer or zero, specifying the number
 #'    of initialization runs to be considered. Default is 0.
 #' @param normalize A string with options "Yes" or "No" specifying
@@ -189,13 +190,13 @@ mvplnVGAclus <- function(dataset,
   }
 
   if (is.character(initMethod) == TRUE) {
-    if(initMethod != "kmeans" & initMethod != "random" & initMethod != "medoids" & initMethod != "medoids" & initMethod != "clara" & initMethod != "fanny") {
+    if(initMethod != "none" & initMethod != "kmeans" & initMethod != "random" & initMethod != "medoids" & initMethod != "medoids" & initMethod != "clara" & initMethod != "fanny") {
       stop("initMethod should of class character, specifying
-      either: kmeans, random, medoids, clara, or fanny.")
+      either: none, kmeans, random, medoids, clara, or fanny.")
     }
   } else if (is.character(initMethod) != TRUE) {
     stop("initMethod should of class character, specifying
-      either: kmeans, random, medoids, clara, or fanny.")
+      either: none, kmeans, random, medoids, clara, or fanny.")
   }
 
   if (is.numeric(nInitIterations) != TRUE) {
@@ -255,70 +256,107 @@ mvplnVGAclus <- function(dataset,
   parallelFA <- function(G, dataset,
                          TwoDdataset,
                          r, p, d, N,
-                         normFactors) {
+                         normFactors,
+                         nInitIterations,
+                         initMethod) {
 
-
-
+    # arranging normalization factors
     libMat <- matrix(normFactors, N, d, byrow = T)
     libMatList <- list()
     for (i in 1:N) {
       libMatList[[i]] <- t(matrix(libMat[i, ], nrow = p))
     }
 
-    # Initialization
-    mu <- omega <- phi <- list() # mu is M;
-    delta <- kappa <- sigma <- isigma <- iphi <- iomega <- list()
-    # delta  is variational parameter Delta
-    # kappa is variational parameter kappa
-    # sigma is Psi in the math - kronecker of omega and Phi
-    # isigma is inverse of Psi
-    # iphi is inverse of Phi
-    # iomega is inverse of omega
+    if (initMethod == "none") {
 
-    m <- S <- list()
-    # m is vectorized xi
-    # S is Psi
+      # Initialization
+      mu <- omega <- phi <- list() # mu is M;
+      delta <- kappa <- sigma <- isigma <- iphi <- iomega <- list()
+      # delta  is variational parameter Delta
+      # kappa is variational parameter kappa
+      # sigma is Psi in the math - kronecker of omega and Phi
+      # isigma is inverse of Psi
+      # iphi is inverse of Phi
+      # iomega is inverse of omega
 
-    # Other intermediate items initialized
-    Sk <- array(0, c(d, d, G) )
-    start <- GX <- dGX <- zS <- list()
+      m <- S <- list()
+      # m is vectorized xi
+      # S is Psi
 
-    iKappa <- iDelta <- startList <- list()
-    # iKappa is inverse of kappa
-    # iDelta is inverse of Delta
+      # Other intermediate items initialized
+      Sk <- array(0, c(d, d, G) )
+      start <- GX <- dGX <- zS <- list()
 
-    kMeansResults <- kmeans(log(TwoDdataset+1),
-                      centers = G,
-                      nstart = 50,
-                      iter.max = 20)$cluster
-    zValue <- mclust::unmap(kMeansResults) ### Starting value for Z
-    piG <- colSums(zValue) / N
+      iKappa <- iDelta <- startList <- list()
+      # iKappa is inverse of kappa
+      # iDelta is inverse of Delta
 
-    for (g in 1:G) {
-      obs <- which(zValue[, g] == 1)
-      mu[[g]] <- colMeans(log(TwoDdataset[obs, ] + 1 / 6))
-      sigma[[g]] <- var(log(TwoDdataset[obs, ] + 1 / 6))
-      isigma[[g]] <- solve(sigma[[g]])
-      phi[[g]] <- diag(r) * sqrt(min(diag(var(log(TwoDdataset[obs, ] + 1 / 6)))))
-      omega[[g]] <- diag(p) * sqrt(min(diag(var(log(TwoDdataset[obs, ] + 1 / 6)))))
-      iphi[[g]] <- solve(phi[[g]])
-      iomega[[g]] <- solve(omega[[g]])
-    }
+      kMeansResults <- kmeans(log(TwoDdataset+1),
+                              centers = G,
+                              nstart = 50,
+                              iter.max = 20)$cluster
+      zValue <- mclust::unmap(kMeansResults) ### Starting value for Z
+      piG <- colSums(zValue) / N
 
-    for (g in 1:G) {
-      start[[g]] <- log(TwoDdataset + 1/6) ###Starting value for M
-      m[[g]] <- log(TwoDdataset + 1/6)
-      S[[g]] <- list()
-      delta[[g]] <- list()
-      kappa[[g]] <- list()
-      startList[[g]] <- list()
-      for (i in 1:N) {
-        startList[[g]][[i]] <- log(dataset[[i]])
-        delta[[g]][[i]] <- diag(r) * 0.001
-        kappa[[g]][[i]] <- diag(p) * 0.001
-        S[[g]][[i]] <- delta[[g]][[i]] %x% kappa[[g]][[i]]
+      for (g in 1:G) {
+        obs <- which(zValue[, g] == 1)
+        mu[[g]] <- colMeans(log(TwoDdataset[obs, ] + 1 / 6))
+        sigma[[g]] <- var(log(TwoDdataset[obs, ] + 1 / 6))
+        isigma[[g]] <- solve(sigma[[g]])
+        phi[[g]] <- diag(r) * sqrt(min(diag(var(log(TwoDdataset[obs, ] + 1 / 6)))))
+        omega[[g]] <- diag(p) * sqrt(min(diag(var(log(TwoDdataset[obs, ] + 1 / 6)))))
+        iphi[[g]] <- solve(phi[[g]])
+        iomega[[g]] <- solve(omega[[g]])
       }
+
+      for (g in 1:G) {
+        start[[g]] <- log(TwoDdataset + 1/6) ###Starting value for M
+        m[[g]] <- log(TwoDdataset + 1/6)
+        S[[g]] <- list()
+        delta[[g]] <- list()
+        kappa[[g]] <- list()
+        startList[[g]] <- list()
+        for (i in 1:N) {
+          startList[[g]][[i]] <- log(dataset[[i]])
+          delta[[g]][[i]] <- diag(r) * 0.001
+          kappa[[g]][[i]] <- diag(p) * 0.001
+          S[[g]][[i]] <- delta[[g]][[i]] %x% kappa[[g]][[i]]
+        }
+      }
+    } else {
+     outputInitialization <- initializationRun(G,
+                        dataset,
+                        TwoDdataset,
+                        r, p, d, N,
+                        normFactors,
+                        nInitIterations,
+                        initMethod)
+
+     mu <-
+     omega <-
+     phi <-
+     delta <-
+     kappa <-
+     sigma <-
+     isigma <-
+     iphi <-
+     iomega <-
+     m <-
+     S <-
+     Sk <-
+     start <-
+     GX <-
+     dGX <-
+     zS <-
+     iKappa <-
+     iDelta <-
+     startList <-
+     zValue
+     piG <- colSums(zValue) / N
+
     }
+
+
 
     it <- 1
     aloglik <- loglik <- NULL
@@ -482,7 +520,8 @@ mvplnVGAclus <- function(dataset,
                  p = p, # growth stages
                  d = d,
                  N = n,
-                 normFactors = normFactors)
+                 normFactors = normFactors,
+                 nInitIterations = nInitIterations)
     }
 
 
@@ -560,6 +599,268 @@ mvplnVGAclus <- function(dataset,
     class(RESULTS) <- "mvplnParallel"
     return(RESULTS)
 
-
-
 }
+
+initializationRun <- function(G,
+                              dataset,
+                              TwoDdataset,
+                              r, p, d, N,
+                              normFactors,
+                              nInitIterations,
+                              initMethod) {
+
+    # arranging normalization factors
+    libMat <- matrix(normFactors, N, d, byrow = T)
+    libMatList <- list()
+    for (i in 1:N) {
+      libMatList[[i]] <- t(matrix(libMat[i, ], nrow = p))
+    }
+
+    # Initialization
+      mu <- omega <- phi <- list() # mu is M;
+      delta <- kappa <- sigma <- isigma <- iphi <- iomega <- list()
+      # delta  is variational parameter Delta
+      # kappa is variational parameter kappa
+      # sigma is Psi in the math - kronecker of omega and Phi
+      # isigma is inverse of Psi
+      # iphi is inverse of Phi
+      # iomega is inverse of omega
+
+      m <- S <- list()
+      # m is vectorized xi
+      # S is Psi
+
+      # Other intermediate items initialized
+      Sk <- array(0, c(d, d, G) )
+      start <- GX <- dGX <- zS <- list()
+
+      iKappa <- iDelta <- startList <- list()
+      # iKappa is inverse of kappa
+      # iDelta is inverse of Delta
+
+
+      if (initMethod == "kmeans") {
+        zValue <- mclust::unmap(stats::kmeans(x = log(dataset + 1 / 3),
+                                              centers = G)$cluster)
+
+      } else if (initMethod == "random") {
+        if(G == 1) { # generating z if g = 1
+          zValue <- as.matrix(rep.int(1, times = n),
+                                       ncol = G,
+                                       nrow = n)
+        } else { # generating z if g>1
+          zConv = 0
+          while(! zConv) { # ensure that dimension of z is same as G (i.e.
+            # if one column contains all 0s, then generate z again)
+            zValue <- t(stats::rmultinom(n = n,
+                                         size = 1,
+                                         prob = rep(1 / G, G)))
+            if(length(which(colSums(zValue) > 0)) == G) {
+              zConv <- 1
+            }
+          }
+        }
+      } else if (initMethod == "medoids") {
+        zValue <- mclust::unmap(cluster::pam(x = log(dataset + 1 / 3),
+                                                      k = G)$cluster)
+      } else if (initMethod == "clara") {
+        zValue <- mclust::unmap(cluster::clara(x = log(dataset + 1 / 3),
+                                                        k = G)$cluster)
+      } else if (initMethod == "fanny") {
+        zValue <- mclust::unmap(cluster::fanny(x = log(dataset + 1 / 3),
+                                                        k = G)$cluster)
+      }
+
+      piG <- colSums(zValue) / N
+
+      for (g in 1:G) {
+        obs <- which(zValue[, g] == 1)
+        mu[[g]] <- colMeans(log(TwoDdataset[obs, ] + 1 / 6))
+        sigma[[g]] <- var(log(TwoDdataset[obs, ] + 1 / 6))
+        isigma[[g]] <- solve(sigma[[g]])
+        phi[[g]] <- diag(r) * sqrt(min(diag(var(log(TwoDdataset[obs, ] + 1 / 6)))))
+        omega[[g]] <- diag(p) * sqrt(min(diag(var(log(TwoDdataset[obs, ] + 1 / 6)))))
+        iphi[[g]] <- solve(phi[[g]])
+        iomega[[g]] <- solve(omega[[g]])
+      }
+
+      for (g in 1:G) {
+        start[[g]] <- log(TwoDdataset + 1/6) ###Starting value for M
+        m[[g]] <- log(TwoDdataset + 1/6)
+        S[[g]] <- list()
+        delta[[g]] <- list()
+        kappa[[g]] <- list()
+        startList[[g]] <- list()
+        for (i in 1:N) {
+          startList[[g]][[i]] <- log(dataset[[i]])
+          delta[[g]][[i]] <- diag(r) * 0.001
+          kappa[[g]][[i]] <- diag(p) * 0.001
+          S[[g]][[i]] <- delta[[g]][[i]] %x% kappa[[g]][[i]]
+        }
+      }
+
+
+    it <- 1
+    aloglik <- loglik <- NULL
+    checks <- aloglik[c(1:5)] <- 0
+    itMax <- 200
+
+    while (checks == 0) {
+
+      for (g in 1:G) {
+        GX[[g]] <- dGX[[g]] <- zS[[g]] <- list()
+        iDelta[[g]] <- iKappa[[g]] <- list()
+        deltaO <- delta[[g]]
+        kappaO <- kappa[[g]]
+
+        for (i in 1:N) {
+          iDelta[[g]][[i]] <- diag(c(t(diag(kappa[[g]][[i]])) %*%
+                                       t(exp(log(libMatList[[i]]) +
+                                               startList[[g]][[i]] +
+                                               0.5 * diag(delta[[g]][[i]]) %*%
+                                               t(diag(kappa[[g]][[i]])))))) +
+            iphi[[g]] * sum(diag(iomega[[g]] %*%
+                                   kappa[[g]][[i]]))
+          delta[[g]][[i]] <- p * solve(iDelta[[g]][[i]])
+
+
+          iKappa[[g]][[i]] <- diag(c(t(diag(delta[[g]][[i]])) %*%
+                                       (exp(log(libMatList[[i]]) +
+                                              startList[[g]][[i]] +
+                                              t(0.5 * diag(kappa[[g]][[i]]) %*%
+                                                  t(diag(delta[[g]][[i]]))))))) +
+            iomega[[g]] * sum(diag(iphi[[g]] %*%
+                                     delta[[g]][[i]]))
+
+          kappa[[g]][[i]] <- solve(iKappa[[g]][[i]])
+
+
+          S[[g]][[i]] <- delta[[g]][[i]] %x% kappa[[g]][[i]]
+          zS[[g]][[i]] <- zValue[i, g] * S[[g]][[i]]
+          GX[[g]][[i]] <- TwoDdataset[i, ] -
+            exp(start[[g]][i, ] +
+                  log(libMat[i,]) +
+                  0.5 * diag(S[[g]][[i]])) -
+            (isigma[[g]]) %*% (start[[g]][i, ] - mu[[g]])
+          m[[g]][i, ] <- start[[g]][i, ] + S[[g]][[i]] %*% GX[[g]][[i]]
+          startList[[g]][[i]] <- t(matrix(m[[g]][i, ], nrow = p))
+        }
+        start[[g]] <- m[[g]]
+
+        mu[[g]] <- colSums(zValue[, g] * m[[g]]) / sum(zValue[, g]) # this is xi
+
+        # Updating Sample covariance
+        muMat <- t(matrix(mu[[g]], nrow = p))
+        phiM <- list()
+        for (i in 1:N) {
+          phiM[[i]] <- zValue[i,g]*(startList[[g]][[i]] - muMat) %*%
+            iomega[[g]] %*% t(startList[[g]][[i]] - muMat) +
+            zValue[i, g] * delta[[g]][[i]] * sum(diag(iomega[[g]] %*%
+                                                        kappa[[g]][[i]]))
+        }
+        phi[[g]] <- Reduce("+", phiM) / sum(zValue[, g] * p)
+        iphi[[g]] <- solve(phi[[g]])
+
+        omegaM <- list()
+        for (i in 1:N) {
+          omegaM[[i]] <- zValue[i, g] * t(startList[[g]][[i]] - muMat) %*%
+            iphi[[g]] %*% (startList[[g]][[i]] - muMat) +
+            zValue[i, g] * kappa[[g]][[i]] * sum(diag(iphi[[g]] %*%
+                                                        delta[[g]][[i]]))
+        }
+        omega[[g]] <- Reduce("+", omegaM) / sum(zValue[, g] * r)
+        iomega[[g]] <- solve(omega[[g]])
+        sigma[[g]] <- phi[[g]] %x% omega[[g]]
+        isigma[[g]] <- iphi[[g]] %x% iomega[[g]]
+      }
+
+      piG <- colSums(zValue) / N
+      # Internal functions
+      funFive <- function(x, y = isigma[[g]]) {
+        sum(diag(x %*% y))
+      }
+
+      FMatrix <- matrix(NA, ncol = G, nrow = N)
+
+      for (g in 1:G) {
+        two <- rowSums(exp(m[[g]] + log(libMat) +
+                             0.5 * matrix(unlist(lapply(S[[g]], diag)),
+                                          ncol = d, byrow = TRUE)))
+        five <- 0.5 * unlist(lapply(S[[g]], funFive))
+        six <- 0.5 * log(unlist(lapply(S[[g]], det)))
+        FMatrix[, g] <- piG[g] * exp(rowSums(m[[g]] * TwoDdataset) -
+                                       two - rowSums(lfactorial(TwoDdataset)) +
+                                       rowSums(log(libMat) * TwoDdataset) - 0.5 *
+                                       mahalanobis(m[[g]], center = mu[[g]], cov = isigma[[g]],
+                                                   inverted = TRUE) - five + six + 0.5 *
+                                       log(det(isigma[[g]])) - d/2)
+      }
+
+      loglik[it] <- sum(log(rowSums(FMatrix)))
+
+      zValue <- FMatrix / rowSums(FMatrix)
+      if (it <= 5) {
+        zValue[zValue == "NaN"] <- 0
+      }
+
+      if (it > 5) {
+        # Aitkaine's stopping criterion
+        if ((loglik[it - 1] - loglik[it - 2]) == 0) checks <- 1 else {
+          a <- (loglik[it] - loglik[it - 1]) / (loglik[it - 1] - loglik[it - 2])
+          addTo <- (1 / (1 - a) * (loglik[it] - loglik[it - 1]))
+          aloglik[it] <- loglik[it - 1] + addTo
+          if (abs(aloglik[it] - aloglik[it - 1]) < 0.05) {
+            checks <- 1
+          } else {
+            checks <- checks
+          }
+        }
+      }
+
+      it <- it + 1
+      if (it == nInitIterations) {
+        checks <- 1
+      }
+      finalPhi <- finalOmega <- list()
+      for (g in 1:G) {
+        finalPhi[[g]] <- phi[[g]] / diag(phi[[g]])[1]
+        finalOmega[[g]] <- omega[[g]] * diag(phi[[g]])[1]
+      }
+    }
+
+    programclust <- map(zValue)
+
+    initRunOutput <- list(mu = mu,
+                          sigma = sigma,
+                          omega = omega,
+                          phi = phi,
+                          omega = omega,
+                          delta = delta,
+                          kappa = kappa,
+                          isigma = isigma,
+                          iphi = iphi,
+                          iomega = iomega,
+                          m = m,
+                          S = S,
+                          Sk = Sk,
+                          start = start,
+                          GX = GX,
+                          dGX = dGX,
+                          zS = zS,
+                          iKappa = iKappa,
+                          iDelta = iDelta,
+                          startList = startList,
+                          zValue = zValue,
+                          loglik = loglik,
+                          piG = piG,
+                          clusterlabels = programclust,
+                          iterations = it)
+
+    class(initRunOutput) <- "initializationRun"
+
+    return(initRunOutput)
+  }
+
+
+# [END]
+
