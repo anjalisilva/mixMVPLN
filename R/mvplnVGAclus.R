@@ -156,7 +156,7 @@ mvplnVGAclus <- function(dataset,
                           normalize = "Yes",
                           numNodes = NA) {
 
-  ptm <- proc.time()
+  ptm <- base::proc.time()
 
   # Performing checks
   if (typeof(unlist(dataset)) != "double" & typeof(unlist(dataset)) != "integer") {
@@ -308,201 +308,239 @@ mvplnVGAclus <- function(dataset,
     }
 
 
-    clusteringVGA <- function(G) {
+    parallel_FA<-function(G, TwoDdataset, r, p, n, d, normFactors){
 
-    #### Initialization ###
-    mu <- list() # This is M
-    #psi <- list() # This is kronecker of omega and Phi
-    omega <- list() # This is omega
-    phi <- list() # This is Phi
-    delta <- list() # This is variational parameter Delta
-    kappa <- list() # This is variational parameter kappa
-    sigma <- list()  # This is Psi in the math - kronecker of omega and Phi
-    isigma <- list() # Inverse of Psi
-    iphi <- list() # This is inverse of Phi
-    iomega <- list() # This is inverse of omega
-    m <- list() # Vectorized xi
-    S <- list() # It is Psi
-    # P <- list()
-    # Q <- list()
+      # parameter updates
 
-    ###Other intermediate items initialized
-    start <- list()
-    Sk <- array(0, c(d, d, G))
-    GX <- list()
-    dGX <- list()
-    zS <- list()
-
-    iKappa <- list() ### inverse of kappa
-    iDelta <- list() ### inverse of Delta
-    startList <- list()
-
-    kMeans <- kmeans(log(dataset + 1),
-                     centers = G, nstart = 50,
-                     iter.max = 20)$cluster
-    z <- mclust::unmap(kMeans) ### Starting value for Z
-    piG <- colSums(z) / r
-
-    for (g in 1:G){
-      obs <- which(z[, g] == 1)
-      mu[[g]] <- colMeans(log(dataset[obs, ] + 1 / 6))
-      sigma[[g]] <- var(log(dataset[obs, ] + 1 / 6))
-      isigma[[g]] <- solve(sigma[[g]])
-      phi[[g]] <- diag(r) * sqrt(min(diag(var(log(dataset[obs, ] + 1 / 6)))))
-      omega[[g]] <- diag(p) * sqrt(min(diag(var(log(dataset[obs, ] + 1 / 6)))))
-      iphi[[g]] <- solve(phi[[g]])
-      iomega[[g]] <- solve(omega[[g]])
-    }
-
-    for (g in 1:G) {
-      start[[g]] <- log(dataset + 1 /6) ###Starting value for M
-      m[[g]] <- log(dataset + 1 / 6)
-      S[[g]] <- list()
-      delta[[g]] <- list()
-      kappa[[g]] <- list()
-      startList[[g]] <- list()
-      for (i in 1:r) {
-        startList[[g]][[i]] <- log(TwoDdataset[[i]])
-        delta[[g]][[i]] <- diag(r) * 0.001
-        kappa[[g]][[i]] <- diag(p) * 0.001
-        S[[g]][[i]] <- delta[[g]][[i]] %x% kappa[[g]][[i]]
+      lib_mat <- matrix(normFactors, n, d, byrow=T)
+      lib_mat_list <- list()
+      for (i in 1:n) {
+        lib_mat_list[[i]] <- t(matrix(lib_mat[i, ], nrow = p))
       }
-    }
+
+      Y_list <- list()
+      for (i in 1:n) {
+        Y_list[[i]] <- t(matrix(TwoDdataset[i, ], nrow=p))
+      }
 
 
-    checks <- 0
-    it <- 1
-    aloglik <- loglik <- NULL
-    aloglik[c(1, 2, 3, 4, 5)] <- 0
-    itMax <- 200
 
+      # Initialization
+      mu <- omega <- phi<- delta <- kappa <- list() # M, Omega, Phi
+      sigma <- isigma <- iphi <- iomega <- list()
+      # Delta is variational parameter
+      # kappa is variational parameter
+      # sigma is Psi in the math - kronecker of omega and Phi
+      # isigma is inverse of Psi
+      # iphi is inverse of Phi
+      # iomega is inverse of Omega
 
-    while (checks == 0) {
+      m <- S <- list() # Vectorized xi
+      # m is vectorized xi
+      # S is Psi
+
+      ###Other intermediate items initialized
+      start <- GX <- dGX <- z_S <- list()
+      Sk <- array(0, c(d, d, G))
+
+      i_kappa <- i_delta <- list()
+      # i_kappa is inverse of kappa
+      # i_delta is inverse of Delta
+      start_list <- list()
+
+      k_means <- kmeans(log(TwoDdataset + 1),
+                        centers = G, nstart = 50,
+                        iter.max = 20)$cluster
+      z <- mclust::unmap(k_means) ### Starting value for Z
+      pi_g <- colSums(z) / n
 
       for (g in 1:G) {
-        GX[[g]] <- list()
-        dGX[[g]] <- list()
-        zS[[g]] <- list()
-        iDelta[[g]] <- list()
-        iKappa[[g]] <- list()
-
-
-        for (i in 1:r){
-          iDelta[[g]][[i]] <- diag(c(t(diag(kappa[[g]][[i]])) %*%
-                                  t(exp(log(libMatList[[i]]) + startList[[g]][[i]] +
-                                  0.5 * diag(delta[[g]][[i]]) %*% t(diag(kappa[[g]][[i]])))))) +
-                                  iphi[[g]] * sum(diag(iomega[[g]] %*% kappa[[g]][[i]]))
-          delta[[g]][[i]] <- p * solve(iDelta[[g]][[i]])
-
-
-          iKappa[[g]][[i]] <- diag(c(t(diag(delta[[g]][[i]])) %*%
-                              (exp(log(libMatList[[i]]) + startList[[g]][[i]] +
-                              t(0.5*diag(kappa[[g]][[i]]) %*% t(diag(delta[[g]][[i]]))))))) +
-                              iomega[[g]] * sum(diag(iphi[[g]] %*% delta[[g]][[i]]))
-
-
-          kappa[[g]][[i]] <- solve(iKappa[[g]][[i]])
-
-
-          S[[g]][[i]] <- delta[[g]][[i]] %x% kappa[[g]][[i]]
-          zS[[g]][[i]] <- z[i, g] * S[[g]][[i]]
-          GX[[g]][[i]] <- dataset[i, ] - exp(start[[g]][i, ] + log(libMat[i, ])
-                          + 0.5 * diag(S[[g]][[i]])) - (isigma[[g]]) %*%
-                          (start[[g]][i, ] - mu[[g]])
-          m[[g]][i, ] <- start[[g]][i, ] + S[[g]][[i]] %*% GX[[g]][[i]]
-          startList[[g]][[i]] <- t(matrix(m[[g]][i, ], nrow = p))
-        }
-        start[[g]] <- m[[g]]
-
-        mu[[g]] <- colSums(z[, g] * m[[g]]) / sum(z[, g]) # this is xi
-
-
-
-        ####Updating Sample covariance
-        muMat <- t(matrix(mu[[g]], nrow = p))
-        phi_m <- list()
-        for (i in 1:r) {
-          phi_m[[i]] <- z[i, g] * (startList[[g]][[i]] - muMat) %*%
-            iomega[[g]] %*% t(startList[[g]][[i]] - muMat) +
-            z[i, g] * delta[[g]][[i]] *
-            sum(diag(iomega[[g]] %*% kappa[[g]][[i]]))
-        }
-        phi[[g]] <- Reduce("+", phi_m) / sum(z[, g] * p)
+        obs <- which(z[, g] == 1)
+        mu[[g]] <- colMeans(log(TwoDdataset[obs, ] + 1 / 6))
+        sigma[[g]] <- var(log(TwoDdataset[obs, ] + 1 / 6))
+        isigma[[g]] <- solve(sigma[[g]])
+        phi[[g]] <- diag(r) * sqrt(min(diag(var(log(TwoDdataset[obs, ] + 1 / 6)))))
+        omega[[g]] <- diag(p) * sqrt(min(diag(var(log(TwoDdataset[obs, ] + 1 / 6)))))
         iphi[[g]] <- solve(phi[[g]])
-
-        omegaM <- list()
-        for (i in 1:r) {
-          omegaM[[i]] <- z[i, g] * t(startList[[g]][[i]] - muMat) %*%
-            iphi[[g]] %*% (startList[[g]][[i]] - muMat) + z[i, g] *
-            kappa[[g]][[i]] * sum(diag(iphi[[g]] %*% delta[[g]][[i]]))
-        }
-        omega[[g]] <- Reduce("+", omegaM) / sum(z[, g] * r)
         iomega[[g]] <- solve(omega[[g]])
-        sigma[[g]] <- phi[[g]] %x% omega[[g]]
-        isigma[[g]] <- iphi[[g]] %x% iomega[[g]]
       }
-
-      piG <- colSums(z) / r
-      ### Some useful functions
-      fun_five <- function(x, y = isigma[[g]]) {
-        sum(diag(x %*% y))
-      }
-
-      F <- matrix(NA, ncol = G, nrow = r)
 
       for (g in 1:G) {
-        two <- rowSums(exp(m[[g]] + log(libMat) + 0.5 *
-               matrix(unlist(lapply(S[[g]], diag)),
-               ncol = d, byrow = TRUE)))
-        five <- 0.5 * unlist(lapply(S[[g]], fun_five))
-        six <- 0.5 * log(unlist(lapply(S[[g]], det)))
-        F[, g] <- piG[g] * exp(rowSums(m[[g]] * dataset) -
-                  two - rowSums(lfactorial(dataset)) +
-                  rowSums(log(libMat) * dataset) - 0.5 *
-                  mahalanobis(m[[g]], center = mu[[g]],
-                  cov = isigma[[g]], inverted = TRUE) -
-                  five + six + 0.5 * log(det(isigma[[g]])) - d / 2)
+        start[[g]] <- log(TwoDdataset + 1 / 6) ###Starting value for M
+        m[[g]] <- log(TwoDdataset + 1 / 6)
+        S[[g]] <- list()
+        delta[[g]] <- list()
+        kappa[[g]] <- list()
+        start_list[[g]] <- list()
+        for (i in 1:n) {
+          start_list[[g]][[i]] <- log(Y_list[[i]])
+          delta[[g]][[i]] <- diag(r) * 0.001
+          kappa[[g]][[i]] <- diag(p) * 0.001
+          S[[g]][[i]] <- delta[[g]][[i]] %x% kappa[[g]][[i]]
+        }
       }
 
-      loglik[it] <- sum(log(rowSums(F)))
 
-      z <- F / rowSums(F)
-      if (it <= 5) {
-        z[z == "NaN"] <- 0
-      }
 
-      if (it > 5) {
-        #Aitkaine's stopping criterion
-        if ((loglik[it - 1] - loglik[it - 2]) == 0) checks <- 1 else{
-          a <- (loglik[it] - loglik[it-1]) / (loglik[it - 1] - loglik[it - 2])
-          addTo <- (1 / (1 - a)*(loglik[it] - loglik[it - 1]))
-          # }
-          aloglik[it] <- loglik[it - 1] + addTo
-          if (abs(aloglik[it] - aloglik[it - 1]) < 0.05) {
+      checks <- 0
+      it <- 1
+      aloglik <- loglik <- NULL
+      aloglik[c(1:5)] <- 0
+      it_max <- 200
+
+
+      while (checks == 0) {
+
+
+        for (g in 1:G) {
+          GX[[g]] <- dGX[[g]] <- z_S[[g]] <- i_delta[[g]] <- i_kappa[[g]] <-list()
+          delta_o <- delta[[g]]
+          kappa_o <- kappa[[g]]
+
+          for (i in 1:n) {
+            i_delta[[g]][[i]] <-
+              diag(c(t(diag(kappa[[g]][[i]])) %*%
+                       t(exp(log(lib_mat_list[[i]]) +
+                               start_list[[g]][[i]] +
+                               0.5 * diag(delta[[g]][[i]]) %*%
+                               t(diag(kappa[[g]][[i]])))))) +
+              iphi[[g]]*sum(diag(iomega[[g]] %*%
+                                   kappa[[g]][[i]]))
+            delta[[g]][[i]] <- p * solve(i_delta[[g]][[i]])
+
+
+            i_kappa[[g]][[i]] <- diag(c(t(diag(delta[[g]][[i]])) %*%
+                                          (exp(log(lib_mat_list[[i]]) +
+                                                 start_list[[g]][[i]] +
+                                                 t(0.5*diag(kappa[[g]][[i]]) %*%
+                                                     t(diag(delta[[g]][[i]]))))))) +
+              iomega[[g]] * sum(diag(iphi[[g]] %*%
+                                       delta[[g]][[i]]))
+
+
+            kappa[[g]][[i]] <- solve(i_kappa[[g]][[i]])
+
+
+            S[[g]][[i]] <- delta[[g]][[i]] %x% kappa[[g]][[i]]
+            z_S[[g]][[i]] <- z[i, g] * S[[g]][[i]]
+            GX[[g]][[i]] <- TwoDdataset[i, ] -
+              exp(start[[g]][i, ] + log(lib_mat[i, ]) +
+                    0.5*diag(S[[g]][[i]])) - (isigma[[g]]) %*%
+              (start[[g]][i, ] - mu[[g]])
+            m[[g]][i, ] <- start[[g]][i, ] + S[[g]][[i]] %*% GX[[g]][[i]]
+            start_list[[g]][[i]] <- t(matrix(m[[g]][i, ], nrow = p))
+          }
+          start[[g]] <- m[[g]]
+
+          mu[[g]] <- colSums(z[, g] * m[[g]]) / sum(z[, g]) # this is xi
+
+
+
+          # Updating Sample covariance
+          mu_mat <- t(matrix(mu[[g]], nrow = p))
+          phi_m <- list()
+          for (i in 1:n) {
+            phi_m[[i]] <- z[i, g] *
+              (start_list[[g]][[i]] - mu_mat) %*%
+              iomega[[g]] %*% t(start_list[[g]][[i]] - mu_mat) +
+              z[i, g] * delta[[g]][[i]] * sum(diag(iomega[[g]] %*%
+                                                     kappa[[g]][[i]]))
+          }
+          phi[[g]] <- Reduce("+", phi_m) / sum(z[, g] * p)
+          iphi[[g]] <- solve(phi[[g]])
+
+          omega_m <- list()
+          for (i in 1:n) {
+            omega_m[[i]] <- z[i, g] * t(start_list[[g]][[i]] - mu_mat) %*%
+              iphi[[g]] %*% (start_list[[g]][[i]] - mu_mat) +
+              z[i, g] * kappa[[g]][[i]] * sum(diag(iphi[[g]] %*%
+                                                     delta[[g]][[i]]))
+          }
+          omega[[g]] <- Reduce("+", omega_m) / sum(z[, g] * r)
+          iomega[[g]] <- solve(omega[[g]])
+          sigma[[g]] <- phi[[g]] %x% omega[[g]]
+          isigma[[g]] <- iphi[[g]] %x% iomega[[g]]
+        }
+
+
+
+
+
+        pi_g <- colSums(z) / n
+        ### Some useful functions
+        fun_five <- function(x, y = isigma[[g]]) {
+          sum(diag(x %*% y))
+        }
+
+        FMatrix <- matrix(NA, ncol = G, nrow = n)
+
+        for (g in 1:G) {
+          two <- rowSums(exp(m[[g]] + log(lib_mat) + 0.5 *
+                               matrix(unlist(lapply(S[[g]], diag)),
+                                      ncol = d, byrow = TRUE)))
+          five <- 0.5 * unlist(lapply(S[[g]], fun_five))
+          six <- 0.5 * log(unlist(lapply(S[[g]], det)))
+          FMatrix[, g] <- pi_g[g] * exp(rowSums(m[[g]] * TwoDdataset) - two -
+                                          rowSums(lfactorial(TwoDdataset)) +
+                                          rowSums(log(lib_mat) * TwoDdataset) -
+                                          0.5 * mahalanobis(m[[g]], center = mu[[g]], cov = isigma[[g]], inverted = TRUE) -
+                                          five + six + 0.5 * log(det(isigma[[g]])) - d / 2)
+        }
+
+        loglik[it] <- sum(log(rowSums(FMatrix)))
+
+        z <- FMatrix / rowSums(FMatrix)
+        if (it <= 5) {
+          z[z == "NaN"] <- 0
+        }
+
+        if (it > 5) {
+          #Aitkaine's stopping criterion
+          if ((loglik[it - 1] - loglik[it - 2]) == 0) {
             checks <- 1
           } else {
-            checks <- checks
+            a <- (loglik[it] - loglik[it - 1]) / (loglik[it - 1] - loglik[it - 2])
+            add_to <- (1 / (1 - a) * (loglik[it] - loglik[it - 1]))
+            aloglik[it] <- loglik[it - 1] + add_to
+            if (abs(aloglik[it] - aloglik[it - 1]) < 0.05) {
+              checks <- 1
+            } else {
+              checks <- checks
+            }
           }
         }
+        #print(it)
+        it <- it + 1
+        if (it == it_max) {
+          checks<-1
+        }
+
+        final_phi <- final_omega <- list()
+        for (g in 1:G) {
+          final_phi[[g]] <- phi[[g]] / diag(phi[[g]])[1]
+          final_omega[[g]] <- omega[[g]] * diag(phi[[g]])[1]
+        }
       }
-      # print(it)
-      it <- it + 1
-      if (it == itMax) checks <- 1
-      finalPhi <- list()
-      finalOmega <- list()
-      for (g in 1:G){
-        finalPhi[[g]] <- phi[[g]] / diag(phi[[g]])[1]
-        finalOmega[[g]] <- omega[[g]] * diag(phi[[g]])[1]
-      }
+
+
+      return(list(pi_g = pi_g,
+                  mu = mu,
+                  sigma = sigma,
+                  z = z,
+                  loglik = loglik,
+                  kmeans = k_means,
+                  phi = final_phi,
+                  omega = final_omega))
     }
-    }
+
 
 
     for(g in seq_along(1:(gmax - gmin + 1))) {
+      clusteringVGA(G = g, TwoDdataset = TwoDdataset, n = n, d = d)
     }
 
 
-    # cluster data extracting
+    # cluster data result extracting
     for(g in seq_along(1:(gmax - gmin + 1))) {
 
       if(length(1:(gmax - gmin + 1)) == gmax) {
