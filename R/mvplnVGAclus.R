@@ -143,8 +143,7 @@ mvplnVGAclus <- function(dataset,
                           gmax,
                           initMethod = "kmeans",
                           nInitIterations = 2,
-                          normalize = "Yes",
-                          numNodes = NA) {
+                          normalize = "Yes") {
 
   ptm <- base::proc.time()
 
@@ -223,11 +222,11 @@ mvplnVGAclus <- function(dataset,
 
   # Changing dataset into a n x rp dataset
   TwoDdataset <- matrix(NA, ncol = d, nrow = n)
-  sample_matrix <- matrix(c(1:d), nrow = r, byrow = TRUE)
+  sampleMatrix <- matrix(c(1:d), nrow = r, byrow = TRUE)
   for (u in 1:n) {
     for (e in 1:p) {
       for (s in 1:r) {
-        TwoDdataset[u, sample_matrix[s, e]] <- dataset[[u]][s, e]
+        TwoDdataset[u, sampleMatrix[s, e]] <- dataset[[u]][s, e]
       }
     }
   }
@@ -243,17 +242,11 @@ mvplnVGAclus <- function(dataset,
     membership <- "Not provided" }
 
 
-  Y_list <- list()
-  for (i in 1:N){
-    Y_list[[i]]<-t(matrix(bozzo2016[i,],nrow=p))
-  }
 
-  parallelFA <- function(G, TwoDdataset,
+  parallelFA <- function(G, dataset,
+                         TwoDdataset,
                          r, p, d, N,
-                         normalize,
-                         Y_list) {
-
-    ###### Parameter Updates ####
+                         normalize) {
 
     # Calculating normalization factors
     if(normalize == "Yes") {
@@ -266,16 +259,13 @@ mvplnVGAclus <- function(dataset,
       stop("Argument normalize should be 'Yes' or 'No' ")
     }
 
-
-    libMat <- matrix(normFactors,N,d,byrow=T)
+    libMat <- matrix(normFactors, N, d, byrow = T)
     libMatList <- list()
-    for (i in 1:N){
-      libMatList[[i]]<-t(matrix(libMat[i,],nrow=p))
+    for (i in 1:N) {
+      libMatList[[i]] <- t(matrix(libMat[i, ], nrow = p))
     }
 
-
-
-    #### Initialization ###
+    # Initialization
     mu <- omega <- phi <- list() # mu is M;
     delta <- kappa <- sigma <- isigma <- iphi <- iomega <- list()
     # delta  is variational parameter Delta
@@ -290,7 +280,7 @@ mvplnVGAclus <- function(dataset,
     # S is Psi
 
     # Other intermediate items initialized
-    Sk <- array(0, c(d,d,G) )
+    Sk <- array(0, c(d, d, G) )
     start <- GX <- dGX <- zS <- list()
 
     iKappa <- iDelta <- startList <- list()
@@ -305,7 +295,7 @@ mvplnVGAclus <- function(dataset,
     piG <- colSums(zValue) / N
 
     for (g in 1:G) {
-      obs <- which(zValue[, g] ==1 )
+      obs <- which(zValue[, g] == 1)
       mu[[g]] <- colMeans(log(TwoDdataset[obs, ] + 1 / 6))
       sigma[[g]] <- var(log(TwoDdataset[obs, ] + 1 / 6))
       isigma[[g]] <- solve(sigma[[g]])
@@ -323,31 +313,23 @@ mvplnVGAclus <- function(dataset,
       kappa[[g]] <- list()
       startList[[g]] <- list()
       for (i in 1:N) {
-        startList[[g]][[i]] <- log(Y_list[[i]])
-        delta[[g]][[i]] <- diag(r)*0.001
-        kappa[[g]][[i]] <- diag(p)*0.001
+        startList[[g]][[i]] <- log(dataset[[i]])
+        delta[[g]][[i]] <- diag(r) * 0.001
+        kappa[[g]][[i]] <- diag(p) * 0.001
         S[[g]][[i]] <- delta[[g]][[i]] %x% kappa[[g]][[i]]
       }
     }
 
-
-
-    checks <- 0
     it <- 1
     aloglik <- loglik <- NULL
-    aloglik[c(1:5)] <- 0
-    it_max <- 200
-
+    checks <- aloglik[c(1:5)] <- 0
+    itMax <- 200
 
     while (checks==0) {
 
-
       for (g in 1:G) {
-        GX[[g]] <- list()
-        dGX[[g]] <- list()
-        zS[[g]] <- list()
-        iDelta[[g]] <- list()
-        iKappa[[g]] <- list()
+        GX[[g]] <- dGX[[g]] <- zS[[g]] <- list()
+        iDelta[[g]] <- iKappa[[g]] <- list()
         deltaO <- delta[[g]]
         kappaO <- kappa[[g]]
 
@@ -370,7 +352,6 @@ mvplnVGAclus <- function(dataset,
                                iomega[[g]] * sum(diag(iphi[[g]] %*%
                                delta[[g]][[i]]))
 
-
           kappa[[g]][[i]] <- solve(iKappa[[g]][[i]])
 
 
@@ -388,18 +369,16 @@ mvplnVGAclus <- function(dataset,
 
         mu[[g]] <- colSums(zValue[, g] * m[[g]]) / sum(zValue[, g]) # this is xi
 
-
-
         # Updating Sample covariance
         muMat <- t(matrix(mu[[g]], nrow = p))
-        phi_m <- list()
+        phiM <- list()
         for (i in 1:N) {
-          phi_m[[i]] <- zValue[i,g]*(startList[[g]][[i]] - muMat) %*%
+          phiM[[i]] <- zValue[i,g]*(startList[[g]][[i]] - muMat) %*%
                         iomega[[g]] %*% t(startList[[g]][[i]] - muMat) +
                         zValue[i, g] * delta[[g]][[i]] * sum(diag(iomega[[g]] %*%
                         kappa[[g]][[i]]))
         }
-        phi[[g]] <- Reduce("+", phi_m) / sum(zValue[, g]*p)
+        phi[[g]] <- Reduce("+", phiM) / sum(zValue[, g] * p)
         iphi[[g]] <- solve(phi[[g]])
 
         omegaM <- list()
@@ -415,17 +394,13 @@ mvplnVGAclus <- function(dataset,
         isigma[[g]] <- iphi[[g]] %x% iomega[[g]]
       }
 
-
-
-
-
       piG <- colSums(zValue) / N
-      ### Some useful functions
+      # Internal functions
       funFive <- function(x, y = isigma[[g]]) {
         sum(diag(x %*% y))
       }
 
-      FMatrix  <- matrix(NA, ncol = G, nrow = N)
+      FMatrix <- matrix(NA, ncol = G, nrow = N)
 
       for (g in 1:G) {
         two <- rowSums(exp(m[[g]] + log(libMat) +
@@ -433,7 +408,7 @@ mvplnVGAclus <- function(dataset,
                ncol = d, byrow = TRUE)))
         five <- 0.5 * unlist(lapply(S[[g]], funFive))
         six <- 0.5 * log(unlist(lapply(S[[g]], det)))
-        FMatrix [, g] <- piG[g] * exp(rowSums(m[[g]] * TwoDdataset) -
+        FMatrix[, g] <- piG[g] * exp(rowSums(m[[g]] * TwoDdataset) -
                   two - rowSums(lfactorial(TwoDdataset)) +
                   rowSums(log(libMat) * TwoDdataset) - 0.5 *
                   mahalanobis(m[[g]], center = mu[[g]], cov = isigma[[g]],
@@ -441,9 +416,9 @@ mvplnVGAclus <- function(dataset,
                   log(det(isigma[[g]])) - d/2)
       }
 
-      loglik[it] <- sum(log(rowSums(FMatrix )))
+      loglik[it] <- sum(log(rowSums(FMatrix)))
 
-      zValue <- FMatrix  / rowSums(FMatrix )
+      zValue <- FMatrix / rowSums(FMatrix)
       if (it <= 5) {
         zValue[zValue == "NaN"] <- 0
       }
@@ -452,16 +427,21 @@ mvplnVGAclus <- function(dataset,
         #Aitkaine's stopping criterion
         if ((loglik[it - 1] - loglik[it - 2]) == 0) checks <- 1 else {
           a <- (loglik[it] - loglik[it - 1]) / (loglik[it - 1] - loglik[it - 2])
-          add_to <- (1 / (1 - a) * (loglik[it] - loglik[it - 1]))
-          aloglik[it] <- loglik[it - 1] + add_to
-          if (abs(aloglik[it] - aloglik[it - 1]) < 0.05) checks <- 1 else checks <- checks
+          addTo <- (1 / (1 - a) * (loglik[it] - loglik[it - 1]))
+          aloglik[it] <- loglik[it - 1] + addTo
+          if (abs(aloglik[it] - aloglik[it - 1]) < 0.05) {
+            checks <- 1
+          } else {
+            checks <- checks
+          }
         }
       }
 
       it <- it + 1
-      if (it == it_max) checks <- 1
-      finalPhi <- list()
-      finalOmega <- list()
+      if (it == itMax) {
+        checks <- 1
+      }
+      finalPhi <- finalOmega <- list()
       for (g in 1:G) {
         finalPhi[[g]] <- phi[[g]] / diag(phi[[g]])[1]
         finalOmega[[g]] <- omega[[g]] * diag(phi[[g]])[1]
@@ -482,25 +462,16 @@ mvplnVGAclus <- function(dataset,
     return(FinalGResults)
   }
 
-  parallelFA(G = 2,
-              TwoDdataset = bozzo2016,
-              r=r, # variety
-              p= p, # growth stages
-              d = d,
-              N = n,
-              normalize = normalize,
-              Y_list = Y_list)
 
-
-
-    for(g in seq_along(1:(gmax - gmin + 1))) {
-      parallel_FA(G = g,
-                  TwoDdataset = TwoDdataset,
-                  r = r,
-                  p = p,
-                  n = n,
-                  d = d,
-                  normFactors = normFactors)
+  for(g in seq_along(1:(gmax - gmin + 1))) {
+    parallelFAOutput <- parallelFA(G = g,
+                 dataset = dataset,
+                 TwoDdataset = TwoDdataset,
+                 r = r, # variety
+                 p = p, # growth stages
+                 d = d,
+                 N = n,
+                 normalize = normalize)
     }
 
 
@@ -513,10 +484,8 @@ mvplnVGAclus <- function(dataset,
         clustersize <- seq(gmin, gmax, 1)[g]
       }
 
-
-
       # save the final log-likelihood
-      ll[g] <- unlist(tail(parallelRun[[g]]$allresults$loglikelihood, n = 1))
+      ll[g] <- unlist(tail(parallelFAOutput[[g]]$loglik, n = 1))
 
       k[g] <- calcParameters(g = clustersize,
                              r = r,
@@ -527,24 +496,24 @@ mvplnVGAclus <- function(dataset,
         bic <- BICFunction(ll = ll,
                            k = k,
                            n = n,
-                           run = parallelRun,
+                           run = parallelFAOutput,
                            gmin = gmin,
                            gmax = gmax)
 
         icl <- ICLFunction(bIc = bic,
                            gmin = gmin,
                            gmax = gmax,
-                           run = parallelRun)
+                           run = parallelFAOutput)
 
         aic <- AICFunction(ll = ll,
                            k = k,
-                           run = parallelRun,
+                           run = parallelFAOutput,
                            gmin = gmin,
                            gmax = gmax )
 
         aic3 <- AIC3Function(ll = ll,
                              k = k,
-                             run = parallelRun,
+                             run = parallelFAOutput,
                              gmin = gmin,
                              gmax = gmax)
       }
