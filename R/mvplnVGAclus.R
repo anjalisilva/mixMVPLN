@@ -324,6 +324,8 @@ mvplnVGAclus <- function(dataset,
         }
       }
     } else {
+
+    # Initialize based on specified initMethod method
      outputInitialization <- initializationRun(G,
                         dataset,
                         TwoDdataset,
@@ -332,32 +334,30 @@ mvplnVGAclus <- function(dataset,
                         nInitIterations,
                         initMethod)
 
-     mu <-
-     omega <-
-     phi <-
-     delta <-
-     kappa <-
-     sigma <-
-     isigma <-
-     iphi <-
-     iomega <-
-     m <-
-     S <-
-     Sk <-
-     start <-
-     GX <-
-     dGX <-
-     zS <-
-     iKappa <-
-     iDelta <-
-     startList <-
-     zValue
-     piG <- colSums(zValue) / N
+     mu <- outputInitialization$mu
+     omega <- outputInitialization$omega
+     phi <- outputInitialization$phi
+     delta <- outputInitialization$delta
+     kappa <- outputInitialization$kappa
+     sigma <- outputInitialization$sigma
+     isigma <- outputInitialization$isigma
+     iphi <- outputInitialization$iphi
+     iomega <- outputInitialization$iomega
+     m <- outputInitialization$m
+     S <- outputInitialization$S
+     Sk <- outputInitialization$Sk
+     start <- outputInitialization$start
+     GX <- outputInitialization$GX
+     dGX <- outputInitialization$dGX
+     zS <- outputInitialization$zS
+     iKappa <- outputInitialization$iKappa
+     iDelta <- outputInitialization$iDelta
+     startList <- outputInitialization$startList
+     zValue <- outputInitialization$zValue
+     piG <- outputInitialization$piG
+  }
 
-    }
-
-
-
+    # start clustering after initialization
     it <- 1
     aloglik <- loglik <- NULL
     checks <- aloglik[c(1:5)] <- 0
@@ -486,18 +486,17 @@ mvplnVGAclus <- function(dataset,
       }
     }
 
-    programclust <- map(zValue)
+    programclust <- mclust::map(zValue)
 
     FinalGResults <- list(mu = mu,
-                         sigma = sigma,
-                         probaPost = zValue,
-                         loglikelihood = loglik,
-                         proportion = piG,
-                         clusterlabels = programclust,
-                         kmeans = kMeansResults,
-                         phi = finalPhi,
-                         omega = finalOmega,
-                         iterations = it)
+                          sigma = sigma,
+                          phi = finalPhi,
+                          omega = finalOmega,
+                          probaPost = zValue,
+                          loglikelihood = loglik,
+                          proportion = piG,
+                          clusterlabels = programclust,
+                          iterations = it)
 
     class(FinalGResults) <- "FinalGResults"
 
@@ -513,7 +512,8 @@ mvplnVGAclus <- function(dataset,
       clustersize <- seq(gmin, gmax, 1)[g]
     }
 
-    parallelFAOutput[[g]] <- parallelFA(G = clustersize,
+    parallelFAOutput[[g]] <- parallelFA(
+                 G = clustersize,
                  dataset = dataset,
                  TwoDdataset = TwoDdataset,
                  r = r, # variety
@@ -521,7 +521,8 @@ mvplnVGAclus <- function(dataset,
                  d = d,
                  N = n,
                  normFactors = normFactors,
-                 nInitIterations = nInitIterations)
+                 nInitIterations = nInitIterations,
+                 initMethod = initMethod)
     }
 
 
@@ -640,7 +641,7 @@ initializationRun <- function(G,
 
 
       if (initMethod == "kmeans") {
-        zValue <- mclust::unmap(stats::kmeans(x = log(dataset + 1 / 3),
+        zValue <- mclust::unmap(stats::kmeans(x = log(TwoDdataset + 1 / 3),
                                               centers = G)$cluster)
 
       } else if (initMethod == "random") {
@@ -661,13 +662,13 @@ initializationRun <- function(G,
           }
         }
       } else if (initMethod == "medoids") {
-        zValue <- mclust::unmap(cluster::pam(x = log(dataset + 1 / 3),
+        zValue <- mclust::unmap(cluster::pam(x = log(TwoDdataset + 1 / 3),
                                                       k = G)$cluster)
       } else if (initMethod == "clara") {
-        zValue <- mclust::unmap(cluster::clara(x = log(dataset + 1 / 3),
+        zValue <- mclust::unmap(cluster::clara(x = log(TwoDdataset + 1 / 3),
                                                         k = G)$cluster)
       } else if (initMethod == "fanny") {
-        zValue <- mclust::unmap(cluster::fanny(x = log(dataset + 1 / 3),
+        zValue <- mclust::unmap(cluster::fanny(x = log(TwoDdataset + 1 / 3),
                                                         k = G)$cluster)
       }
 
