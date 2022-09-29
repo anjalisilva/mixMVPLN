@@ -241,23 +241,23 @@ mvplnVGAclus <- function(dataset,
   if(all(is.na(membership) == TRUE)) {
     membership <- "Not provided" }
 
+  # Calculating normalization factors
+  if(normalize == "Yes") {
+    normFactors <- as.vector(edgeR::calcNormFactors(as.matrix(TwoDdataset),
+                                                    method = "TMM"))
 
+  } else if(normalize == "No") {
+    normFactors <- rep(0, d)
+  } else {
+    stop("Argument normalize should be 'Yes' or 'No' ")
+  }
 
   parallelFA <- function(G, dataset,
                          TwoDdataset,
                          r, p, d, N,
-                         normalize) {
+                         normFactors) {
 
-    # Calculating normalization factors
-    if(normalize == "Yes") {
-      normFactors <- as.vector(edgeR::calcNormFactors(as.matrix(TwoDdataset),
-                                                      method = "TMM"))
 
-    } else if(normalize == "No") {
-      normFactors <- rep(0, d)
-    } else {
-      stop("Argument normalize should be 'Yes' or 'No' ")
-    }
 
     libMat <- matrix(normFactors, N, d, byrow = T)
     libMatList <- list()
@@ -468,21 +468,28 @@ mvplnVGAclus <- function(dataset,
 
   parallelFAOutput <- list()
   for(g in seq_along(1:(gmax - gmin + 1))) {
-    parallelFAOutput[[g]] <- parallelFA(G = g,
+
+    if(length(1:(gmax - gmin + 1)) == gmax) {
+      clustersize <- g
+    } else if(length(1:(gmax - gmin + 1)) < gmax) {
+      clustersize <- seq(gmin, gmax, 1)[g]
+    }
+
+    parallelFAOutput[[g]] <- parallelFA(G = clustersize,
                  dataset = dataset,
                  TwoDdataset = TwoDdataset,
                  r = r, # variety
                  p = p, # growth stages
                  d = d,
                  N = n,
-                 normalize = normalize)
+                 normFactors = normFactors)
     }
 
 
     # cluster data result extracting
     BIC <- ICL <- AIC <- AIC3 <- k <- ll <- vector()
     for(g in seq_along(1:(gmax - gmin + 1))) {
-
+       print(g)
       if(length(1:(gmax - gmin + 1)) == gmax) {
         clustersize <- g
       } else if(length(1:(gmax - gmin + 1)) < gmax) {
