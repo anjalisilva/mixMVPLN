@@ -245,8 +245,9 @@ mvplnVGAclus <- function(dataset,
 
 
 
-  parallel_FA <- function(G, TwoDdataset, normFactors,
-                          r, p, d, N, normalize = "Yes") {
+  parallelFA <- function(G, TwoDdataset,
+                         r, p, d, N,
+                         normalize) {
 
     ###### Parameter Updates ####
 
@@ -262,13 +263,13 @@ mvplnVGAclus <- function(dataset,
     }
 
 
-    lib_mat<-matrix(normFactors,N,d,byrow=T)
-    lib_mat_list<-list()
+    lib_mat <- matrix(normFactors,N,d,byrow=T)
+    lib_mat_list <- list()
     for (i in 1:N){
       lib_mat_list[[i]]<-t(matrix(lib_mat[i,],nrow=p))
     }
 
-    Y_list<-list()
+    Y_list <- list()
     for (i in 1:N){
       Y_list[[i]]<-t(matrix(TwoDdataset[i,],nrow=p))
     }
@@ -279,102 +280,119 @@ mvplnVGAclus <- function(dataset,
 
 
     #### Initialization ###
-    mu<-list() ###This is M
-    #psi<-list() #### This is kronecker of omega and Phi
-    omega<-list() ### This is omega
-    phi<-list() ### This is Phi
-    delta<-list() #### This is variational parameter Delta
-    kappa<-list() #### This is variational parameter kappa
-    sigma<-list()  #### This is Psi in the math - kronecker of omega and Phi
-    isigma<-list() ###Inverse of Psi
-    iphi<-list() ### This is inverse of Phi
-    iomega<-list() ### This is inverse of omega
-    m<-list()### Vectorized xi
-    S<-list() ###It is Psi
-    # P<-list()
-    # Q<-list()
+    mu <- list() ###This is M
+    #psi <- list() #### This is kronecker of omega and Phi
+    omega <- list() ### This is omega
+    phi <- list() ### This is Phi
+    delta <- list() #### This is variational parameter Delta
+    kappa <- list() #### This is variational parameter kappa
+    sigma <- list()  #### This is Psi in the math - kronecker of omega and Phi
+    isigma <- list() ###Inverse of Psi
+    iphi <- list() ### This is inverse of Phi
+    iomega <- list() ### This is inverse of omega
+    m <- list()### Vectorized xi
+    S <- list() ###It is Psi
+    # P <- list()
+    # Q <- list()
 
     ###Other intermediate items initialized
-    start<-list()
-    Sk<-array(0, c(d,d,G) )
-    GX<-list()
-    dGX<-list()
-    z_S<-list()
+    start <- list()
+    Sk <- array(0, c(d,d,G) )
+    GX <- list()
+    dGX <- list()
+    z_S <- list()
 
-    i_kappa<-list() ### inverse of kappa
-    i_delta<-list() ### inverse of Delta
-    start_list<-list()
+    i_kappa <- list() ### inverse of kappa
+    i_delta <- list() ### inverse of Delta
+    start_list <- list()
 
-    k_means<-kmeans(log(TwoDdataset+1),centers=G,nstart=50,iter.max = 20)$cluster
-    z<-mclust::unmap(k_means) ### Starting value for Z
-    pi_g<-colSums(z)/N
+    k_means <- kmeans(log(TwoDdataset+1),
+                      centers = G,
+                      nstart = 50, iter.max = 20)$cluster
+    z <- mclust::unmap(k_means) ### Starting value for Z
+    pi_g <- colSums(z) / N
 
-    for (g in 1:G){
-      obs<-which(z[,g]==1)
-      mu[[g]]<-colMeans(log(TwoDdataset[obs,]+1/6))
-      sigma[[g]]<-var(log(TwoDdataset[obs,]+1/6))
-      isigma[[g]]<-solve(sigma[[g]])
-      phi[[g]]<-diag(r)*sqrt(min(diag(var(log(TwoDdataset[obs,]+1/6)))))
-      omega[[g]]<-diag(p)*sqrt(min(diag(var(log(TwoDdataset[obs,]+1/6)))))
-      iphi[[g]]<-solve(phi[[g]])
-      iomega[[g]]<-solve(omega[[g]])
+    for (g in 1:G) {
+      obs <- which(z[, g] ==1 )
+      mu[[g]] <- colMeans(log(TwoDdataset[obs, ] + 1 / 6))
+      sigma[[g]] <- var(log(TwoDdataset[obs, ] + 1 / 6))
+      isigma[[g]] <- solve(sigma[[g]])
+      phi[[g]] <- diag(r) * sqrt(min(diag(var(log(TwoDdataset[obs, ] + 1 / 6)))))
+      omega[[g]] <- diag(p) * sqrt(min(diag(var(log(TwoDdataset[obs, ] + 1 / 6)))))
+      iphi[[g]] <- solve(phi[[g]])
+      iomega[[g]] <- solve(omega[[g]])
     }
 
-    for (g in 1:G){
-      start[[g]]<-log(TwoDdataset+1/6) ###Starting value for M
-      m[[g]]<-log(TwoDdataset+1/6)
-      S[[g]]<-list()
-      delta[[g]]<-list()
-      kappa[[g]]<-list()
-      start_list[[g]]<-list()
-      for (i in 1:N){
-        start_list[[g]][[i]]<-log(Y_list[[i]])
-        delta[[g]][[i]]<-diag(r)*0.001
-        kappa[[g]][[i]]<-diag(p)*0.001
-        S[[g]][[i]]<-delta[[g]][[i]]%x%kappa[[g]][[i]]
+    for (g in 1:G) {
+      start[[g]] <- log(TwoDdataset + 1/6) ###Starting value for M
+      m[[g]] <- log(TwoDdataset + 1/6)
+      S[[g]] <- list()
+      delta[[g]] <- list()
+      kappa[[g]] <- list()
+      start_list[[g]] <- list()
+      for (i in 1:N) {
+        start_list[[g]][[i]] <- log(Y_list[[i]])
+        delta[[g]][[i]] <- diag(r)*0.001
+        kappa[[g]][[i]] <- diag(p)*0.001
+        S[[g]][[i]] <- delta[[g]][[i]] %x% kappa[[g]][[i]]
       }
     }
 
 
 
-    checks<-0
-    it<-1
-    aloglik<-NULL
-    loglik<-NULL
-    aloglik[c(1,2,3,4,5)]<-0
-    it_max<-200
+    checks <- 0
+    it <- 1
+    aloglik <- loglik <- NULL
+    aloglik[c(1:5)] <- 0
+    it_max <- 200
 
 
-    while (checks==0){
+    while (checks==0) {
 
 
-      for (g in 1:G){
-        GX[[g]]<-list()
-        dGX[[g]]<-list()
-        z_S[[g]]<-list()
-        i_delta[[g]]<-list()
-        i_kappa[[g]]<-list()
-        delta_o<-delta[[g]]
-        kappa_o<-kappa[[g]]
+      for (g in 1:G) {
+        GX[[g]] <- list()
+        dGX[[g]] <- list()
+        z_S[[g]] <- list()
+        i_delta[[g]] <- list()
+        i_kappa[[g]] <- list()
+        delta_o <- delta[[g]]
+        kappa_o <- kappa[[g]]
 
-        for (i in 1:N){
-          i_delta[[g]][[i]]<-diag(c(t(diag(kappa[[g]][[i]]))%*%t(exp(log(lib_mat_list[[i]])+start_list[[g]][[i]]+0.5*diag(delta[[g]][[i]])%*%t(diag(kappa[[g]][[i]]))))))+iphi[[g]]*sum(diag(iomega[[g]]%*%kappa[[g]][[i]]))
-          delta[[g]][[i]]<-p*solve(i_delta[[g]][[i]])
+        for (i in 1:N) {
+          i_delta[[g]][[i]] <- diag(c(t(diag(kappa[[g]][[i]])) %*%
+                               t(exp(log(lib_mat_list[[i]]) +
+                               start_list[[g]][[i]] +
+                               0.5 * diag(delta[[g]][[i]]) %*%
+                               t(diag(kappa[[g]][[i]])))))) +
+                               iphi[[g]] * sum(diag(iomega[[g]] %*%
+                               kappa[[g]][[i]]))
+          delta[[g]][[i]] <- p * solve(i_delta[[g]][[i]])
 
 
-          i_kappa[[g]][[i]]<-diag(c(t(diag(delta[[g]][[i]]))%*% (exp(log(lib_mat_list[[i]])+start_list[[g]][[i]]+ t(0.5*diag(kappa[[g]][[i]])%*%t(diag(delta[[g]][[i]])))))))+iomega[[g]]*sum(diag(iphi[[g]]%*%delta[[g]][[i]]))
+          i_kappa[[g]][[i]] <- diag(c(t(diag(delta[[g]][[i]])) %*%
+                               (exp(log(lib_mat_list[[i]]) +
+                               start_list[[g]][[i]] +
+                               t(0.5 * diag(kappa[[g]][[i]]) %*%
+                               t(diag(delta[[g]][[i]]))))))) +
+                               iomega[[g]] * sum(diag(iphi[[g]] %*%
+                               delta[[g]][[i]]))
 
 
-          kappa[[g]][[i]]<-solve(i_kappa[[g]][[i]])
+          kappa[[g]][[i]] <- solve(i_kappa[[g]][[i]])
 
 
-          S[[g]][[i]]<-delta[[g]][[i]]%x%kappa[[g]][[i]]
-          z_S[[g]][[i]]<-z[i,g]*S[[g]][[i]]
-          GX[[g]][[i]]<-TwoDdataset[i,]-exp(start[[g]][i,]+log(lib_mat[i,])+0.5*diag(S[[g]][[i]]))-(isigma[[g]])%*%(start[[g]][i,]-mu[[g]])
-          m[[g]][i, ]<-start[[g]][i,]+S[[g]][[i]]%*% GX[[g]][[i]]
-          start_list[[g]][[i]]<-t(matrix(m[[g]][i, ],nrow=p))
+          S[[g]][[i]] <- delta[[g]][[i]] %x% kappa[[g]][[i]]
+          z_S[[g]][[i]] <- z[i, g] * S[[g]][[i]]
+          GX[[g]][[i]] <- TwoDdataset[i, ] -
+                          exp(start[[g]][i, ] +
+                          log(lib_mat[i,]) +
+                          0.5 * diag(S[[g]][[i]])) -
+                          (isigma[[g]]) %*% (start[[g]][i, ] - mu[[g]])
+          m[[g]][i, ] <- start[[g]][i, ]+S[[g]][[i]] %*% GX[[g]][[i]]
+          start_list[[g]][[i]] <- t(matrix(m[[g]][i, ], nrow = p))
         }
-        start[[g]]<-m[[g]]
+        start[[g]] <- m[[g]]
 
         mu[[g]]<-colSums(z[,g]*m[[g]])/sum(z[,g]) ### This is xi
 
@@ -450,13 +468,13 @@ mvplnVGAclus <- function(dataset,
     return(list(pi_g=pi_g,mu=mu,sigma=sigma,z=z,loglik=loglik,kmeans=k_means,phi=final_phi,omega=final_omega))
   }
 
-  parallel_FA(G = 2,
+  parallelFA(G = 2,
               TwoDdataset = bozzo2016,
-              normFactors = normFactors,
               r=r, # variety
               p= p, # growth stages
               d = d,
-              N = n)
+              N = n,
+              normalize = normalize)
 
 
 

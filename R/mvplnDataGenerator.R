@@ -207,7 +207,7 @@ mvplnDataGenerator <- function(nOccasions,
                                                                         omega[((g - 1) * nResponses + 1):(g * nResponses), ]) ),
                                      nrow = nOccasions,
                                      ncol = nResponses,
-                                     byrow=TRUE)
+                                     byrow = TRUE)
 
       # Adding M1
       theta[[n_g[[g]][u]]] <-  theta[[n_g[[g]][u]]] + matrixMean[((g - 1) * nOccasions + 1):(g * nOccasions), ]
