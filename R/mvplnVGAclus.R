@@ -389,83 +389,102 @@ mvplnVGAclus <- function(dataset,
                           log(lib_mat[i,]) +
                           0.5 * diag(S[[g]][[i]])) -
                           (isigma[[g]]) %*% (start[[g]][i, ] - mu[[g]])
-          m[[g]][i, ] <- start[[g]][i, ]+S[[g]][[i]] %*% GX[[g]][[i]]
+          m[[g]][i, ] <- start[[g]][i, ] + S[[g]][[i]] %*% GX[[g]][[i]]
           start_list[[g]][[i]] <- t(matrix(m[[g]][i, ], nrow = p))
         }
         start[[g]] <- m[[g]]
 
-        mu[[g]]<-colSums(z[,g]*m[[g]])/sum(z[,g]) ### This is xi
+        mu[[g]] <- colSums(z[, g] * m[[g]]) / sum(z[, g]) # this is xi
 
 
 
-        ####Updating Sample covariance
-        mu_mat<-t(matrix(mu[[g]],nrow=p))
-        phi_m<-list()
-        for (i in 1:N){
-          phi_m[[i]]<-z[i,g]*(start_list[[g]][[i]]-mu_mat)%*%iomega[[g]]%*%t(start_list[[g]][[i]]-mu_mat)+z[i,g]*delta[[g]][[i]]*sum(diag(iomega[[g]]%*%kappa[[g]][[i]]))
+        # Updating Sample covariance
+        mu_mat <- t(matrix(mu[[g]], nrow = p))
+        phi_m <- list()
+        for (i in 1:N) {
+          phi_m[[i]] <- z[i,g]*(start_list[[g]][[i]] - mu_mat) %*%
+                        iomega[[g]] %*% t(start_list[[g]][[i]] - mu_mat) +
+                        z[i, g] * delta[[g]][[i]] * sum(diag(iomega[[g]] %*%
+                        kappa[[g]][[i]]))
         }
-        phi[[g]]<-Reduce("+",phi_m)/sum(z[,g]*p)
-        iphi[[g]]<-solve(phi[[g]])
+        phi[[g]] <- Reduce("+", phi_m) / sum(z[, g]*p)
+        iphi[[g]] <- solve(phi[[g]])
 
-        omega_m<-list()
-        for (i in 1:N){
-          omega_m[[i]]<-z[i,g]*t(start_list[[g]][[i]]-mu_mat)%*%iphi[[g]]%*%(start_list[[g]][[i]]-mu_mat)+z[i,g]*kappa[[g]][[i]]*sum(diag(iphi[[g]]%*%delta[[g]][[i]]))
+        omega_m <- list()
+        for (i in 1:N) {
+          omega_m[[i]] <- z[i, g] * t(start_list[[g]][[i]] - mu_mat) %*%
+                          iphi[[g]] %*% (start_list[[g]][[i]] - mu_mat) +
+                          z[i, g] * kappa[[g]][[i]] * sum(diag(iphi[[g]] %*%
+                          delta[[g]][[i]]))
         }
-        omega[[g]]<-Reduce("+",omega_m)/sum(z[,g]*r)
-        iomega[[g]]<-solve(omega[[g]])
-        sigma[[g]]<-phi[[g]]%x%omega[[g]]
-        isigma[[g]]<-iphi[[g]]%x%iomega[[g]]
+        omega[[g]] <- Reduce("+", omega_m) / sum(z[, g] * r)
+        iomega[[g]] <- solve(omega[[g]])
+        sigma[[g]] <- phi[[g]] %x% omega[[g]]
+        isigma[[g]] <- iphi[[g]] %x% iomega[[g]]
       }
 
 
 
 
 
-      pi_g<-colSums(z)/N
+      pi_g <- colSums(z) / N
       ### Some useful functions
-      fun_five<-function(x,y=isigma[[g]]){
-        sum(diag(x%*%y))
+      fun_five <- function(x, y = isigma[[g]]) {
+        sum(diag(x %*% y))
       }
 
-      F<-matrix(NA,ncol=G,nrow=N)
+      FMatrix  <- matrix(NA, ncol = G, nrow = N)
 
-      for (g in 1:G){
-        two<-rowSums(exp(m[[g]]+log(lib_mat)+0.5*matrix(unlist(lapply(S[[g]],diag)),ncol=d,byrow=TRUE)))
-        five<-0.5*unlist(lapply(S[[g]],fun_five))
-        six<-0.5*log(unlist(lapply(S[[g]],det)))
-        F[,g]<-pi_g[g]*exp(rowSums(m[[g]]*TwoDdataset)-two-rowSums(lfactorial(TwoDdataset))+rowSums(log(lib_mat)*TwoDdataset)-0.5*mahalanobis(m[[g]],center=mu[[g]],cov=isigma[[g]],inverted=TRUE)-five+six+0.5*log(det(isigma[[g]]))-d/2)
+      for (g in 1:G) {
+        two <- rowSums(exp(m[[g]] + log(lib_mat) +
+               0.5 * matrix(unlist(lapply(S[[g]], diag)),
+               ncol = d, byrow = TRUE)))
+        five <- 0.5 * unlist(lapply(S[[g]], fun_five))
+        six <- 0.5 * log(unlist(lapply(S[[g]], det)))
+        FMatrix [, g] <- pi_g[g] * exp(rowSums(m[[g]] * TwoDdataset) -
+                  two - rowSums(lfactorial(TwoDdataset)) +
+                  rowSums(log(lib_mat) * TwoDdataset) - 0.5 *
+                  mahalanobis(m[[g]], center = mu[[g]], cov = isigma[[g]],
+                  inverted = TRUE) - five + six + 0.5 *
+                  log(det(isigma[[g]])) - d/2)
       }
 
-      loglik[it]<-sum(log(rowSums(F)))
+      loglik[it] <- sum(log(rowSums(FMatrix )))
 
-      z<-F/rowSums(F)
-      if (it<=5){
-        z[z=="NaN"]<-0
+      z <- FMatrix  / rowSums(FMatrix )
+      if (it <= 5) {
+        z[z == "NaN"] <- 0
       }
 
-      if (it>5){
+      if (it > 5) {
         #Aitkaine's stopping criterion
-        if ((loglik[it-1]-loglik[it-2])==0) checks<-1 else{
-          a<-(loglik[it]-loglik[it-1])/(loglik[it-1]-loglik[it-2])
-          add_to<-(1/(1-a)*(loglik[it]-loglik[it-1]))
-          # }
-          aloglik[it]<-loglik[it-1]+add_to
-          if (abs(aloglik[it]-aloglik[it-1])<0.05) checks<-1 else checks<-checks
+        if ((loglik[it - 1] - loglik[it - 2]) == 0) checks <- 1 else {
+          a <- (loglik[it] - loglik[it - 1]) / (loglik[it - 1] - loglik[it - 2])
+          add_to <- (1 / (1 - a) * (loglik[it] - loglik[it - 1]))
+          aloglik[it] <- loglik[it - 1] + add_to
+          if (abs(aloglik[it] - aloglik[it - 1]) < 0.05) checks <- 1 else checks <- checks
         }
       }
       #print(it)
-      it<-it+1
-      if (it==it_max) checks<-1
-      final_phi<-list()
-      final_omega<-list()
-      for (g in 1:G){
-        final_phi[[g]]<-phi[[g]]/diag(phi[[g]])[1]
-        final_omega[[g]]<-omega[[g]]*diag(phi[[g]])[1]
+      it <- it + 1
+      if (it == it_max) checks <- 1
+      final_phi <- list()
+      final_omega <- list()
+      for (g in 1:G) {
+        final_phi[[g]] <- phi[[g]] / diag(phi[[g]])[1]
+        final_omega[[g]] <- omega[[g]] * diag(phi[[g]])[1]
       }
     }
 
 
-    return(list(pi_g=pi_g,mu=mu,sigma=sigma,z=z,loglik=loglik,kmeans=k_means,phi=final_phi,omega=final_omega))
+    return(list(pi_g = pi_g,
+                mu = mu,
+                sigma = sigma,
+                z = z,
+                loglik = loglik,
+                kmeans = k_means,
+                phi = final_phi,
+                omega = final_omega))
   }
 
   parallelFA(G = 2,
