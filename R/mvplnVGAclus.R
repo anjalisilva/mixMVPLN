@@ -1,33 +1,34 @@
 #' Clustering Using mixtures of MVPLN via variational Gaussian approximations
 #'
 #' Performs clustering using mixtures of matrix variate Poisson-log normal
-#' (MVPLN) via variational Gaussian approximations. Model selection can be done
-#' using AIC, AIC3, BIC and ICL.
+#' (MVPLN) via variational Gaussian approximations. Model selection can
+#' be done using AIC, AIC3, BIC and ICL.
 #'
 #' @param dataset A list of length nUnits, containing Y_j matrices.
 #'    A matrix Y_j has size r x p, and the dataset will have 'j' such
 #'    matrices with j = 1,...,n. If a Y_j has all zeros, such Y_j will
 #'    be removed prior to cluster analysis.
-#' @param membership A numeric vector of size length(dataset) containing the
-#'    cluster membership of each Y_j matrix. If not available, leave as
-#'    "none".
-#' @param gmin A positive integer specifying the minimum number of components
-#'    to be considered in the clustering run.
+#' @param membership A numeric vector of size length(dataset) containing
+#'    the cluster membership of each Y_j matrix. If not available, leave
+#'    as "none".
+#' @param gmin A positive integer specifying the minimum number of
+#'    components to be considered in the clustering run.
 #' @param gmax A positive integer, >gmin, specifying the maximum number of
 #'    components to be considered in the clustering run.
 #' @param nChains A positive integer specifying the number of Markov chains.
 #'    Default is 3, the recommended minimum number.
 #' @param nIterations A positive integer specifying the number of iterations
-#'    for each MCMC chain (including warmup). The value should be greater than
-#'    40. The upper limit will depend on size of dataset.
+#'    for each MCMC chain (including warmup). The value should be greater
+#'    than 40. The upper limit will depend on size of dataset.
 #' @param initMethod A method for initialization. Current options are
 #'    "none", "kmeans", "random", "medoids", "clara", or "fanny".
 #'    Default is "none".
 #' @param nInitIterations A positive integer or zero, specifying the number
 #'    of initialization runs to be considered. Default is 0.
 #' @param normalize A string with options "Yes" or "No" specifying
-#'     if normalization should be performed. Currently, normalization factors
-#'     are calculated using TMM method of edgeR package. Default is "Yes".
+#'     if normalization should be performed. Currently, normalization
+#'     factors are calculated using TMM method of edgeR package.
+#'     Default is "Yes".
 #'
 #' @return Returns an S3 object of class mvplnParallel with results.
 #' \itemize{
@@ -37,14 +38,14 @@
 #'   \item nOccassions - Number of occassions in the input dataset.
 #'   \item normFactors - A vector of normalization factors used for
 #'      input dataset.
-#'   \item gmin - Minimum number of components considered in the clustering
-#'      run.
-#'   \item gmax - Maximum number of components considered in the clustering
-#'      run.
+#'   \item gmin - Minimum number of components considered in the
+#'      clustering run.
+#'   \item gmax - Maximum number of components considered in the
+#'      clustering run.
 #'   \item initalizationMethod - Method used for initialization.
 #'   \item allResults - A list with all results.
-#'   \item loglikelihood - A vector with value of final log-likelihoods for
-#'      each cluster size.
+#'   \item loglikelihood - A vector with value of final log-likelihoods
+#'      for each cluster size.
 #'   \item nParameters - A vector with number of parameters for each
 #'      cluster size.
 #'   \item trueLabels - The vector of true labels, if provided by user.
@@ -57,20 +58,22 @@
 #'
 #' @examples
 #' \dontrun{
+#' # Example 1
 #' # Generating simulated matrix variate count data
 #' set.seed(1234)
 #' trueG <- 2 # number of total G
 #' truer <- 2 # number of total occasions
 #' truep <- 3 # number of total responses
-#' trueN <- 100 # number of total units
+#' trueN <- 1000 # number of total units
+#' truePiG <- c(0.6, 0.4) # mixing proportions for G=2
 #'
 #' # Mu is a r x p matrix
-#' trueM1 <- matrix(rep(6, (truer * truep)),
+#' trueM1 <- matrix(rep(6.2, (truer * truep)),
 #'                  ncol = truep,
 #'                  nrow = truer,
 #'                  byrow = TRUE)
 #'
-#' trueM2 <- matrix(rep(1, (truer * truep)),
+#' trueM2 <- matrix(rep(1.5, (truer * truep)),
 #'                  ncol = truep,
 #'                  nrow = truer,
 #'                  byrow = TRUE)
@@ -79,46 +82,110 @@
 #'
 #' # Phi is a r x r matrix
 #' # Loading needed packages for generating data
-#' if (!require(clusterGeneration)) install.packages("clusterGeneration")
+#' # install.packages("clusterGeneration")
+#' # library("clusterGeneration")
 #'
-#' # Covariance matrix containing variances and covariances between r occasions
-#' truePhi1 <- clusterGeneration::genPositiveDefMat("unifcorrmat",
-#'                                                   dim = truer,
-#'                                                   rangeVar = c(1, 1.7))$Sigma
-#' truePhi1[1, 1] <- 1 # For identifiability issues
-#'
-#' truePhi2 <- clusterGeneration::genPositiveDefMat("unifcorrmat",
-#'                                                   dim = truer,
-#'                                                   rangeVar = c(0.7, 0.7))$Sigma
-#' truePhi2[1, 1] <- 1 # For identifiability issues
+#' set.seed(1)
+#' truePhi1 <- matrix(rep(0, truer * truer), truer, truer)
+#' diag(truePhi1) <- diag(clusterGeneration::genPositiveDefMat(
+#'                        "unifcorrmat",
+#'                         dim = truer,
+#'                         rangeVar = c(1, 1.7))$Sigma)
+#' truePhi1[1, 1] <- 1 # for identifiability issuess
+#' truePhi2 <- matrix(rep(0,truer * truer), truer, truer)
+#' diag(truePhi2) <- diag(clusterGeneration::genPositiveDefMat(
+#'                        "unifcorrmat",
+#'                         dim = truer,
+#'                         rangeVar = c(0.7, 0.7))$Sigma)
+#' truePhi2[1, 1] <- 1 # for identifiability issues
 #' truePhiall <- rbind(truePhi1, truePhi2)
 #'
-#' # Omega is a p x p matrix
-#' # Covariance matrix containing variances and covariances between p responses
-#' trueOmega1 <- clusterGeneration::genPositiveDefMat("unifcorrmat", dim = truep,
-#'                                    rangeVar = c(1, 1.7))$Sigma
 #'
-#' trueOmega2 <- clusterGeneration::genPositiveDefMat("unifcorrmat", dim = truep,
-#'                                    rangeVar = c(0.7, 0.7))$Sigma
+#' # Omega is a p x p matrix
+#' set.seed(1)
+#' trueOmega1 <- matrix(rep(0, truep * truep), truep, truep)
+#' diag(trueOmega1) <- diag(clusterGeneration::genPositiveDefMat(
+#'                          "unifcorrmat",
+#'                           dim = truep,
+#'                           rangeVar = c(1, 1.7))$Sigma)
+#' trueOmega2 <- matrix(rep(0, truep * truep), truep, truep)
+#' diag(trueOmega2) <- diag(clusterGeneration::genPositiveDefMat(
+#'                          "unifcorrmat",
+#'                           dim = truep,
+#'                          mrangeVar = c(0.6, 0.9))$Sigma)
 #' trueOmegaAll <- rbind(trueOmega1, trueOmega2)
 #'
 #' # Generated simulated data
-#' sampleData <- mixMVPLN::mvplnDataGenerator(nOccasions = truer,
-#'                                            nResponses = truep,
-#'                                            nUnits = trueN,
-#'                                            mixingProportions = c(0.79, 0.21),
-#'                                            matrixMean = trueMall,
-#'                                            phi = truePhiall,
-#'                                            omega = trueOmegaAll)
+#' sampleData <- mixMVPLN::mvplnDataGenerator(
+#'                          nOccasions = truer,
+#'                          nResponses = truep,
+#'                          nUnits = trueN,
+#'                          mixingProportions = truePiG,
+#'                          matrixMean = trueMall,
+#'                          phi = truePhiall,
+#'                          omega = trueOmegaAll)
 #'
 #' # Clustering simulated matrix variate count data
-#' clusteringResults <- mixMVPLN::mvplnVGAclus(dataset = dataset,
-#'                                             membership = sampleData$truemembership,
-#'                                             gmin = 1,
-#'                                             gmax = 3,
-#'                                             initMethod = "fanny",
-#'                                             nInitIterations = 2,
-#'                                             normalize = "Yes")
+#' clusteringResults <- mixMVPLN::mvplnVGAclus(
+#'                       dataset = sampleData$dataset,
+#'                       membership = sampleData$truemembership,
+#'                       gmin = 1,
+#'                       gmax = 3,
+#'                       initMethod = "kmeans",
+#'                       nInitIterations = 2,
+#'                       normalize = "Yes")
+#'
+#' # Example 2
+#' trueG <- 1 # 1 cluster
+#' truer <- 2 # variety
+#' truep <- 3 # growth stages
+#' truen <- 1000 # genes
+#' truePiG <- c(1) # mixing proportions for G = 1
+#'
+#' # Mu is a r x p matrix
+#' trueM1 <- matrix(c(6, 5.5, 6, 6, 5.5, 6),
+#'                  ncol = truep,
+#'                  nrow = truer,
+#'                  byrow = TRUE)
+#' trueMall <- rbind(trueM1)
+
+#' # Phi is a r x r matrix
+#' set.seed(1)
+#' truePhi1 <- clusterGeneration::genPositiveDefMat(
+#'                               "unifcorrmat",
+#'                               dim = truer,
+#'                               rangeVar = c(0.7, 1.7))$Sigma
+#' truePhi1[1, 1] <- 1 # for identifiability issues
+#' truePhiall <- rbind(truePhi1)
+#'
+#' # Omega is a p x p matrix
+#' set.seed(1)
+#' trueOmega1 <- genPositiveDefMat(
+#'                    "unifcorrmat",
+#'                     dim = truep,
+#'                     rangeVar = c(1, 1.7))$Sigma
+#' trueOmegaAll <- rbind(trueOmega1)
+#'
+#' # Generated simulated data
+#' set.seed(1)
+#' sampleData2 <- mixMVPLN::mvplnDataGenerator(
+#'                          nOccasions = truer,
+#'                          nResponses = truep,
+#'                          nUnits = trueN,
+#'                          mixingProportions = truePiG,
+#'                          matrixMean = trueMall,
+#'                          phi = truePhiall,
+#'                          omega = trueOmegaAll)
+#'
+#' # Clustering simulated matrix variate count data
+#' clusteringResults <- mixMVPLN::mvplnVGAclus(
+#'                       dataset = sampleData2$dataset,
+#'                       membership = sampleData2$truemembership,
+#'                       gmin = 1,
+#'                       gmax = 2,
+#'                       initMethod = "kmeans",
+#'                       nInitIterations = 2,
+#'                       normalize = "Yes")
 #'
 #' }
 #'
@@ -205,10 +272,15 @@ mvplnVGAclus <- function(dataset,
       cluster membership. Otherwise, leave as 'none'.")
   }
 
-  if(all(membership != "none") &&
-     all((diff(sort(unique(membership))) == 1) != TRUE) ) {
-    stop("Cluster memberships in the membership vector
-      are missing a cluster, e.g. 1, 3, 4, 5, 6 is missing cluster 2.")
+  # Checking if missing membership values
+  # First check for the case in which G = 1, otherwise check
+  #   if missing cluster memberships
+  if(all(membership != "none") && length(unique(membership)) != 1) {
+    if(all(membership != "none") &&
+       all((diff(sort(unique(membership))) == 1) != TRUE) ) {
+      stop("Cluster memberships in the membership vector
+        are missing a cluster, e.g. 1, 3, 4, 5, 6 is missing cluster 2.")
+    }
   }
 
   if(all(membership != "none") && length(membership) != length(dataset)) {
@@ -483,6 +555,11 @@ mvplnVGAclus <- function(dataset,
 
       loglik[it] <- sum(log(rowSums(FMatrix)))
 
+      # Plotting
+      # if (it > 3) {
+      #   plot(loglik, type = "l")
+      # }
+
       zValue <- FMatrix / rowSums(FMatrix)
       if (it <= 5) {
         zValue[zValue == "NaN"] <- 0
@@ -490,6 +567,7 @@ mvplnVGAclus <- function(dataset,
 
       if (it > 5) {
         #Aitkaine's stopping criterion
+        cat("\n At it:", it ,"loglik[it - 1]:", loglik[it - 1], "- loglik[it - 2]:", loglik[it - 2], "is", loglik[it - 1] - loglik[it - 2], "\n")
         if ((loglik[it - 1] - loglik[it - 2]) == 0) checks <- 1 else {
           a <- (loglik[it] - loglik[it - 1]) / (loglik[it - 1] - loglik[it - 2])
           addTo <- (1 / (1 - a) * (loglik[it] - loglik[it - 1]))

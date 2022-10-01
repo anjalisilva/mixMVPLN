@@ -5,49 +5,55 @@
 #' dimension r x p, where 'r' is the number of occasions and 'p' is
 #' the number of responses/variables.
 #'
-#' @param nOccasions A positive integer indicating the number of occassions.
-#'    A matrix Y_j has size r x p, and the dataset will have 'j' such
-#'    matrices with j = 1,...,n. Here, Y_j matrix is said to contain k ∈ {1,...,p}
-#'    responses/variables over i ∈ {1,...,r} occasions.
-#' @param nResponses A positive integer indicating the number of responses/variables.
-#'    A matrix Y_j has size r x p, and the dataset will have 'j' such
-#'    matrices with j = 1,...,n. Here, Y_j matrix is said to contain k ∈ {1,...,p}
-#'    responses/variables over i ∈ {1,...,r} occasions.
+#' @param nOccasions A positive integer indicating the number of
+#'    occassions. A matrix Y_j has size r x p, and the dataset will
+#'    have 'j' such matrices with j = 1,...,n. Here, Y_j matrix is
+#'    said to contain k ∈ {1,...,p} responses/variables over
+#'    i ∈ {1,...,r} occasions.
+#' @param nResponses A positive integer indicating the number of
+#'    responses/variables. A matrix Y_j has size r x p, and the
+#'    dataset will have 'j' such matrices with j = 1,...,n. Here,
+#'    Y_j matrix is said to contain k ∈ {1,...,p} responses/variables
+#'    over i ∈ {1,...,r} occasions.
 #' @param nUnits A positive integer indicating the number of units. A
 #'    matrix Y_j has size r x p, and the dataset will have 'j' such
 #'    matrices with j = 1,...,n.
-#' @param mixingProportions A numeric vector that length equal to the number of total
-#'    components, indicating the proportion of each component. Vector content should
-#'    sum to 1.
-#' @param matrixMean A matrix of size r x p for each component/cluster, giving the
-#'    matrix of means (M). All matrices should be combined via rbind. See example.
-#' @param phi A matrix of size r x r, which is the covariance matrix containing the
-#'    variances and covariances between 'r' occasions, for each component/cluster.
-#'    All matrices should be combined via rbind. See example.
-#' @param omega A matrix of size p x p, which is the covariance matrix containing the
-#'    variance and covariances of 'p' responses/variables, for each component/cluster.
-#'    All matrices should be combined via rbind. See example.
-#'
+#' @param mixingProportions A numeric vector that length equal to the
+#'    number of total components, indicating the proportion of each
+#'    component. Vector content should sum to 1.
+#' @param matrixMean A matrix of size r x p for each component/cluster,
+#'    giving the matrix of means (M). All matrices should be combined
+#'    via rbind. See example.
+#' @param phi A matrix of size r x r, which is the covariance matrix
+#'    containing the variances and covariances between 'r' occasions,
+#'    for each component/cluster. All matrices should be combined via
+#'    rbind. See example.
+#' @param omega A matrix of size p x p, which is the covariance matrix
+#'     containing the variance and covariances of 'p' responses/variables,
+#'     for each component/cluster. All matrices should be combined via
+#'     rbind. See example.
 #' @return Returns an S3 object of class mvplnDataGenerator with results.
 #' \itemize{
-#'   \item dataset - Simulated dataset with 'n' matrices, each matrix with
-#'         dimension r x p, where 'r' is the number of occasions and 'p' is
-#'         the number of responses/variables.
+#'   \item dataset - Simulated dataset with 'n' matrices, each matrix
+#'         with dimension r x p, where 'r' is the number of occasions
+#'         and 'p' is the number of responses/variables.
 #'   \item truemembership - A numeric vector indicating the membership of
 #'         each observation.
-#'   \item units - A positive integer indicating the number of units used for
-#'         simulating the data.
-#'   \item occassions - A positive integer indicating the number of occassions
-#'         used for simulating the data.
+#'   \item units - A positive integer indicating the number of units used
+#'         for simulating the data.
+#'   \item occassions - A positive integer indicating the number of
+#'         occassions used for simulating the data.
 #'   \item variables - A positive integer indicating the number of
 #'         responses/variables used for simulating the data.
 #'   \item mixingProportions - A numeric vector indicating the mixing
 #'      proportion of each component.
 #'   \item means - Matrix of mean used for simulating the data.
-#'   \item phi - Covariance matrix containing the variances and covariances
-#'         between 'r' occasions used for simulating the data.
-#'   \item psi - Covariance matrix containing the variance and covariances
-#'         of 'p' responses/variables used for simulating the data.
+#'   \item phi - Covariance matrix containing the variances and
+#'         covariances between 'r' occasions used for simulating the
+#'         data.
+#'   \item psi - Covariance matrix containing the variance and
+#'         covariances of 'p' responses/variables used for simulating
+#'         the data.
 #'}
 #'
 #' @examples
@@ -57,64 +63,16 @@
 #' trueG <- 2 # number of total G
 #' truer <- 2 # number of total occasions
 #' truep <- 3 # number of total responses
-#' trueN <- 100 # number of total units
-#'
-#' # M is a r x p matrix
-#' trueM1 <- matrix(rep(6, (truer * truep)),
-#'                   ncol = truep, nrow = truer, byrow = TRUE)
-#' trueM2 <- matrix(rep(1, (truer * truep)),
-#'                   ncol = truep, nrow = truer, byrow = TRUE)
-#' trueMall <- rbind(trueM1, trueM2)
-#'
-#' # Phi is a r x r matrix
-#' # Covariance matrix containing variances and covariances between r occasions
-#'
-#' truePhi1 <- matrix(c(1.435610, -1.105615, -1.105615,  1.426492),
-#'                     nrow = 2)
-#' truePhi1[1, 1] <- 1 # for identifiability issues
-#'
-#' truePhi2 <- matrix(c(0.7000000, 0.1727312, 0.1727312, 0.7000000),
-#'                    nrow = 2)
-#' truePhi2[1, 1] <- 1 # for identifiability issues
-#' truePhiAll <- rbind(truePhi1, truePhi2)
-
-#'
-#' # Omega is a p x p matrix
-#' # Covariance matrix containing variance and covariances of p responses/variables
-#'
-#' trueOmega1 <- matrix(c(1.4855139,  0.9049113, -0.9063446,
-#'                           0.9049113,  1.3814824, -1.2298301,
-#'                           -0.9063446, -1.2298301,  1.1979135), nrow = 3)
-#'
-#' trueOmega2 <- matrix(c(0.7000000, 0.5379098, 0.4837924,
-#'                          0.5379098, 0.7000000, 0.4089374,
-#'                          0.4837924, 0.4089374, 0.7000000), nrow = 3)
-#' trueOmegaAll <- rbind(trueOmega1, trueOmega2)
-#'
-#'
-#' sampleData <- mixMVPLN::mvplnDataGenerator(nOccasions = truer,
-#'                                            nResponses = truep,
-#'                                            nUnits = trueN,
-#'                                            mixingProportions = c(0.79, 0.21),
-#'                                            matrixMean = trueMall,
-#'                                            phi = truePhiAll,
-#'                                            omega = trueOmegaAll)
-#'
-#'
-#' # Example 2
-#' set.seed(1234)
-#' trueG <- 2 # number of total G
-#' truer <- 2 # number of total occasions
-#' truep <- 3 # number of total responses
-#' trueN <- 100 # number of total units
+#' trueN <- 1000 # number of total units
+#' truePiG <- c(0.6, 0.4) # mixing proportions for G=2
 #'
 #' # Mu is a r x p matrix
-#' trueM1 <- matrix(rep(6, (truer * truep)),
+#' trueM1 <- matrix(rep(6.2, (truer * truep)),
 #'                  ncol = truep,
 #'                  nrow = truer,
 #'                  byrow = TRUE)
 #'
-#' trueM2 <- matrix(rep(1, (truer * truep)),
+#' trueM2 <- matrix(rep(1.5, (truer * truep)),
 #'                  ncol = truep,
 #'                  nrow = truer,
 #'                  byrow = TRUE)
@@ -123,37 +81,98 @@
 #'
 #' # Phi is a r x r matrix
 #' # Loading needed packages for generating data
-#' if (!require(clusterGeneration)) install.packages("clusterGeneration")
-#'
-#' # Covariance matrix containing variances and covariances between r occasions
-#' truePhi1 <- clusterGeneration::genPositiveDefMat("unifcorrmat",
-#'                                                   dim = truer,
-#'                                                   rangeVar = c(1, 1.7))$Sigma
-#' truePhi1[1, 1] <- 1 # For identifiability issues
-#'
-#' truePhi2 <- clusterGeneration::genPositiveDefMat("unifcorrmat",
-#'                                                   dim = truer,
-#'                                                   rangeVar = c(0.7, 0.7))$Sigma
-#' truePhi2[1, 1] <- 1 # For identifiability issues
+#' # install.packages("clusterGeneration")
+#' # library("clusterGeneration")
+#' set.seed(1)
+#' truePhi1 <- matrix(rep(0, truer * truer), truer, truer)
+#' diag(truePhi1) <- diag(clusterGeneration::genPositiveDefMat(
+#'                        "unifcorrmat",
+#'                         dim = truer,
+#'                         rangeVar = c(1, 1.7))$Sigma)
+#' truePhi1[1, 1] <- 1 # for identifiability issuess
+#' truePhi2 <- matrix(rep(0,truer * truer), truer, truer)
+#' diag(truePhi2) <- diag(clusterGeneration::genPositiveDefMat(
+#'                        "unifcorrmat",
+#'                         dim = truer,
+#'                         rangeVar = c(0.7, 0.7))$Sigma)
+#' truePhi2[1, 1] <- 1 # for identifiability issues
 #' truePhiall <- rbind(truePhi1, truePhi2)
 #'
-#' # Omega is a p x p matrix
-#' # Covariance matrix containing variances and covariances between p responses
-#' trueOmega1 <- clusterGeneration::genPositiveDefMat("unifcorrmat", dim = truep,
-#'                                    rangeVar = c(1, 1.7))$Sigma
 #'
-#' trueOmega2 <- clusterGeneration::genPositiveDefMat("unifcorrmat", dim = truep,
-#'                                    rangeVar = c(0.7, 0.7))$Sigma
+#' # Omega is a p x p matrix
+#' set.seed(1)
+#' trueOmega1 <- matrix(rep(0, truep * truep), truep, truep)
+#' diag(trueOmega1) <- diag(clusterGeneration::genPositiveDefMat(
+#'                          "unifcorrmat",
+#'                           dim = truep,
+#'                           rangeVar = c(1, 1.7))$Sigma)
+#' trueOmega2 <- matrix(rep(0, truep * truep), truep, truep)
+#' diag(trueOmega2) <- diag(clusterGeneration::genPositiveDefMat(
+#'                          "unifcorrmat",
+#'                           dim = truep,
+#'                          mrangeVar = c(0.6, 0.9))$Sigma)
 #' trueOmegaAll <- rbind(trueOmega1, trueOmega2)
 #'
 #' # Generated simulated data
-#' sampleData <- mixMVPLN::mvplnDataGenerator(nOccasions = truer,
-#'                                            nResponses = truep,
-#'                                            nUnits = trueN,
-#'                                            mixingProportions = c(0.79, 0.21),
-#'                                            matrixMean = trueMall,
-#'                                            phi = truePhiall,
-#'                                            omega = trueOmegaAll)
+#' sampleData <- mixMVPLN::mvplnDataGenerator(
+#'                          nOccasions = truer,
+#'                          nResponses = truep,
+#'                          nUnits = trueN,
+#'                          mixingProportions = truePiG,
+#'                          matrixMean = trueMall,
+#'                          phi = truePhiall,
+#'                          omega = trueOmegaAll)
+#'
+#' sampleData <- mixMVPLN::mvplnDataGenerator(
+#'                          nOccasions = truer,
+#'                          nResponses = truep,
+#'                          nUnits = trueN,
+#'                          mixingProportions = c(0.79, 0.21),
+#'                          matrixMean = trueMall,
+#'                          phi = truePhiAll,
+#'                          omega = trueOmegaAll)
+#'
+#' # Example 2
+#' trueG <- 1 # 1 cluster
+#' truer <- 2 # variety
+#' truep <- 3 # growth stages
+#' truen <- 1000 # genes
+#' truePiG <- c(1) # mixing proportions for G = 1
+#'
+#' # Mu is a r x p matrix
+#' trueM1 <- matrix(c(6, 5.5, 6, 6, 5.5, 6),
+#'                  ncol = truep,
+#'                  nrow = truer,
+#'                  byrow = TRUE)
+#' trueMall <- rbind(trueM1)
+
+#' # Phi is a r x r matrix
+#' set.seed(1)
+#' truePhi1 <- clusterGeneration::genPositiveDefMat(
+#'                               "unifcorrmat",
+#'                               dim = truer,
+#'                               rangeVar = c(0.7, 1.7))$Sigma
+#' truePhi1[1, 1] <- 1 # for identifiability issues
+#' truePhiall <- rbind(truePhi1)
+#'
+#' # Omega is a p x p matrix
+#' set.seed(1)
+#' trueOmega1 <- genPositiveDefMat(
+#'                    "unifcorrmat",
+#'                     dim = truep,
+#'                     rangeVar = c(1, 1.7))$Sigma
+#' trueOmegaAll <- rbind(trueOmega1)
+#'
+#' # Generated simulated data
+#' set.seed(1)
+#' sampleData2 <- mixMVPLN::mvplnDataGenerator(
+#'                          nOccasions = truer,
+#'                          nResponses = truep,
+#'                          nUnits = trueN,
+#'                          mixingProportions = truePiG,
+#'                          matrixMean = trueMall,
+#'                          phi = truePhiall,
+#'                          omega = trueOmegaAll)
 #'
 #' @author {Anjali Silva, \email{anjali@alumni.uoguelph.ca}, Sanjeena Dang,
 #'          \email{sanjeenadang@cunet.carleton.ca}. }
@@ -321,7 +340,7 @@ mvplnDataGenerator <- function(nOccasions,
                   means = matrixMean,
                   phi = phi,
                   omega = omega,
-                  dataset2D = UnlistDataset)
+                  data2D = UnlistDataset)
   class(results) <- "mvplnDataGenerator"
   return(results)
 }
