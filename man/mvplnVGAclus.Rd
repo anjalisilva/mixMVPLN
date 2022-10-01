@@ -34,13 +34,17 @@ components to be considered in the clustering run.}
 "none", "kmeans", "random", "medoids", "clara", or "fanny".
 Default is "none".}
 
-\item{nInitIterations}{A positive integer or zero, specifying the number
-of initialization runs to be considered. Default is 0.}
+\item{nInitIterations}{A positive integer or zero, specifying the
+number of initialization runs to be considered. Default is 0.
+If the value is greater than 0, for each g in range gmin to
+gmax, this many initialization runs will be considered and run
+with max log likelihood value will be used for selecting
+initialization values.}
 
-\item{normalize}{A string with options "Yes" or "No" specifying
+\item{normalize}{A character string "Yes" or "No" specifying
 if normalization should be performed. Currently, normalization
 factors are calculated using TMM method of edgeR package.
-Default is "Yes".}
+Default is "Yes", for which normalization will be performed.}
 
 \item{nChains}{A positive integer specifying the number of Markov chains.
 Default is 3, the recommended minimum number.}
@@ -157,7 +161,7 @@ clusteringResults <- mixMVPLN::mvplnVGAclus(
                       gmin = 1,
                       gmax = 3,
                       initMethod = "kmeans",
-                      nInitIterations = 2,
+                      nInitIterations = 3,
                       normalize = "Yes")
 
 # Example 2

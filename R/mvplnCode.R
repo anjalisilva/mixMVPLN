@@ -1,32 +1,35 @@
 #' Clustering Using mixtures of MVPLN via MCMC-EM
 #'
-#' Performs clustering using mixtures of matrix variate Poisson-log normal
-#' (MVPLN) via MCMC-EM with parallelization. Model selection can be done
-#' using AIC, AIC3, BIC and ICL.
+#' Performs clustering using mixtures of matrix variate Poisson-log
+#' normal (MVPLN) via MCMC-EM with parallelization. Model selection
+#'  can be done using AIC, AIC3, BIC and ICL.
 #'
 #' @param dataset A list of length nUnits, containing Y_j matrices.
 #'    A matrix Y_j has size r x p, and the dataset will have 'j' such
 #'    matrices with j = 1,...,n. If a Y_j has all zeros, such Y_j will
 #'    be removed prior to cluster analysis.
-#' @param membership A numeric vector of size length(dataset) containing the
-#'    cluster membership of each Y_j matrix. If not available, leave as
-#'    "none".
-#' @param gmin A positive integer specifying the minimum number of components
-#'    to be considered in the clustering run.
-#' @param gmax A positive integer, >gmin, specifying the maximum number of
-#'    components to be considered in the clustering run.
-#' @param nChains A positive integer specifying the number of Markov chains.
-#'    Default is 3, the recommended minimum number.
-#' @param nIterations A positive integer specifying the number of iterations
-#'    for each MCMC chain (including warmup). The value should be greater than
-#'    40. The upper limit will depend on size of dataset.
-#' @param initMethod An algorithm for initialization. Current options are
-#'    "kmeans", "random", "medoids", "clara", or "fanny". Default is "kmeans".
-#' @param nInitIterations A positive integer or zero, specifying the number
-#'    of initialization runs to be considered. Default is 0.
+#' @param membership A numeric vector of size length(dataset) containing
+#'    the cluster membership of each Y_j matrix. If not available, leave
+#'    as "none".
+#' @param gmin A positive integer specifying the minimum number of
+#'   components to be considered in the clustering run.
+#' @param gmax A positive integer, >gmin, specifying the maximum number
+#'    of components to be considered in the clustering run.
+#' @param nChains A positive integer specifying the number of Markov
+#'    chains. Default is 3, the recommended minimum number.
+#' @param nIterations A positive integer specifying the number of
+#'    iterations for each MCMC chain (including warmup). The value
+#'    should be greater than 40. The upper limit will depend on size of
+#'    dataset.
+#' @param initMethod An algorithm for initialization. Current options
+#'    are "kmeans", "random", "medoids", "clara", or "fanny". Default
+#'    is "kmeans".
+#' @param nInitIterations A positive integer or zero, specifying the
+#'    number of initialization runs to be considered. Default is 0.
 #' @param normalize A string with options "Yes" or "No" specifying
-#'     if normalization should be performed. Currently, normalization factors
-#'     are calculated using TMM method of edgeR package. Default is "Yes".
+#'     if normalization should be performed. Currently, normalization
+#'     factors are calculated using TMM method of edgeR package. Default
+#'     is "Yes".
 #' @param numNodes A positive integer indicating the number of nodes to be
 #'     used from the local machine to run the clustering algorithm. Else
 #'     leave as NA, so default will be detected as
@@ -129,15 +132,16 @@
 #'
 #'
 #' # Clustering simulated matrix variate count data
-#' clusteringResults <- mixMVPLN::mvplnMCMCclus(dataset = sampleData$dataset,
-#'                                       membership = sampleData$truemembership,
-#'                                       gmin = 1,
-#'                                       gmax = 3,
-#'                                       nChains = 3,
-#'                                       nIterations = 300,
-#'                                       initMethod = "kmeans",
-#'                                       nInitIterations = 1,
-#'                                       normalize = "Yes")
+#' clusteringResults <- mixMVPLN::mvplnMCMCclus(
+#'                          dataset = sampleData$dataset,
+#'                          membership = sampleData$truemembership,
+#'                          gmin = 1,
+#'                          gmax = 3,
+#'                          nChains = 3,
+#'                          nIterations = 300,
+#'                          initMethod = "kmeans",
+#'                          nInitIterations = 1,
+#'                          normalize = "Yes")
 #'
 #'
 #' # Example 2
@@ -183,15 +187,16 @@
 #'                          omega = trueOmegaAll)
 #'
 #' # Clustering simulated matrix variate count data
-#' clusteringResults <- mixMVPLN::mvplnMCMCclus(dataset = sampleData2$dataset,
-#'                                       membership = sampleData2$truemembership,
-#'                                       gmin = 1,
-#'                                       gmax = 3,
-#'                                       nChains = 3,
-#'                                       nIterations = 300,
-#'                                       initMethod = "kmeans",
-#'                                       nInitIterations = 1,
-#'                                       normalize = "Yes")
+#' clusteringResults <- mixMVPLN::mvplnMCMCclus(
+#'                         dataset = sampleData2$dataset,
+#'                         membership = sampleData2$truemembership,
+#'                         gmin = 1,
+#'                         gmax = 3,
+#'                         nChains = 3,
+#'                         nIterations = 300,
+#'                         initMethod = "kmeans",
+#'                         nInitIterations = 1,
+#'                         normalize = "Yes")
 #' }
 #'
 #' @author {Anjali Silva, \email{anjali@alumni.uoguelph.ca}, Sanjeena Dang,
@@ -375,11 +380,11 @@ mvplnMCMCclus <- function(dataset,
 
   # Changing dataset into a n x rp dataset
   TwoDdataset <- matrix(NA, ncol = d, nrow = n)
-  sample_matrix <- matrix(c(1:d), nrow = r, byrow = TRUE)
+  sampleMatrix <- matrix(c(1:d), nrow = r, byrow = TRUE)
   for (u in 1:n) {
     for (e in 1:p) {
       for (s in 1:r) {
-        TwoDdataset[u, sample_matrix[s, e]] <- dataset[[u]][s, e]
+        TwoDdataset[u, sampleMatrix[s, e]] <- dataset[[u]][s, e]
       }
     }
   }
@@ -615,10 +620,10 @@ parameterEstimation <- function(r,
   Omega <- do.call("rbind", rep(list(diag(p)), G))
 
   # generating stan values
-  EThetaOmega <- E_theta_phi <- E_theta_phi2 <- list()
+  EThetaOmega <- EthetaPhi <- EthetaPhi2 <- list()
 
   # update parameters
-  theta_mat <- lapply(as.list(c(1:G)),
+  thetaMat <- lapply(as.list(c(1:G)),
                       function(g) lapply(as.list(c(1:n)),
                                          function(o) as.matrix(fit[[g]])[, c(o,sapply(c(1:n),
                                                                                       function(i) c(1:(d - 1)) * n + i)[, o]) ]) )
@@ -637,18 +642,18 @@ parameterEstimation <- function(r,
   M <- do.call(rbind,M)
 
   # updating phi
-  E_theta_phi <- lapply(as.list(c(1:G)), function(g) lapply(as.list(c(1:n)),
-                                                            function(i) lapply(as.list(c(1:nrow(theta_mat[[g]][[i]]))),
-                                                                               function(e) ((matrix(theta_mat[[g]][[i]][e,], r, p, byrow = T)) - M[((g - 1) * r + 1):(g * r), ]) %*% solve(Omega[((g - 1) * p + 1):(g*p), ]) %*% t((matrix(theta_mat[[g]][[i]][e, ], r, p, byrow = T)) - M[((g - 1) * r + 1):(g * r), ]) ) ) )
-  E_theta_phi2 <- lapply(as.list(c(1:G)), function(g) lapply(as.list(c(1:n)),
-                                                             function(i) z[i, g] * Reduce("+", E_theta_phi[[g]][[i]]) / ((0.5 * nIterations) * nChains) ) )
-  Phi <- lapply(as.list(c(1:G)), function(g) (Reduce("+", E_theta_phi2[[g]]) / (p * sum(z[, g]))))
+  EthetaPhi <- lapply(as.list(c(1:G)), function(g) lapply(as.list(c(1:n)),
+                                                            function(i) lapply(as.list(c(1:nrow(thetaMat[[g]][[i]]))),
+                                                                               function(e) ((matrix(thetaMat[[g]][[i]][e,], r, p, byrow = T)) - M[((g - 1) * r + 1):(g * r), ]) %*% solve(Omega[((g - 1) * p + 1):(g*p), ]) %*% t((matrix(thetaMat[[g]][[i]][e, ], r, p, byrow = T)) - M[((g - 1) * r + 1):(g * r), ]) ) ) )
+  EthetaPhi2 <- lapply(as.list(c(1:G)), function(g) lapply(as.list(c(1:n)),
+                                                             function(i) z[i, g] * Reduce("+", EthetaPhi[[g]][[i]]) / ((0.5 * nIterations) * nChains) ) )
+  Phi <- lapply(as.list(c(1:G)), function(g) (Reduce("+", EthetaPhi2[[g]]) / (p * sum(z[, g]))))
   Phi <- do.call(rbind, Phi)
 
   # updating omega
   EThetaOmega <- lapply(as.list(c(1:G)), function(g) lapply(as.list(c(1:n)),
-                                                              function(i) lapply(as.list(1:nrow(theta_mat[[g]][[i]])),
-                                                                                 function(e) t((matrix(theta_mat[[g]][[i]][e,], r, p, byrow = T)) - M[((g - 1) * r + 1):(g * r), ]) %*% solve(Phi[((g - 1) * r + 1):(g * r), ]) %*% ((matrix(theta_mat[[g]][[i]][e, ], r, p, byrow = T)) - M[((g - 1) * r + 1):(g * r), ]) ) ) )
+                                                              function(i) lapply(as.list(1:nrow(thetaMat[[g]][[i]])),
+                                                                                 function(e) t((matrix(thetaMat[[g]][[i]][e,], r, p, byrow = T)) - M[((g - 1) * r + 1):(g * r), ]) %*% solve(Phi[((g - 1) * r + 1):(g * r), ]) %*% ((matrix(thetaMat[[g]][[i]][e, ], r, p, byrow = T)) - M[((g - 1) * r + 1):(g * r), ]) ) ) )
   EThetaOmega2 <- lapply(as.list(c(1:G)) ,function(g) lapply(as.list(c(1:n)),
                                                                function(i)  z[i, g] * Reduce("+", EThetaOmega[[g]][[i]]) / ((0.5 * nIterations) * nChains) ) )
   Omega <- lapply(as.list(c(1:G)), function(g) Reduce("+", EThetaOmega2[[g]]) / (r * sum(z[, g]))  )
@@ -724,7 +729,7 @@ callingClustering <- function(n, r, p, d,
                               nInitIterations = NA,
                               normFactors,
                               model) {
-  ptm_inner <- proc.time()
+  ptmInner <- proc.time()
 
   for (gmodel in 1:(gmax - gmin + 1)) {
     if(length(1:(gmax - gmin + 1)) == gmax) {
@@ -769,10 +774,10 @@ callingClustering <- function(n, r, p, d,
     }
   }
 
-  finalInner <- proc.time() - ptm_inner
+  finalInner <- base::proc.time() - base::ptmInner
   RESULTS <- list(gmin = gmin,
                   gmax = gmax,
-                  initalization_method = initMethod,
+                  initalizationMethod = initMethod,
                   allresults = allruns,
                   totaltime = finalInner)
 
@@ -804,8 +809,9 @@ initializationRun <- function(r,
     set.seed(iterations)
 
     if (initMethod == "kmeans" | is.na(initMethod)) {
-      z[[iterations]] <- mclust::unmap(stats::kmeans(x = log(dataset + 1 / 3),
-                                                     centers = gmodel)$cluster)
+      z[[iterations]] <- mclust::unmap(
+                           stats::kmeans(x = log(dataset + 1 / 3),
+                           centers = gmodel)$cluster)
     } else if (initMethod == "random") {
       if(gmodel == 1) { # generating z if g=1
         z[[iterations]] <- as.matrix(rep.int(1, times = n),
@@ -815,23 +821,27 @@ initializationRun <- function(r,
         zConv = 0
         while(! zConv) { # ensure that dimension of z is same as G (i.e.
           # if one column contains all 0s, then generate z again)
-          z[[iterations]] <- t(stats::rmultinom(n = n,
-                                                size = 1,
-                                                prob = rep(1 / gmodel, gmodel)))
+          z[[iterations]] <- t(stats::rmultinom(
+                                           n = n,
+                                           size = 1,
+                                           prob = rep(1 / gmodel, gmodel)))
           if(length(which(colSums(z[[iterations]]) > 0)) == gmodel) {
             zConv <- 1
           }
         }
       }
     } else if (initMethod == "medoids") {
-      z[[iterations]] <- mclust::unmap(cluster::pam(x = log(dataset + 1 / 3),
-                                                    k = gmodel)$cluster)
+      z[[iterations]] <- mclust::unmap(cluster::pam(
+                                x = log(dataset + 1 / 3),
+                                k = gmodel)$cluster)
     } else if (initMethod == "clara") {
-      z[[iterations]] <- mclust::unmap(cluster::clara(x = log(dataset + 1 / 3),
-                                                      k = gmodel)$cluster)
+      z[[iterations]] <- mclust::unmap(cluster::clara(
+                                x = log(dataset + 1 / 3),
+                                k = gmodel)$cluster)
     } else if (initMethod == "fanny") {
-      z[[iterations]] <- mclust::unmap(cluster::fanny(x = log(dataset + 1 / 3),
-                                                      k = gmodel)$cluster)
+      z[[iterations]] <- mclust::unmap(cluster::fanny(
+                                x = log(dataset + 1 / 3),
+                                k = gmodel)$cluster)
     }
 
     init_runs[[iterations]] <- mvplnCluster(r = r,
@@ -849,7 +859,8 @@ initializationRun <- function(r,
       unlist(utils::tail((init_runs[[iterations]]$loglikelihood), n = 1))
   }
 
-  initialization <- init_runs[[which(logLInit == max(logLInit, na.rm = TRUE))[1]]]
+  initialization <- init_runs[[which(logLInit ==
+                                       max(logLInit, na.rm = TRUE))[1]]]
 
   return(initialization)
   # Developed by Anjali Silva
@@ -869,7 +880,8 @@ mvplnCluster <- function(r, p, z,
   n <- nrow(dataset)
 
   PhiAllOuter <- OmegaAllOuter <- MAllOuter <- SigmaAllOuter <- list()
-  medianMuOuter <- medianSigmaOuter <- medianPhiOuter <- medianOmegaOuter <- list()
+  medianMuOuter <- medianSigmaOuter <- medianPhiOuter <-
+                                            medianOmegaOuter <- list()
   convOuter <- 0
   itOuter <- 2
   obs <- PI <- logL <- normMuOuter <- normSigmaOuter <- vector()
@@ -948,8 +960,8 @@ mvplnCluster <- function(r, p, z,
     # plot(logL[-1], xlab="iteration", ylab=paste("Initialization logL value for",G) )
 
 
-    threshold_outer <- 12
-    if(itOuter > (threshold_outer + 1)) {
+    thresholdOuter <- 12
+    if(itOuter > (thresholdOuter + 1)) {
 
       if (all(coda::heidel.diag(logL[- 1], eps = 0.1, pvalue = 0.05)[, c(1, 4)] == 1) || itOuter > 50) {
         programclust <- vector()

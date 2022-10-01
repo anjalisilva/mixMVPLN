@@ -23,32 +23,35 @@ A matrix Y_j has size r x p, and the dataset will have 'j' such
 matrices with j = 1,...,n. If a Y_j has all zeros, such Y_j will
 be removed prior to cluster analysis.}
 
-\item{membership}{A numeric vector of size length(dataset) containing the
-cluster membership of each Y_j matrix. If not available, leave as
-"none".}
+\item{membership}{A numeric vector of size length(dataset) containing
+the cluster membership of each Y_j matrix. If not available, leave
+as "none".}
 
-\item{gmin}{A positive integer specifying the minimum number of components
-to be considered in the clustering run.}
-
-\item{gmax}{A positive integer, >gmin, specifying the maximum number of
+\item{gmin}{A positive integer specifying the minimum number of
 components to be considered in the clustering run.}
 
-\item{nChains}{A positive integer specifying the number of Markov chains.
-Default is 3, the recommended minimum number.}
+\item{gmax}{A positive integer, >gmin, specifying the maximum number
+of components to be considered in the clustering run.}
 
-\item{nIterations}{A positive integer specifying the number of iterations
-for each MCMC chain (including warmup). The value should be greater than
-40. The upper limit will depend on size of dataset.}
+\item{nChains}{A positive integer specifying the number of Markov
+chains. Default is 3, the recommended minimum number.}
 
-\item{initMethod}{An algorithm for initialization. Current options are
-"kmeans", "random", "medoids", "clara", or "fanny". Default is "kmeans".}
+\item{nIterations}{A positive integer specifying the number of
+iterations for each MCMC chain (including warmup). The value
+should be greater than 40. The upper limit will depend on size of
+dataset.}
 
-\item{nInitIterations}{A positive integer or zero, specifying the number
-of initialization runs to be considered. Default is 0.}
+\item{initMethod}{An algorithm for initialization. Current options
+are "kmeans", "random", "medoids", "clara", or "fanny". Default
+is "kmeans".}
+
+\item{nInitIterations}{A positive integer or zero, specifying the
+number of initialization runs to be considered. Default is 0.}
 
 \item{normalize}{A string with options "Yes" or "No" specifying
-if normalization should be performed. Currently, normalization factors
-are calculated using TMM method of edgeR package. Default is "Yes".}
+if normalization should be performed. Currently, normalization
+factors are calculated using TMM method of edgeR package. Default
+is "Yes".}
 
 \item{numNodes}{A positive integer indicating the number of nodes to be
 used from the local machine to run the clustering algorithm. Else
@@ -83,9 +86,9 @@ Returns an S3 object of class mvplnParallel with results.
 }
 }
 \description{
-Performs clustering using mixtures of matrix variate Poisson-log normal
-(MVPLN) via MCMC-EM with parallelization. Model selection can be done
-using AIC, AIC3, BIC and ICL.
+Performs clustering using mixtures of matrix variate Poisson-log
+normal (MVPLN) via MCMC-EM with parallelization. Model selection
+ can be done using AIC, AIC3, BIC and ICL.
 }
 \examples{
 \dontrun{
@@ -158,15 +161,16 @@ sampleData <- mixMVPLN::mvplnDataGenerator(
 
 
 # Clustering simulated matrix variate count data
-clusteringResults <- mixMVPLN::mvplnMCMCclus(dataset = sampleData$dataset,
-                                      membership = sampleData$truemembership,
-                                      gmin = 1,
-                                      gmax = 3,
-                                      nChains = 3,
-                                      nIterations = 300,
-                                      initMethod = "kmeans",
-                                      nInitIterations = 1,
-                                      normalize = "Yes")
+clusteringResults <- mixMVPLN::mvplnMCMCclus(
+                         dataset = sampleData$dataset,
+                         membership = sampleData$truemembership,
+                         gmin = 1,
+                         gmax = 3,
+                         nChains = 3,
+                         nIterations = 300,
+                         initMethod = "kmeans",
+                         nInitIterations = 1,
+                         normalize = "Yes")
 
 
 # Example 2
@@ -211,15 +215,16 @@ sampleData2 <- mixMVPLN::mvplnDataGenerator(
                          omega = trueOmegaAll)
 
 # Clustering simulated matrix variate count data
-clusteringResults <- mixMVPLN::mvplnMCMCclus(dataset = sampleData2$dataset,
-                                      membership = sampleData2$truemembership,
-                                      gmin = 1,
-                                      gmax = 3,
-                                      nChains = 3,
-                                      nIterations = 300,
-                                      initMethod = "kmeans",
-                                      nInitIterations = 1,
-                                      normalize = "Yes")
+clusteringResults <- mixMVPLN::mvplnMCMCclus(
+                        dataset = sampleData2$dataset,
+                        membership = sampleData2$truemembership,
+                        gmin = 1,
+                        gmax = 3,
+                        nChains = 3,
+                        nIterations = 300,
+                        initMethod = "kmeans",
+                        nInitIterations = 1,
+                        normalize = "Yes")
 }
 
 }
