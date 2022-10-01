@@ -51,6 +51,7 @@
 #'}
 #'
 #' @examples
+#' # Example 1
 #' # Generating simulated data
 #' set.seed(1234)
 #' trueG <- 2 # number of total G
@@ -97,6 +98,61 @@
 #'                                            mixingProportions = c(0.79, 0.21),
 #'                                            matrixMean = trueMall,
 #'                                            phi = truePhiAll,
+#'                                            omega = trueOmegaAll)
+#'
+#'
+#' # Example 2
+#' set.seed(1234)
+#' trueG <- 2 # number of total G
+#' truer <- 2 # number of total occasions
+#' truep <- 3 # number of total responses
+#' trueN <- 100 # number of total units
+#'
+#' # Mu is a r x p matrix
+#' trueM1 <- matrix(rep(6, (truer * truep)),
+#'                  ncol = truep,
+#'                  nrow = truer,
+#'                  byrow = TRUE)
+#'
+#' trueM2 <- matrix(rep(1, (truer * truep)),
+#'                  ncol = truep,
+#'                  nrow = truer,
+#'                  byrow = TRUE)
+#'
+#' trueMall <- rbind(trueM1, trueM2)
+#'
+#' # Phi is a r x r matrix
+#' # Loading needed packages for generating data
+#' if (!require(clusterGeneration)) install.packages("clusterGeneration")
+#'
+#' # Covariance matrix containing variances and covariances between r occasions
+#' truePhi1 <- clusterGeneration::genPositiveDefMat("unifcorrmat",
+#'                                                   dim = truer,
+#'                                                   rangeVar = c(1, 1.7))$Sigma
+#' truePhi1[1, 1] <- 1 # For identifiability issues
+#'
+#' truePhi2 <- clusterGeneration::genPositiveDefMat("unifcorrmat",
+#'                                                   dim = truer,
+#'                                                   rangeVar = c(0.7, 0.7))$Sigma
+#' truePhi2[1, 1] <- 1 # For identifiability issues
+#' truePhiall <- rbind(truePhi1, truePhi2)
+#'
+#' # Omega is a p x p matrix
+#' # Covariance matrix containing variances and covariances between p responses
+#' trueOmega1 <- clusterGeneration::genPositiveDefMat("unifcorrmat", dim = truep,
+#'                                    rangeVar = c(1, 1.7))$Sigma
+#'
+#' trueOmega2 <- clusterGeneration::genPositiveDefMat("unifcorrmat", dim = truep,
+#'                                    rangeVar = c(0.7, 0.7))$Sigma
+#' trueOmegaAll <- rbind(trueOmega1, trueOmega2)
+#'
+#' # Generated simulated data
+#' sampleData <- mixMVPLN::mvplnDataGenerator(nOccasions = truer,
+#'                                            nResponses = truep,
+#'                                            nUnits = trueN,
+#'                                            mixingProportions = c(0.79, 0.21),
+#'                                            matrixMean = trueMall,
+#'                                            phi = truePhiall,
 #'                                            omega = trueOmegaAll)
 #'
 #' @author {Anjali Silva, \email{anjali@alumni.uoguelph.ca}, Sanjeena Dang,
@@ -190,19 +246,20 @@ mvplnDataGenerator <- function(nOccasions,
     stop("omega argument should be a matrix of size p x p for each component/cluster.")
   }
 
+
   # Begin calculations - generate z
   z <- t(stats::rmultinom(n = nUnits, size = 1, prob = mixingProportions))
 
   # For saving data
   Y <- Y2 <- normFactors <- list()
-  theta <- n_g <- vector("list", length = length(mixingProportions))
+  theta <- nG <- vector("list", length = length(mixingProportions))
 
   # Generating theta
   for (g in 1:length(mixingProportions)) {
-    n_g[[g]] <- which(z[, g] == 1)
-    for (u in 1:length(n_g[[g]]) ) {
+    nG[[g]] <- which(z[, g] == 1)
+    for (u in 1:length(nG[[g]]) ) {
       # generating V
-      theta[[n_g[[g]][u]]] <- matrix(mvtnorm::rmvnorm(n = 1,
+      theta[[nG[[g]][u]]] <- matrix(mvtnorm::rmvnorm(n = 1,
                                                       sigma = kronecker(phi[((g - 1) * nOccasions + 1):(g * nOccasions), ],
                                                                         omega[((g - 1) * nResponses + 1):(g * nResponses), ]) ),
                                      nrow = nOccasions,
@@ -210,7 +267,8 @@ mvplnDataGenerator <- function(nOccasions,
                                      byrow = TRUE)
 
       # Adding M1
-      theta[[n_g[[g]][u]]] <-  theta[[n_g[[g]][u]]] + matrixMean[((g - 1) * nOccasions + 1):(g * nOccasions), ]
+      theta[[nG[[g]][u]]] <-  theta[[nG[[g]][u]]] +
+                              matrixMean[((g - 1) * nOccasions + 1):(g * nOccasions), ]
     }
   }
 
@@ -225,7 +283,9 @@ mvplnDataGenerator <- function(nOccasions,
   }
 
   # Unlist to generate 2D dataset for norm factor generation
-  UnlistDataset <- matrix(NA, ncol = nOccasions * nResponses, nrow = nUnits)
+  UnlistDataset <- matrix(NA,
+                          ncol = nOccasions * nResponses,
+                          nrow = nUnits)
   for (u in 1:nUnits) {
     for (i in 1:nOccasions) {
       UnlistDataset[u, ((i - 1) * nResponses + 1):(i *  nResponses)] = Y[[u]][i, ]
@@ -234,16 +294,20 @@ mvplnDataGenerator <- function(nOccasions,
 
 
   # Generate norm factors
-  normFactors <- matrix(log(as.vector(edgeR::calcNormFactors(as.matrix(UnlistDataset), method = "TMM"))),
+  normFactors <- matrix(log(as.vector(edgeR::calcNormFactors(as.matrix(UnlistDataset),
+                        method = "TMM"))),
                         nrow = nOccasions,
                         ncol = nResponses,
-                        byrow = TRUE) # added one because if the entire column is zero, this gives an error
+                        byrow = TRUE) # added one because if the entire
+                                      # column is zero, this gives an error
 
   # Add norm factors and generate final counts
   for (j in 1:nUnits) {
     for (i in 1:nOccasions) {
       for (k in 1:nResponses) {
-        Y2[[j]][i, k] <- stats::rpois(n = 1, lambda = exp(theta[[j]][i, k] + normFactors[i, k]))
+        Y2[[j]][i, k] <- stats::rpois(n = 1,
+                                      lambda = exp(theta[[j]][i, k] +
+                                      normFactors[i, k]))
       }
     }
   }
@@ -256,7 +320,8 @@ mvplnDataGenerator <- function(nOccasions,
                   mixingProportions = mixingProportions,
                   means = matrixMean,
                   phi = phi,
-                  psi = omega)
+                  omega = omega,
+                  dataset2D = UnlistDataset)
   class(results) <- "mvplnDataGenerator"
   return(results)
 }

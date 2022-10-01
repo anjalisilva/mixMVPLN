@@ -74,6 +74,7 @@ dimension r x p, where 'r' is the number of occasions and 'p' is
 the number of responses/variables.
 }
 \examples{
+# Example 1
 # Generating simulated data
 set.seed(1234)
 trueG <- 2 # number of total G
@@ -119,6 +120,61 @@ sampleData <- mixMVPLN::mvplnDataGenerator(nOccasions = truer,
                                            mixingProportions = c(0.79, 0.21),
                                            matrixMean = trueMall,
                                            phi = truePhiAll,
+                                           omega = trueOmegaAll)
+
+
+# Example 2
+set.seed(1234)
+trueG <- 2 # number of total G
+truer <- 2 # number of total occasions
+truep <- 3 # number of total responses
+trueN <- 100 # number of total units
+
+# Mu is a r x p matrix
+trueM1 <- matrix(rep(6, (truer * truep)),
+                 ncol = truep,
+                 nrow = truer,
+                 byrow = TRUE)
+
+trueM2 <- matrix(rep(1, (truer * truep)),
+                 ncol = truep,
+                 nrow = truer,
+                 byrow = TRUE)
+
+trueMall <- rbind(trueM1, trueM2)
+
+# Phi is a r x r matrix
+# Loading needed packages for generating data
+if (!require(clusterGeneration)) install.packages("clusterGeneration")
+
+# Covariance matrix containing variances and covariances between r occasions
+truePhi1 <- clusterGeneration::genPositiveDefMat("unifcorrmat",
+                                                  dim = truer,
+                                                  rangeVar = c(1, 1.7))$Sigma
+truePhi1[1, 1] <- 1 # For identifiability issues
+
+truePhi2 <- clusterGeneration::genPositiveDefMat("unifcorrmat",
+                                                  dim = truer,
+                                                  rangeVar = c(0.7, 0.7))$Sigma
+truePhi2[1, 1] <- 1 # For identifiability issues
+truePhiall <- rbind(truePhi1, truePhi2)
+
+# Omega is a p x p matrix
+# Covariance matrix containing variances and covariances between p responses
+trueOmega1 <- clusterGeneration::genPositiveDefMat("unifcorrmat", dim = truep,
+                                   rangeVar = c(1, 1.7))$Sigma
+
+trueOmega2 <- clusterGeneration::genPositiveDefMat("unifcorrmat", dim = truep,
+                                   rangeVar = c(0.7, 0.7))$Sigma
+trueOmegaAll <- rbind(trueOmega1, trueOmega2)
+
+# Generated simulated data
+sampleData <- mixMVPLN::mvplnDataGenerator(nOccasions = truer,
+                                           nResponses = truep,
+                                           nUnits = trueN,
+                                           mixingProportions = c(0.79, 0.21),
+                                           matrixMean = trueMall,
+                                           phi = truePhiall,
                                            omega = trueOmegaAll)
 
 }
