@@ -89,19 +89,22 @@ using AIC, AIC3, BIC and ICL.
 }
 \examples{
 \dontrun{
+# Example 1
 # Generating simulated matrix variate count data
 set.seed(1234)
 trueG <- 2 # number of total G
 truer <- 2 # number of total occasions
 truep <- 3 # number of total responses
 trueN <- 100 # number of total units
+truePiG <- c(0.6, 0.4) # mixing proportions for G=2
 
 # Mu is a r x p matrix
-trueM1 <- matrix(rep(6, (truer * truep)),
+trueM1 <- matrix(rep(6.2, (truer * truep)),
                  ncol = truep,
-                 nrow = truer, byrow = TRUE)
+                 nrow = truer,
+                 byrow = TRUE)
 
-trueM2 <- matrix(rep(1, (truer * truep)),
+trueM2 <- matrix(rep(1.5, (truer * truep)),
                  ncol = truep,
                  nrow = truer,
                  byrow = TRUE)
@@ -110,41 +113,106 @@ trueMall <- rbind(trueM1, trueM2)
 
 # Phi is a r x r matrix
 # Loading needed packages for generating data
-if (!require(clusterGeneration)) install.packages("clusterGeneration")
+# install.packages("clusterGeneration")
+# library("clusterGeneration")
 
-# Covariance matrix containing variances and covariances between r occasions
-truePhi1 <- clusterGeneration::genPositiveDefMat("unifcorrmat",
-                                                  dim = truer,
-                                                  rangeVar = c(1, 1.7))$Sigma
-truePhi1[1, 1] <- 1 # For identifiability issues
-
-truePhi2 <- clusterGeneration::genPositiveDefMat("unifcorrmat",
-                                                  dim = truer,
-                                                  rangeVar = c(0.7, 0.7))$Sigma
-truePhi2[1, 1] <- 1 # For identifiability issues
+set.seed(1)
+truePhi1 <- matrix(rep(0, truer * truer), truer, truer)
+diag(truePhi1) <- diag(clusterGeneration::genPositiveDefMat(
+                       "unifcorrmat",
+                        dim = truer,
+                        rangeVar = c(1, 1.7))$Sigma)
+truePhi1[1, 1] <- 1 # for identifiability issuess
+truePhi2 <- matrix(rep(0,truer * truer), truer, truer)
+diag(truePhi2) <- diag(clusterGeneration::genPositiveDefMat(
+                       "unifcorrmat",
+                        dim = truer,
+                        rangeVar = c(0.7, 0.7))$Sigma)
+truePhi2[1, 1] <- 1 # for identifiability issues
 truePhiall <- rbind(truePhi1, truePhi2)
 
-# Omega is a p x p matrix
-# Covariance matrix containing variances and covariances between p responses
-trueOmega1 <- clusterGeneration::genPositiveDefMat("unifcorrmat", dim = truep,
-                                   rangeVar = c(1, 1.7))$Sigma
 
-trueOmega2 <- clusterGeneration::genPositiveDefMat("unifcorrmat", dim = truep,
-                                   rangeVar = c(0.7, 0.7))$Sigma
+# Omega is a p x p matrix
+set.seed(1)
+trueOmega1 <- matrix(rep(0, truep * truep), truep, truep)
+diag(trueOmega1) <- diag(clusterGeneration::genPositiveDefMat(
+                         "unifcorrmat",
+                          dim = truep,
+                          rangeVar = c(1, 1.7))$Sigma)
+trueOmega2 <- matrix(rep(0, truep * truep), truep, truep)
+diag(trueOmega2) <- diag(clusterGeneration::genPositiveDefMat(
+                         "unifcorrmat",
+                          dim = truep,
+                         mrangeVar = c(0.6, 0.9))$Sigma)
 trueOmegaAll <- rbind(trueOmega1, trueOmega2)
 
 # Generated simulated data
-sampleData <- mixMVPLN::mvplnDataGenerator(nOccasions = truer,
-                                           nResponses = truep,
-                                           nUnits = trueN,
-                                           mixingProportions = c(0.79, 0.21),
-                                           matrixMean = trueMall,
-                                           phi = truePhiall,
-                                           omega = trueOmegaAll)
+sampleData <- mixMVPLN::mvplnDataGenerator(
+                         nOccasions = truer,
+                         nResponses = truep,
+                         nUnits = trueN,
+                         mixingProportions = truePiG,
+                         matrixMean = trueMall,
+                         phi = truePhiall,
+                         omega = trueOmegaAll)
+
 
 # Clustering simulated matrix variate count data
 clusteringResults <- mixMVPLN::mvplnMCMCclus(dataset = sampleData$dataset,
                                       membership = sampleData$truemembership,
+                                      gmin = 1,
+                                      gmax = 3,
+                                      nChains = 3,
+                                      nIterations = 300,
+                                      initMethod = "kmeans",
+                                      nInitIterations = 1,
+                                      normalize = "Yes")
+
+
+# Example 2
+trueG <- 1 # 1 cluster
+truer <- 2 # variety
+truep <- 3 # growth stages
+truen <- 100 # genes
+truePiG <- c(1) # mixing proportions for G = 1
+
+# Mu is a r x p matrix
+trueM1 <- matrix(c(6, 5.5, 6, 6, 5.5, 6),
+                 ncol = truep,
+                 nrow = truer,
+                 byrow = TRUE)
+trueMall <- rbind(trueM1)
+# Phi is a r x r matrix
+set.seed(1)
+truePhi1 <- clusterGeneration::genPositiveDefMat(
+                              "unifcorrmat",
+                              dim = truer,
+                              rangeVar = c(0.7, 1.7))$Sigma
+truePhi1[1, 1] <- 1 # for identifiability issues
+truePhiall <- rbind(truePhi1)
+
+# Omega is a p x p matrix
+set.seed(1)
+trueOmega1 <- genPositiveDefMat(
+                   "unifcorrmat",
+                    dim = truep,
+                    rangeVar = c(1, 1.7))$Sigma
+trueOmegaAll <- rbind(trueOmega1)
+
+# Generated simulated data
+set.seed(1)
+sampleData2 <- mixMVPLN::mvplnDataGenerator(
+                         nOccasions = truer,
+                         nResponses = truep,
+                         nUnits = trueN,
+                         mixingProportions = truePiG,
+                         matrixMean = trueMall,
+                         phi = truePhiall,
+                         omega = trueOmegaAll)
+
+# Clustering simulated matrix variate count data
+clusteringResults <- mixMVPLN::mvplnMCMCclus(dataset = sampleData2$dataset,
+                                      membership = sampleData2$truemembership,
                                       gmin = 1,
                                       gmax = 3,
                                       nChains = 3,

@@ -139,7 +139,7 @@
 #' trueG <- 1 # 1 cluster
 #' truer <- 2 # variety
 #' truep <- 3 # growth stages
-#' truen <- 1000 # genes
+#' trueN <- 1000 # genes
 #' truePiG <- c(1) # mixing proportions for G = 1
 #'
 #' # Mu is a r x p matrix
@@ -425,35 +425,45 @@ mvplnVGAclus <- function(dataset,
     } else {
 
     # Initialize based on specified initMethod method
-     outputInitialization <- initializationRun(G,
-                        dataset,
-                        TwoDdataset,
-                        r, p, d, N,
-                        normFactors,
-                        nInitIterations,
-                        initMethod)
+    outputInitialization <- list()
+    checklogL <- vector()
+    for (initIt in 1:nInitIterations) {
+       set.seed(initIt)
+       outputInitialization[[initIt]] <- initializationRun(
+                                                G,
+                                                dataset,
+                                                TwoDdataset,
+                                                r, p, d, N,
+                                                normFactors,
+                                                nInitIterations,
+                                                initMethod)
+       checklogL[initIt] <- outputInitialization[[initIt]]$finalLogLik
+    }
 
-     mu <- outputInitialization$mu
-     omega <- outputInitialization$omega
-     phi <- outputInitialization$phi
-     delta <- outputInitialization$delta
-     kappa <- outputInitialization$kappa
-     sigma <- outputInitialization$sigma
-     isigma <- outputInitialization$isigma
-     iphi <- outputInitialization$iphi
-     iomega <- outputInitialization$iomega
-     m <- outputInitialization$m
-     S <- outputInitialization$S
-     Sk <- outputInitialization$Sk
-     start <- outputInitialization$start
-     GX <- outputInitialization$GX
-     dGX <- outputInitialization$dGX
-     zS <- outputInitialization$zS
-     iKappa <- outputInitialization$iKappa
-     iDelta <- outputInitialization$iDelta
-     startList <- outputInitialization$startList
-     zValue <- outputInitialization$zValue
-     piG <- outputInitialization$piG
+    # select init run with highest logL
+    maxRun <- which.max(checklogL)
+
+    mu <- outputInitialization[[maxRun]]$mu
+    omega <- outputInitialization[[maxRun]]$omega
+    phi <- outputInitialization[[maxRun]]$phi
+    delta <- outputInitialization[[maxRun]]$delta
+    kappa <- outputInitialization[[maxRun]]$kappa
+    sigma <- outputInitialization[[maxRun]]$sigma
+    isigma <- outputInitialization[[maxRun]]$isigma
+    iphi <- outputInitialization[[maxRun]]$iphi
+    iomega <- outputInitialization[[maxRun]]$iomega
+    m <- outputInitialization[[maxRun]]$m
+    S <- outputInitialization[[maxRun]]$S
+    Sk <- outputInitialization[[maxRun]]$Sk
+    start <- outputInitialization[[maxRun]]$start
+    GX <- outputInitialization[[maxRun]]$GX
+    dGX <- outputInitialization[[maxRun]]$dGX
+    zS <- outputInitialization[[maxRun]]$zS
+    iKappa <- outputInitialization[[maxRun]]$iKappa
+    iDelta <- outputInitialization[[maxRun]]$iDelta
+    startList <- outputInitialization[[maxRun]]$startList
+    zValue <- outputInitialization[[maxRun]]$zValue
+    piG <- outputInitialization[[maxRun]]$piG
   }
 
     # start clustering after initialization
@@ -932,7 +942,7 @@ initializationRun <- function(G,
       }
 
       it <- it + 1
-      if (it == nInitIterations) {
+      if (it == itMax) {
         checks <- 1
       }
       finalPhi <- finalOmega <- list()
@@ -942,7 +952,7 @@ initializationRun <- function(G,
       }
     }
 
-    programclust <- map(zValue)
+    programclust <- mclust::map(zValue)
 
     initRunOutput <- list(mu = mu,
                           sigma = sigma,
@@ -966,6 +976,7 @@ initializationRun <- function(G,
                           startList = startList,
                           zValue = zValue,
                           loglik = loglik,
+                          finalLogLik = loglik[it-1],
                           piG = piG,
                           clusterlabels = programclust,
                           iterations = it)

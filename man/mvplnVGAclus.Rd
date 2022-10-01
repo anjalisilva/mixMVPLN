@@ -164,7 +164,7 @@ clusteringResults <- mixMVPLN::mvplnVGAclus(
 trueG <- 1 # 1 cluster
 truer <- 2 # variety
 truep <- 3 # growth stages
-truen <- 1000 # genes
+trueN <- 1000 # genes
 truePiG <- c(1) # mixing proportions for G = 1
 
 # Mu is a r x p matrix
