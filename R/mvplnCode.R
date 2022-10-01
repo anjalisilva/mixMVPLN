@@ -1,20 +1,21 @@
 #' Clustering Using mixtures of MVPLN via MCMC-EM
 #'
 #' Performs clustering using mixtures of matrix variate Poisson-log
-#' normal (MVPLN) via MCMC-EM with parallelization. Model selection
-#'  can be done using AIC, AIC3, BIC and ICL.
+#' normal (MVPLN) via Markov chain Monte Carlo expectation-maximization
+#' (MCMC-EM) algorithm with an option for parallelization. Model
+#' selection can be done using AIC, AIC3, BIC and ICL.
 #'
-#' @param dataset A list of length nUnits, containing Y_j matrices.
-#'    A matrix Y_j has size r x p, and the dataset will have 'j' such
-#'    matrices with j = 1,...,n. If a Y_j has all zeros, such Y_j will
+#' @param dataset A list of length nUnits, containing Yj matrices.
+#'    A matrix Yj has size r x p, and the dataset will have 'j' such
+#'    matrices with j = 1,...,n. If a Yj has all zeros, such Yj will
 #'    be removed prior to cluster analysis.
 #' @param membership A numeric vector of size length(dataset) containing
-#'    the cluster membership of each Y_j matrix. If not available, leave
+#'    the cluster membership of each Yj matrix. If not available, leave
 #'    as "none".
 #' @param gmin A positive integer specifying the minimum number of
 #'   components to be considered in the clustering run.
-#' @param gmax A positive integer, >gmin, specifying the maximum number
-#'    of components to be considered in the clustering run.
+#' @param gmax A positive integer, greater than gmin, specifying  number
+#'    the maximum of components to be considered in the clustering run.
 #' @param nChains A positive integer specifying the number of Markov
 #'    chains. Default is 3, the recommended minimum number.
 #' @param nIterations A positive integer specifying the number of
@@ -30,9 +31,10 @@
 #'     if normalization should be performed. Currently, normalization
 #'     factors are calculated using TMM method of edgeR package. Default
 #'     is "Yes".
-#' @param numNodes A positive integer indicating the number of nodes to be
-#'     used from the local machine to run the clustering algorithm. Else
-#'     leave as NA, so default will be detected as
+#' @param numNodes A positive integer, equal to or greater than 1,
+#'     indicating the number of nodes to be used from the local
+#'     machine to run the clustering algorithm. Else leave as NA, so
+#'     default will be detected as
 #'     parallel::makeCluster(parallel::detectCores() - 1).
 #'
 #' @return Returns an S3 object of class mvplnParallel with results.
@@ -255,7 +257,7 @@ mvplnMCMCclus <- function(dataset,
                             nChains = 3,
                             nIterations = NA,
                             initMethod = "kmeans",
-                            nInitIterations = 2,
+                            nInitIterations = 0,
                             normalize = "Yes",
                             numNodes = NA) {
 
