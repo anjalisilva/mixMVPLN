@@ -566,8 +566,11 @@ mvplnVGAclus <- function(dataset,
       }
 
       if (it > 5) {
-        #Aitkaine's stopping criterion
-        cat("\n At it:", it ,"loglik[it - 1]:", loglik[it - 1], "- loglik[it - 2]:", loglik[it - 2], "is", loglik[it - 1] - loglik[it - 2], "\n")
+        # Aitkaine's stopping criterion
+        # Print for check; commented out
+        # cat("\n At it:", it ,"loglik[it - 1]:",
+        # loglik[it - 1], "- loglik[it - 2]:", loglik[it - 2],
+        # "is", loglik[it - 1] - loglik[it - 2], "\n")
         if ((loglik[it - 1] - loglik[it - 2]) == 0) checks <- 1 else {
           a <- (loglik[it] - loglik[it - 1]) / (loglik[it - 1] - loglik[it - 2])
           addTo <- (1 / (1 - a) * (loglik[it] - loglik[it - 1]))

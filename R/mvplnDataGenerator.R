@@ -133,10 +133,10 @@
 #'                          omega = trueOmegaAll)
 #'
 #' # Example 2
-#' trueG <- 1 # 1 cluster
-#' truer <- 2 # variety
-#' truep <- 3 # growth stages
-#' truen <- 1000 # genes
+#' trueG <- 1 # number of total G
+#' truer <- 2 # number of total occasions
+#' truep <- 3 # number of total responses
+#' truen <- 1000 # number of total units
 #' truePiG <- c(1) # mixing proportions for G = 1
 #'
 #' # Mu is a r x p matrix
