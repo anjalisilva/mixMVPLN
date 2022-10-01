@@ -132,7 +132,7 @@
 #'                       gmin = 1,
 #'                       gmax = 3,
 #'                       initMethod = "kmeans",
-#'                       nInitIterations = 2,
+#'                       nInitIterations = 3,
 #'                       normalize = "Yes")
 #'
 #' # Example 2
@@ -427,7 +427,7 @@ mvplnVGAclus <- function(dataset,
     # Initialize based on specified initMethod method
     outputInitialization <- list()
     checklogL <- vector()
-    for (initIt in 1:nInitIterations) {
+    for (initIt in seq_along(1:nInitIterations)) {
        set.seed(initIt)
        outputInitialization[[initIt]] <- initializationRun(
                                                 G,
@@ -435,7 +435,6 @@ mvplnVGAclus <- function(dataset,
                                                 TwoDdataset,
                                                 r, p, d, N,
                                                 normFactors,
-                                                nInitIterations,
                                                 initMethod)
        checklogL[initIt] <- outputInitialization[[initIt]]$finalLogLik
     }
@@ -725,7 +724,6 @@ initializationRun <- function(G,
                               TwoDdataset,
                               r, p, d, N,
                               normFactors,
-                              nInitIterations,
                               initMethod) {
 
     # arranging normalization factors
