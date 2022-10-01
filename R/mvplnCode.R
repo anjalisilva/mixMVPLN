@@ -207,11 +207,18 @@ mvplnMCMCclus <- function(dataset,
       cluster membership. Otherwise, leave as 'none'.")
   }
 
-  if(all(membership != "none") &&
-     all((diff(sort(unique(membership))) == 1) != TRUE) ) {
-    stop("Cluster memberships in the membership vector
-      are missing a cluster, e.g. 1, 3, 4, 5, 6 is missing cluster 2.")
+
+  # Checking if missing membership values
+  # First check for the case in which G = 1, otherwise check
+  #   if missing cluster memberships
+  if(all(membership != "none") && length(unique(membership)) != 1) {
+    if(all(membership != "none") &&
+       all((diff(sort(unique(membership))) == 1) != TRUE) ) {
+      stop("Cluster memberships in the membership vector
+        are missing a cluster, e.g. 1, 3, 4, 5, 6 is missing cluster 2.")
+    }
   }
+
 
   if(all(membership != "none") && length(membership) != length(dataset)) {
     stop("membership should be a numeric vector, where length(membership)
