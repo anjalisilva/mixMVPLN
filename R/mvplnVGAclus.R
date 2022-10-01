@@ -23,12 +23,16 @@
 #' @param initMethod A method for initialization. Current options are
 #'    "none", "kmeans", "random", "medoids", "clara", or "fanny".
 #'    Default is "none".
-#' @param nInitIterations A positive integer or zero, specifying the number
-#'    of initialization runs to be considered. Default is 0.
-#' @param normalize A string with options "Yes" or "No" specifying
+#' @param nInitIterations A positive integer or zero, specifying the
+#'    number of initialization runs to be considered. Default is 0.
+#'    If the value is greater than 0, for each g in range gmin to
+#'    gmax, this many initialization runs will be considered and run
+#'    with max log likelihood value will be used for selecting
+#'    initialization values.
+#' @param normalize A character string "Yes" or "No" specifying
 #'     if normalization should be performed. Currently, normalization
 #'     factors are calculated using TMM method of edgeR package.
-#'     Default is "Yes".
+#'     Default is "Yes", for which normalization will be performed.
 #'
 #' @return Returns an S3 object of class mvplnParallel with results.
 #' \itemize{
