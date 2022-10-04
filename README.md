@@ -75,7 +75,8 @@ An overview of the package is illustrated below:
 
 
 ## Details
-  
+
+### Introduction
 Three-way data structures are characterized by three entities or modes: 
 the units (rows), the variables (columns), and the occasions (layers). 
 For two-way data, each observation is represented as a vector whereas, 
@@ -85,6 +86,7 @@ Extensions of matrix variate distributions in the context of mixture
 models have given rise to mixtures of matrix variate distributions for
 clustering three-way data.
 
+### Distribution
 The multivariate Poisson-log normal (MPLN) distribution was proposed in
 1989 ([Aitchison and Ho, 1989](https://www.jstor.org/stable/2336624?seq=1)). 
 A multivariate Poisson-log normal mixture model for clustering of count data was
@@ -98,6 +100,7 @@ correlations between variables (p) and the correlations between
 occasions (r), as two different covariance matrices are used for the two
 modes.
   
+### Parameter Estimation
 Three different frameworks for parameter estimation for the mixtures of
 MVPLN models are proposed: a method based on Markov chain Monte Carlo 
 expectation-maximization algorithm (MCMC-EM), a method based on variational 
@@ -105,9 +108,13 @@ Gaussian approximations (VGAs), as well as a hybrid approach. MCMC-based
 approaches are computationally intensive; hence the computationally
 efficient variational approximation framework for parameter estimation was
 proposed. The hybrid approach combines both the MCMC-based and variational
-approximation-based approaches.
+approximation-based approaches. When the primary goal is to detect the 
+underlying clusters (which is the case for real data analysis), the VGAs-based 
+approach is sufficient. However, when the primarily goal is posterior 
+inference, we recommend the hybrid approach as it can better yield an exact
+posterior similar to the MCMC-EM approach but is computationally efficient.
   
-### 1. Method based on Markov chain Monte Carlo expectation-maximization (MCMC-EM)
+#### 1. Method based on Markov chain Monte Carlo expectation-maximization (MCMC-EM)
 
 The MCMC-EM algorithm via Stan is used for parameter estimation (Stan 
 Development Team, 2022). Coarse grain parallelization is an option, such 
@@ -116,21 +123,23 @@ component/cluster is run on a different processor when multiple processors
 are available. Parallelization is possible because each component/cluster size is 
 independent from another. All components/clusters in the range to be
 tested have been parallelized to run on a seperate core using the *parallel* 
-R package (R Core Team, 2022). The number of cores used for clustering can be user-specified
-or set to be automatically calculated via the method using *parallel::detectCores() - 1*. 
-To check the convergence of MCMC chains, the potential scale reduction factor 
-and the effective number of samples are used. The Heidelberger and Welch’s 
-convergence diagnostic (Heidelberger and Welch, 1983) is used to check the 
-convergence of the MCMC-EM algorithm. 
+R package (R Core Team, 2022). The number of cores used for clustering can be 
+user-specified or set to be automatically calculated via the method using 
+*parallel::detectCores() - 1*.  To check the convergence of MCMC chains, the potential 
+scale reduction factor and the effective number of samples are used. The 
+Heidelberger and Welch’s convergence diagnostic (Heidelberger and Welch, 1983) 
+is used to check the convergence of the MCMC-EM algorithm. 
   
 While the MCMC based approach can generate exact results, fitting such models can 
 take upto hours per dataset (e.g., 21 hours — on a supercomputer at the SciNet
 HPC Consortium for a dataset with N = 1000 and rp = 6 (Ponce et al., 2019)). This 
 is because the method evaluates the expected complete-data log-likelihood with 
 respect to the posterior distribution of the latent variables at every iteration 
-of the EM algorithm.
+of the EM algorithm. Starting values (argument: initMethod) and the number of 
+iterations for each MCMC chain (argument: nInitIterations) play an important role 
+in the successful operation of this algorithm.
   
- ### 2. Method based on variational Gaussian approximations (VGAs)
+#### 2. Method based on variational Gaussian approximations (VGAs)
   
 Variational approximations (Wainwright et al., 2008) are approximate
 inference techniques in which a computationally convenient approximating
@@ -143,19 +152,26 @@ Thus, parameter estimation can be done in an iterative EM-type approach
 (Gollini and Murphy, 2014; Tang et al., 2015). 
 
 While this method is computationally efficient (e.g., 1 minute for a dataset with 
-N = 1000 and rp = 6 on a standard laptop with Apple M1 chip). However, this method
+N = 1000 and rp = 6 on a standard laptop with Apple M1 chip), this method
 does not guarantee an exact posterior (Ghahramani and Beal, 1999).
   
-### 3. A hybrid approach that combines MCMC-EM-based and variational approximation-based methods
+#### 3. A hybrid approach that combines MCMC-EM-based and variational approximation-based methods
   
-  
+In the hybrid approach, first the model is fit using the VGAs-based approach.
+Then using the final parameter estimates from VGAs-based approach as the initial
+values for the parameters and using the classification, compute the MCMC-EM-based
+expectation for the latent variable and obtain the final estimates of the model parameters.
 
+The hybrid approach has a reduced computational overhead compared to the 
+MCMC-EM-based approach but it can generate samples from the exact posterior distribution. 
+Fitting a model using the hybrid approach takes on average about 6 minutes for a 
+dataset with N = 1000 and rp = 6 on a standard laptop with Apple M1 chip.
+  
+#### Model Selection
+  
 The Akaike information criterion (AIC; Akaike, 1973), Bayesian information criterion 
 (BIC; Schwarz, 1978), AIC used by Bozdogan (AIC3; Bozdogan, 1994) and integrated 
 completed likelihood (ICL; Biernacki et al., 2000) are used for model selection. 
-Starting values (argument: initMethod) and the number of iterations for each chain
-(argument: nInitIterations) play an important role to the successful
-operation of this algorithm.
 
 ## Tutorials
 
@@ -231,6 +247,10 @@ Statistics* 6.](https://www.jstor.org/stable/2958889?seq=1)
 multivariate Poisson-log normal mixture model for clustering
 transcriptome sequencing data. *BMC
 Bioinformatics.*](https://pubmed.ncbi.nlm.nih.gov/31311497/)
+  
+[Wainwright, M. J., Jordan, M. I., et al. (2008). Graphical 
+models, exponential families, and variational inference. *Foundations and 
+Trends® in Machine Learning.*](http://cba.mit.edu/events/03.11.ASE/docs/Wainwright.1.pdf)
 
 ## Maintainer
 
