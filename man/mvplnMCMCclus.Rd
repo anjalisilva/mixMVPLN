@@ -14,7 +14,8 @@ mvplnMCMCclus(
   initMethod = "kmeans",
   nInitIterations = 0,
   normalize = "Yes",
-  numNodes = NA
+  numNodes = NA,
+  VGAparameters = NA
 )
 }
 \arguments{
@@ -58,6 +59,14 @@ indicating the number of nodes to be used from the local
 machine to run the clustering algorithm. Else leave as NA, so
 default will be detected as
 parallel::makeCluster(parallel::detectCores() - 1).}
+
+\item{VGAparameters}{A list containing parameter estimates and
+classification from method based on variational Gaussian
+approximations (VGAs), if running the hybrid approach.
+Default value is NA, which should be the value if
+MCMC-EM approach is employed. If a list is provided,
+it should have the following entries: finalmu, finalphi,
+finalomega, finalsigma, and probaPost.}
 }
 \value{
 Returns an S3 object of class mvplnParallel with results.

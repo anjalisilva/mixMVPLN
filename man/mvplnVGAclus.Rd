@@ -112,7 +112,7 @@ trueMall <- rbind(trueM1, trueM2)
 # Phi is a r x r matrix
 # Loading needed packages for generating data
 # install.packages("clusterGeneration")
-# library("clusterGeneration")
+library("clusterGeneration")
 
 set.seed(1)
 truePhi1 <- matrix(rep(0, truer * truer), truer, truer)
@@ -141,7 +141,7 @@ trueOmega2 <- matrix(rep(0, truep * truep), truep, truep)
 diag(trueOmega2) <- diag(clusterGeneration::genPositiveDefMat(
                          "unifcorrmat",
                           dim = truep,
-                         mrangeVar = c(0.6, 0.9))$Sigma)
+                          rangeVar = c(0.6, 0.9))$Sigma)
 trueOmegaAll <- rbind(trueOmega1, trueOmega2)
 
 # Generated simulated data

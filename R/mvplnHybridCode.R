@@ -1,28 +1,15 @@
-sampleData
-
-
-mvplnHybridclus(dataset = sampleData$dataset,
-                membership = "none",
-                gmin = 1,
-                gmax = 2,
-                nChains = 3,
-                nIterations = NA,
-                initMethod = "kmeans",
-                nInitIterations = 1,
-                normalize = "Yes",
-                numNodes = NA)
-
 
 mvplnHybridclus <- function(dataset,
                          membership = "none",
                          gmin,
                          gmax,
                          nChains = 3,
-                         nIterations = NA,
+                         nIterations = 300,
                          initMethod = "kmeans",
                          nInitIterations = 0,
                          normalize = "Yes",
                          numNodes = NA) {
+  ptm <- base::proc.time()
 
   mvplnVGAclusOutput <-  mvplnVGAclus(dataset = dataset,
                            membership = membership,
@@ -43,5 +30,9 @@ mvplnHybridclus <- function(dataset,
                             normalize = normalize,
                             numNodes = numNodes,
                             VGAparameters = mvplnVGAclusOutput)
+
+  final <- base::proc.time() - ptm
+
+
   return(mvplnMCMCclusOutput)
 }

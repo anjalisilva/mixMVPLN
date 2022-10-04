@@ -696,8 +696,6 @@ mvplnVGAclus <- function(dataset,
       }
     }
 
-
-
     final <- base::proc.time() - ptm
 
     RESULTS <- list(dataset = dataset,

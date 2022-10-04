@@ -741,7 +741,8 @@ callingClustering <- function(n, r, p, d,
                               normFactors,
                               model,
                               VGAparameters = NA) {
-  ptmInner <- proc.time()
+
+  ptmInner <- base::proc.time()
 
   for (gmodel in 1:(gmax - gmin + 1)) {
     if(length(1:(gmax - gmin + 1)) == gmax) {
@@ -901,7 +902,7 @@ mvplnCluster <- function(r, p, z,
   itOuter <- 2
   obs <- PI <- logL <- normMuOuter <- normSigmaOuter <- vector()
 
-  if(is.na(VGAparameters) == TRUE) {
+  if(length(VGAparameters) == 1) {
     if (all(is.na(initialization)) == TRUE  || all(initialization == "init")) {
       # initialize Phi; rxr times G
       PhiAllOuter[[1]] <- Phi <- do.call("rbind", rep(list(diag(r)), G))
@@ -927,12 +928,13 @@ mvplnCluster <- function(r, p, z,
       z <- initialization$probaPost
       nIterations <- initialization$FinalRstanIterations
     }
-  } else if(is.na(VGAparameters) != TRUE){
-    MAllOuter[[1]] <- M <- VGAparameters$finalmu
-    PhiAllOuter[[1]] <- Phi <- VGAparameters$finalphi
-    OmegaAllOuter[[1]] <- Omega <- VGAparameters$finalomega
-    SigmaAllOuter[[1]] <- Sigma <- VGAparameters$finalsigma
-    z <- VGAparameters$probaPost
+  } else if(length(VGAparameters) > 1) {
+    MAllOuter[[1]] <- M <- matrix(unlist(VGAparameters$allResults[[G]]$mu),
+                                  ncol = p, byrow = TRUE)
+    PhiAllOuter[[1]] <- Phi <- do.call("rbind", VGAparameters$allResults[[G]]$phi)
+    OmegaAllOuter[[1]] <- Omega <- do.call("rbind", VGAparameters$allResults[[G]]$omega)
+    SigmaAllOuter[[1]] <- Sigma <- do.call("rbind", VGAparameters$allResults[[G]]$sigma)
+    z <- VGAparameters$allResults[[G]]$probaPost
     nIterations <- nIterations
   }
 
