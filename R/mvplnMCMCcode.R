@@ -740,7 +740,7 @@ callingClustering <- function(n, r, p, d,
       clustersize <- seq(gmin, gmax, 1)[gmodel]
     }
 
-    if(nInitIterations != 0) {
+    if(nInitIterations > 0) {
       initializeruns <- initializationRun(r = r,
                                           p = p,
                                           gmodel = clustersize,
@@ -773,6 +773,7 @@ callingClustering <- function(n, r, p, d,
                                nChains = nChains,
                                nIterations = nIterations,
                                initialization = NA)
+    } else if(nInitIterations == "hybrid") {
     }
   }
 
