@@ -190,7 +190,7 @@ mixMVPLN](https://github.com/anjalisilva/mixMVPLN/blob/master/vignettes/Introduc
 citation("mixMVPLN")
 ```
 
-Silva, A., S. J. Rothstein, P. D. McNicholas, Qin, X. and S. Subedi (2018).
+Silva, A., S. J. Rothstein, P. D. McNicholas, X. Qin and S. Subedi (2018).
 Finite mixtures of matrix-variate Poisson-log normal distributions for
 three-way count data. arXiv preprint arXiv:1807.08380.
 
@@ -199,7 +199,7 @@ A BibTeX entry for LaTeX users is
 
   @misc{,
     title = {Finite mixtures of matrix-variate Poisson-log normal distributions for three-way count data},
-    author = {A. Silva and S. J. Rothstein and P. D. McNicholas and S. Subedi},
+    author = {A. Silva and S. J. Rothstein and P. D. McNicholas, X. Qin and S. Subedi},
     note = {arXiv preprint arXiv:1206.4768},
     year = {2018},
     url = {https://arxiv.org/abs/1807.08380},
@@ -208,7 +208,7 @@ A BibTeX entry for LaTeX users is
 
 ## Package References
 
-[Silva, A., S. J. Rothstein, P. D. McNicholas, and S. Subedi (2018).
+[Silva, A., S. J. Rothstein, P. D. McNicholas, X. Qin, and S. Subedi (2018).
 Finite mixtures of matrix-variate Poisson-log normal distributions for
 three-way count data. arXiv preprint
 arXiv:1807.08380.](https://arxiv.org/abs/1807.08380)
