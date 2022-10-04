@@ -36,6 +36,13 @@
 #'     machine to run the clustering algorithm. Else leave as NA, so
 #'     default will be detected as
 #'     parallel::makeCluster(parallel::detectCores() - 1).
+#' @param VGAparameters A list containing parameter estimates and
+#'     classification from method based on variational Gaussian
+#'     approximations (VGAs), if running the hybrid approach.
+#'     Default value is NA, which should be the value if
+#'     MCMC-EM approach is employed. If a list is provided,
+#'     it should have the following entries: finalmu, finalphi,
+#'     finalomega, finalsigma, and probaPost.
 #'
 #' @return Returns an S3 object of class mvplnParallel with results.
 #' \itemize{
@@ -259,7 +266,8 @@ mvplnMCMCclus <- function(dataset,
                             initMethod = "kmeans",
                             nInitIterations = 0,
                             normalize = "Yes",
-                            numNodes = NA) {
+                            numNodes = NA,
+                            VGAparameters = NA) {
 
   ptm <- base::proc.time()
 
@@ -459,7 +467,8 @@ mvplnMCMCclus <- function(dataset,
                                           initMethod = initMethod,
                                           nInitIterations = nInitIterations,
                                           normFactors = normFactors,
-                                          model = mod)
+                                          model = mod,
+                                          VGAparameters = VGAparameters)
     return(mvplnParallelRun)
   }
 
@@ -730,7 +739,8 @@ callingClustering <- function(n, r, p, d,
                               initMethod = NA,
                               nInitIterations = NA,
                               normFactors,
-                              model) {
+                              model,
+                              VGAparameters = NA) {
   ptmInner <- proc.time()
 
   for (gmodel in 1:(gmax - gmin + 1)) {
@@ -760,7 +770,8 @@ callingClustering <- function(n, r, p, d,
                               normFactors = normFactors,
                               nChains = nChains,
                               nIterations = NA,
-                              initialization = initializeruns)
+                              initialization = initializeruns,
+                              VGAparameters = NA)
     } else if(nInitIterations == 0) {
       allruns <- mvplnCluster( r = r,
                                p = p,
@@ -772,8 +783,8 @@ callingClustering <- function(n, r, p, d,
                                normFactors = normFactors,
                                nChains = nChains,
                                nIterations = nIterations,
-                               initialization = NA)
-    } else if(nInitIterations == "hybrid") {
+                               initialization = NA,
+                               VGAparameters = VGAparameters)
     }
   }
 
@@ -879,7 +890,8 @@ mvplnCluster <- function(r, p, z,
                          normFactors,
                          nChains,
                          nIterations,
-                         initialization) {
+                         initialization,
+                         VGAparameters = NA) {
   n <- nrow(dataset)
 
   PhiAllOuter <- OmegaAllOuter <- MAllOuter <- SigmaAllOuter <- list()
@@ -889,30 +901,39 @@ mvplnCluster <- function(r, p, z,
   itOuter <- 2
   obs <- PI <- logL <- normMuOuter <- normSigmaOuter <- vector()
 
-  if (all(is.na(initialization)) == TRUE  || all(initialization == "init")) {
-    # initialize Phi; rxr times G
-    PhiAllOuter[[1]] <- Phi <- do.call("rbind", rep(list(diag(r)), G))
+  if(is.na(VGAparameters) == TRUE) {
+    if (all(is.na(initialization)) == TRUE  || all(initialization == "init")) {
+      # initialize Phi; rxr times G
+      PhiAllOuter[[1]] <- Phi <- do.call("rbind", rep(list(diag(r)), G))
 
-    # initialize Omega; pxp times G
-    OmegaAllOuter[[1]] <- Omega <- do.call("rbind", rep(list(diag(p)), G))
+      # initialize Omega; pxp times G
+      OmegaAllOuter[[1]] <- Omega <- do.call("rbind", rep(list(diag(p)), G))
 
-    M <- matrix(NA, ncol = p, nrow = r*G) # initialize M = rxp matrix
-    Sigma <- do.call("rbind", rep(list(diag(r * p)), G)) # sigma (rp by rp)
-    for (g in seq_along(1:G)) {
-      M[((g - 1) * r + 1):(g * r), ] <- matrix(log(mean(dataset[c(which(z[, g] == 1)), ])),
-                                               ncol = p,
-                                               nrow = r)
-      Sigma[((g - 1) * (r * p) + 1):(g * (r * p)), ] <- (cov(log(dataset[c(which(z[, g] == 1)), ] + (1 / 3)))) #diag(r*p)
+      M <- matrix(NA, ncol = p, nrow = r*G) # initialize M = rxp matrix
+      Sigma <- do.call("rbind", rep(list(diag(r * p)), G)) # sigma (rp by rp)
+      for (g in seq_along(1:G)) {
+        M[((g - 1) * r + 1):(g * r), ] <- matrix(log(mean(dataset[c(which(z[, g] == 1)), ])),
+                                                 ncol = p,
+                                                 nrow = r)
+        Sigma[((g - 1) * (r * p) + 1):(g * (r * p)), ] <- (cov(log(dataset[c(which(z[, g] == 1)), ] + (1 / 3)))) #diag(r*p)
+      }
+      MAllOuter[[1]] <- M
+      SigmaAllOuter[[1]] <- Sigma
+    } else{ # running after initialization has been done
+      MAllOuter[[1]] <- M <- initialization$finalmu
+      PhiAllOuter[[1]] <- Phi <- initialization$finalphi
+      OmegaAllOuter[[1]] <- Omega <- initialization$finalomega
+      SigmaAllOuter[[1]] <- Sigma <- initialization$finalsigma
+      z <- initialization$probaPost
+      nIterations <- initialization$FinalRstanIterations
     }
-    MAllOuter[[1]] <- M
-    SigmaAllOuter[[1]] <- Sigma
-  } else{ # running after initialization has been done
-    MAllOuter[[1]] <- M <- initialization$finalmu
-    PhiAllOuter[[1]] <- Phi <- initialization$finalphi
-    OmegaAllOuter[[1]] <- Omega <- initialization$finalomega
-    SigmaAllOuter[[1]] <- Sigma <- initialization$finalsigma
-    z <- initialization$probaPost
-    nIterations <- initialization$FinalRstanIterations
+  } else if(is.na(VGAparameters) != TRUE){
+    MAllOuter[[1]] <- M <- VGAparameters$finalmu
+    PhiAllOuter[[1]] <- Phi <- VGAparameters$finalphi
+    OmegaAllOuter[[1]] <- Omega <- VGAparameters$finalomega
+    SigmaAllOuter[[1]] <- Sigma <- VGAparameters$finalsigma
+    z <- VGAparameters$probaPost
+    nIterations <- nIterations
   }
 
 
