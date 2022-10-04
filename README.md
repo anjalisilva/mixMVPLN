@@ -190,7 +190,7 @@ mixMVPLN](https://github.com/anjalisilva/mixMVPLN/blob/master/vignettes/Introduc
 citation("mixMVPLN")
 ```
 
-Silva, A., S. J. Rothstein, P. D. McNicholas, and S. Subedi (2018).
+Silva, A., S. J. Rothstein, P. D. McNicholas, Qin, X. and S. Subedi (2018).
 Finite mixtures of matrix-variate Poisson-log normal distributions for
 three-way count data. arXiv preprint arXiv:1807.08380.
 
@@ -234,6 +234,10 @@ selection criteria and a new informational measure of complexity. In
 Statistical Modeling: An Informational Approach: Volume 2 Multivariate
 Statistical Modeling*, pp. 69–113. Dordrecht: Springer
 Netherlands.](https://link.springer.com/chapter/10.1007/978-94-011-0800-3_3)
+  
+[Gollini, I. and Murphy, T. B. (2014). Mixture of latent trait analyzers 
+for model-based clustering of categorical data. *Statistics and Computing*](
+https://link.springer.com/article/10.1007/s11222-013-9389-1)
 
 [Robinson, M.D., and Oshlack, A. (2010). A scaling normalization method
 for differential expression analysis of RNA-seq data. *Genome Biology*
@@ -247,6 +251,10 @@ Statistics* 6.](https://www.jstor.org/stable/2958889?seq=1)
 multivariate Poisson-log normal mixture model for clustering
 transcriptome sequencing data. *BMC
 Bioinformatics.*](https://pubmed.ncbi.nlm.nih.gov/31311497/)
+  
+[Tang, Y., Browne, R. P., and McNicholas, P. D. (2015). Model based clustering
+of high-dimensional binary data. *Computational Statistics & Data Analysis*](
+https://www.sciencedirect.com/science/article/abs/pii/S0167947314003570)
   
 [Wainwright, M. J., Jordan, M. I., et al. (2008). Graphical 
 models, exponential families, and variational inference. *Foundations and 
