@@ -1,3 +1,14 @@
+# results <- mvplnHybridclus(dataset = sampleData$dataset,
+#                            membership = "none",
+#                            gmin = 1,
+#                            gmax = 2,
+#                            nChains = 3,
+#                            nIterations = 300,
+#                            initMethod = "kmeans",
+#                            nInitIterations = 1,
+#                            normalize = "Yes",
+#                            numNodes = NA)
+
 
 mvplnHybridclus <- function(dataset,
                          membership = "none",
