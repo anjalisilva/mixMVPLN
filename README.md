@@ -27,14 +27,12 @@ count](https://img.shields.io/github/languages/count/anjalisilva/mixMVPLN)
 three-way count data using mixtures of matrix variate Poisson-log normal
 (MVPLN) distributions ([Silva et al.,
 2018](https://arxiv.org/abs/1807.08380)). Three different frameworks are
-available for parameter estimation of the mixtures of MVPLN models: 1)
-method based on Markov chain Monte Carlo expectation-maximization
-algorithm (MCMC-EM), 2) method based on variational Gaussian
-approximations (VGAs), and 3) a hybrid approach that combines both the
-variational approximation-based approach and MCMC-EM-based approach.
-Information criteria (AIC, BIC, AIC3 and ICL) are offered for model
-selection. Also included is a function for simulating data from MVPLN
-model.
+available for parameter estimation of the mixtures of MVPLN models: 
+1) method based on Markov chain Monte Carlo expectation-maximization algorithm (MCMC-EM), 
+2) method based on variational Gaussian approximations (VGAs), and 
+3) a hybrid approach that combines both the MCMC-EM-based and variational approximation-based approaches.
+Information criteria (see details) are offered for model selection. 
+Also included is a function for simulating data from MVPLN model.
 
 ## Installation
 
@@ -54,13 +52,14 @@ To list all functions available in the package:
 ls("package:mixMVPLN")
 ```
 
-`mixMVPLN` contains 5 functions. For the purpose of generating
-simulation data via mixtures of MVPLN: *mvplnDataGenerator*. For
-carrying out clustering of count data using mixtures of MVPLN via 1)
-method based on MCMC-EM with parallelization: *mvplnMCMCclus*; 2) method
-based on VGAs: *mvplnVGAclus*; and 3) the hybrid approach that combines
-both the VGAs and MCMC-EM-based approach: *mvplnHybriDclus*. For
-visualization of clustering results, there is the: *mvplnVisualize*.
+`mixMVPLN` contains 5 functions. For the purpose of generating simulation data via
+mixtures of MVPLN: *mvplnDataGenerator*. For carrying out clustering of count data 
+using mixtures of MVPLN via:
+1) method based on MCMC-EM with parallelization: *mvplnMCMCclus*; 
+2) method based on VGAs: *mvplnVGAclus*; and 
+3) the hybrid approach that combines both the VGAs and MCMC-EM-based approach: *mvplnHybriDclus*. 
+
+For visualization of clustering results, there is the: *mvplnVisualize*.
 
 An overview of the package is illustrated below:
 
@@ -76,42 +75,85 @@ An overview of the package is illustrated below:
 
 
 ## Details
-
+  
+Three-way data structures are characterized by three entities or modes: 
+the units (rows), the variables (columns), and the occasions (layers). 
+For two-way data, each observation is represented as a vector whereas, 
+for three-way data, each observation can be regarded as a matrix. 
 Matrix variate distributions offer a natural way for modeling matrices.
 Extensions of matrix variate distributions in the context of mixture
-models have given rise to mixtures of matrix variate distributions.
+models have given rise to mixtures of matrix variate distributions for
+clustering three-way data.
 
 The multivariate Poisson-log normal (MPLN) distribution was proposed in
-1989 ([Aitchison and Ho,
-1989](https://www.jstor.org/stable/2336624?seq=1)). A multivariate
-Poisson-log normal mixture model for clustering of count data was
-proposed by [Silva et al.,
-2019](https://pubmed.ncbi.nlm.nih.gov/31311497/). Here this work is
-extended and a mixture of matrix variate Poisson-log normal (MVPLN)
-distribution for clustering three-way count data is proposed by [Silva
+1989 ([Aitchison and Ho, 1989](https://www.jstor.org/stable/2336624?seq=1)). 
+A multivariate Poisson-log normal mixture model for clustering of count data was
+proposed by [Silva et al., 2019](https://pubmed.ncbi.nlm.nih.gov/31311497/). 
+Here this work is extended and a mixture of matrix variate Poisson-log normal 
+(MVPLN) distribution for clustering three-way count data is proposed by [Silva
 et al., 2018](https://arxiv.org/abs/1807.08380). A mixture of MVPLN
 distribution is a multivariate log normal mixture of independent Poisson
 distributions. The MVPLN distribution can account for both the
 correlations between variables (p) and the correlations between
 occasions (r), as two different covariance matrices are used for the two
 modes.
+  
+Three different frameworks for parameter estimation for the mixtures of
+MVPLN models are proposed: a method based on Markov chain Monte Carlo 
+expectation-maximization algorithm (MCMC-EM), a method based on variational 
+Gaussian approximations (VGAs), as well as a hybrid approach. MCMC-based 
+approaches are computationally intensive; hence the computationally
+efficient variational approximation framework for parameter estimation was
+proposed. The hybrid approach combines both the MCMC-based and variational
+approximation-based approaches.
+  
+### 1. Method based on Markov chain Monte Carlo expectation-maximization (MCMC-EM)
 
-The MCMC-EM algorithm via Stan is used for parameter estimation. Coarse
-grain parallelization is employed, such that when a range of
-components/clusters (g = 1,…,G) are considered, each component/cluster
-is run on a different processor. This can be performed because each
-component/cluster size is independent from another. All
-components/clusters in the range to be tested have been parallelized to
-run on a seperate core using the *parallel* R package. The number of
-cores used for clustering is can be user-specified or calculated using
-*parallel::detectCores() - 1*. To check the convergence of MCMC chains,
-the potential scale reduction factor and the effective number of samples
-are used. The Heidelberger and Welch’s convergence diagnostic
-(Heidelberger and Welch, 1983) is used to check the convergence of the
-MCMC-EM algorithm.
+The MCMC-EM algorithm via Stan is used for parameter estimation (Stan 
+Development Team, 2022). Coarse grain parallelization is an option, such 
+that when a range of components/clusters (g = 1,…,G) are considered, each 
+component/cluster is run on a different processor when multiple processors 
+are available. Parallelization is possible because each component/cluster size is 
+independent from another. All components/clusters in the range to be
+tested have been parallelized to run on a seperate core using the *parallel* 
+R package (R Core Team, 2022). The number of cores used for clustering can be user-specified
+or set to be automatically calculated via the method using *parallel::detectCores() - 1*. 
+To check the convergence of MCMC chains, the potential scale reduction factor 
+and the effective number of samples are used. The Heidelberger and Welch’s 
+convergence diagnostic (Heidelberger and Welch, 1983) is used to check the 
+convergence of the MCMC-EM algorithm. 
+  
+While the MCMC based approach can generate exact results, fitting such models can 
+take upto hours per dataset (e.g., 21 hours — on a supercomputer at the SciNet
+HPC Consortium for a dataset with N = 1000 and rp = 6 (Ponce et al., 2019)). This 
+is because the method evaluates the expected complete-data log-likelihood with 
+respect to the posterior distribution of the latent variables at every iteration 
+of the EM algorithm.
+  
+ ### 2. Method based on variational Gaussian approximations (VGAs)
+  
+Variational approximations (Wainwright et al., 2008) are approximate
+inference techniques in which a computationally convenient approximating
+density is used in place of a more complex but 'true’ posterior density. 
+The approximating density is obtained by minimizing the Kullback- Leibler
+(KL) divergence between the true and the approximating densities. The 
+variational parameters that maximize the evidence lower bound (ELBO) will
+minimize the KL divergence between the true posterior and the approximating density. 
+Thus, parameter estimation can be done in an iterative EM-type approach 
+(Gollini and Murphy, 2014; Tang et al., 2015). 
 
-The AIC, BIC, AIC3 and ICL are used for model selection. Starting values
-(argument: initMethod) and the number of iterations for each chain
+While this method is computationally efficient (e.g., 1 minute for a dataset with 
+N = 1000 and rp = 6 on a standard laptop with Apple M1 chip). However, this method
+does not guarantee an exact posterior (Ghahramani and Beal, 1999).
+  
+### 3. A hybrid approach that combines MCMC-EM-based and variational approximation-based methods
+  
+  
+
+The Akaike information criterion (AIC; Akaike, 1973), Bayesian information criterion 
+(BIC; Schwarz, 1978), AIC used by Bozdogan (AIC3; Bozdogan, 1994) and integrated 
+completed likelihood (ICL; Biernacki et al., 2000) are used for model selection. 
+Starting values (argument: initMethod) and the number of iterations for each chain
 (argument: nInitIterations) play an important role to the successful
 operation of this algorithm.
 
