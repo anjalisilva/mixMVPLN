@@ -136,7 +136,7 @@ HPC Consortium for a dataset with N = 1000 and rp = 6 (Ponce et al., 2019)). Thi
 is because the method evaluates the expected complete-data log-likelihood with 
 respect to the posterior distribution of the latent variables at every iteration 
 of the EM algorithm. Starting values (argument: initMethod) and the number of 
-iterations for each MCMC chain (argument: nInitIterations) play an important role 
+iterations for each MCMC chain (argument: nIterations) play an important role 
 in the successful operation of this algorithm.
   
 #### 2. Method based on variational Gaussian approximations (VGAs)
