@@ -34,7 +34,7 @@
 #' @param numNodes A positive integer, equal to or greater than 1,
 #'     indicating the number of nodes to be used from the local
 #'     machine to run the clustering algorithm. Else leave as NA, so
-#'     default will be detected as
+#'     default will be detected for the computer using
 #'     parallel::makeCluster(parallel::detectCores() - 1).
 #' @param VGAparameters A list containing parameter estimates and
 #'     classification from method based on variational Gaussian
@@ -126,7 +126,7 @@
 #' diag(trueOmega2) <- diag(clusterGeneration::genPositiveDefMat(
 #'                          "unifcorrmat",
 #'                           dim = truep,
-#'                          mrangeVar = c(0.6, 0.9))$Sigma)
+#'                           rangeVar = c(0.6, 0.9))$Sigma)
 #' trueOmegaAll <- rbind(trueOmega1, trueOmega2)
 #'
 #' # Generated simulated data
@@ -493,7 +493,8 @@ mvplnMCMCclus <- function(dataset,
                                       "p",
                                       "r",
                                       "stanRun",
-                                      "TwoDdataset"),
+                                      "TwoDdataset",
+                                      "VGAparameters"),
                           envir = environment())
 
   # Doing clusterEvalQ
@@ -920,7 +921,7 @@ mvplnCluster <- function(r, p, z,
       }
       MAllOuter[[1]] <- M
       SigmaAllOuter[[1]] <- Sigma
-    } else{ # running after initialization has been done
+    } else { # running after initialization has been done
       MAllOuter[[1]] <- M <- initialization$finalmu
       PhiAllOuter[[1]] <- Phi <- initialization$finalphi
       OmegaAllOuter[[1]] <- Omega <- initialization$finalomega
@@ -956,7 +957,8 @@ mvplnCluster <- function(r, p, z,
                            normFactors = normFactors)
 
     # update parameters
-    paras <- parameterEstimation(r = r,
+    paras <- parameterEstimation(
+                            r = r,
                             p = p,
                             G = G,
                             z = z,
@@ -973,7 +975,7 @@ mvplnCluster <- function(r, p, z,
     thetaStan <- paras$theta
 
     vectorizedM <- t(sapply(c(1:G), function(g)
-      ( MAllOuter[[itOuter]][((g - 1) * r + 1):(g * r), ]) ))
+                  ( MAllOuter[[itOuter]][((g - 1) * r + 1):(g * r), ]) ))
 
     logL[itOuter] <- calcLikelihood(dataset = dataset,
                                      z = z,
@@ -986,23 +988,37 @@ mvplnCluster <- function(r, p, z,
     # plot(logL[-1], xlab="iteration", ylab=paste("Initialization logL value for",G) )
 
 
-    thresholdOuter <- 12
-    if(itOuter > (thresholdOuter + 1)) {
-
-      if (all(coda::heidel.diag(logL[- 1], eps = 0.1, pvalue = 0.05)[, c(1, 4)] == 1) || itOuter > 50) {
-        programclust <- vector()
-        programclust <- map(z)
-
-        # checking for empty clusters
-        J <- 1:ncol(z)
-        K <- as.logical(match(J, sort(unique(programclust)), nomatch = 0))
-        if(length(J[! K]) > 0) { # J[!K] tells which are empty clusters
-          z <- z[, -J[! K]]
+    if(length(VGAparameters) == 1) {
+      thresholdOuter <- 12
+      if(itOuter > (thresholdOuter + 1)) {
+        if (all(coda::heidel.diag(logL[- 1], eps = 0.1, pvalue = 0.05)[, c(1, 4)] == 1) || itOuter > 50) {
+          programclust <- vector()
           programclust <- map(z)
-        }
 
-        convOuter <- 1
+          # checking for empty clusters
+          J <- 1:ncol(z)
+          K <- as.logical(match(J, sort(unique(programclust)), nomatch = 0))
+          if(length(J[! K]) > 0) { # J[!K] tells which are empty clusters
+            z <- z[, -J[! K]]
+            programclust <- map(z)
+          }
+
+          convOuter <- 1
+        }
       }
+    } else if((length(VGAparameters) > 1)) {
+      programclust <- vector()
+      programclust <- map(z)
+
+      # checking for empty clusters
+      J <- 1:ncol(z)
+      K <- as.logical(match(J, sort(unique(programclust)), nomatch = 0))
+      if(length(J[! K]) > 0) { # J[!K] tells which are empty clusters
+        z <- z[, -J[! K]]
+        programclust <- map(z)
+      }
+
+      convOuter <- 1
     }
 
 
@@ -1022,7 +1038,7 @@ mvplnCluster <- function(r, p, z,
 
 
   results <- list(finalmu = MAllOuter[[itOuter]] +
-                    do.call("rbind", rep(list(matrix(normFactors, byrow = TRUE, ncol = p)), G)),
+                  do.call("rbind", rep(list(matrix(normFactors, byrow = TRUE, ncol = p)), G)),
                   finalsigma = SigmaAllOuter[[itOuter]],
                   finalphi = PhiAllOuter[[itOuter]],
                   finalomega = OmegaAllOuter[[itOuter]],

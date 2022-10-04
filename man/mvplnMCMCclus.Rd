@@ -57,7 +57,7 @@ is "Yes".}
 \item{numNodes}{A positive integer, equal to or greater than 1,
 indicating the number of nodes to be used from the local
 machine to run the clustering algorithm. Else leave as NA, so
-default will be detected as
+default will be detected for the computer using
 parallel::makeCluster(parallel::detectCores() - 1).}
 
 \item{VGAparameters}{A list containing parameter estimates and
@@ -157,7 +157,7 @@ trueOmega2 <- matrix(rep(0, truep * truep), truep, truep)
 diag(trueOmega2) <- diag(clusterGeneration::genPositiveDefMat(
                          "unifcorrmat",
                           dim = truep,
-                         mrangeVar = c(0.6, 0.9))$Sigma)
+                          rangeVar = c(0.6, 0.9))$Sigma)
 trueOmegaAll <- rbind(trueOmega1, trueOmega2)
 
 # Generated simulated data
