@@ -48,6 +48,7 @@
 #' # Phi is a r x r matrix
 #' # Loading needed packages for generating data
 #' if (!require(clusterGeneration)) install.packages("clusterGeneration")
+#' library("clusterGeneration")
 #' # Covariance matrix containing variances and covariances between r occasions
 #' truePhi1 <- clusterGeneration::genPositiveDefMat("unifcorrmat",
 #'                                                  dim = truer,
@@ -80,7 +81,7 @@
 #'                                                 omega = trueOmegaAll)
 #'
 #' # Clustering
-#' clusteringResults <- mixMVPLN::mvplnClustering(
+#' clusteringResults <- mixMVPLN::mvplnMCMCclus(
 #'                          dataset = simulatedMVData$dataset,
 #'                          membership = simulatedMVData$truemembership,
 #'                          gmin = 1,

@@ -127,8 +127,8 @@ trueMall <- rbind(trueM1, trueM2)
 
 # Phi is a r x r matrix
 # Loading needed packages for generating data
-# install.packages("clusterGeneration")
-# library("clusterGeneration")
+if (!require(clusterGeneration)) install.packages("clusterGeneration")
+library("clusterGeneration")
 
 set.seed(1)
 truePhi1 <- matrix(rep(0, truer * truer), truer, truer)
@@ -176,7 +176,7 @@ clusteringResults <- mixMVPLN::mvplnMCMCclus(
                          dataset = sampleData$dataset,
                          membership = sampleData$truemembership,
                          gmin = 1,
-                         gmax = 3,
+                         gmax = 2,
                          nChains = 3,
                          nIterations = 300,
                          initMethod = "kmeans",

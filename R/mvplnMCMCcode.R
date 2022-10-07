@@ -96,8 +96,8 @@
 #'
 #' # Phi is a r x r matrix
 #' # Loading needed packages for generating data
-#' # install.packages("clusterGeneration")
-#' # library("clusterGeneration")
+#' if (!require(clusterGeneration)) install.packages("clusterGeneration")
+#' library("clusterGeneration")
 #'
 #' set.seed(1)
 #' truePhi1 <- matrix(rep(0, truer * truer), truer, truer)
@@ -145,7 +145,7 @@
 #'                          dataset = sampleData$dataset,
 #'                          membership = sampleData$truemembership,
 #'                          gmin = 1,
-#'                          gmax = 3,
+#'                          gmax = 2,
 #'                          nChains = 3,
 #'                          nIterations = 300,
 #'                          initMethod = "kmeans",
@@ -258,18 +258,18 @@
 #' @importFrom utils tail
 #'
 mvplnMCMCclus <- function(dataset,
-                            membership = "none",
-                            gmin,
-                            gmax,
-                            nChains = 3,
-                            nIterations = NA,
-                            initMethod = "kmeans",
-                            nInitIterations = 0,
-                            normalize = "Yes",
-                            numNodes = NA,
-                            VGAparameters = NA) {
+                          membership = "none",
+                          gmin,
+                          gmax,
+                          nChains = 3,
+                          nIterations = NA,
+                          initMethod = "kmeans",
+                          nInitIterations = 0,
+                          normalize = "Yes",
+                          numNodes = NA,
+                          VGAparameters = NA) {
 
-  ptm <- base::proc.time()
+  ptm <-  proc.time()
 
   # Performing checks
   if (typeof(unlist(dataset)) != "double" & typeof(unlist(dataset)) != "integer") {
@@ -513,8 +513,8 @@ mvplnMCMCclus <- function(dataset,
   parallelRun <- list()
   cat("\nRunning parallel code...")
   parallelRun <- parallel::clusterMap(cl = cl,
-                                     fun = mvplnParallelCode,
-                                     g = gmin:gmax)
+                                      fun = mvplnParallelCode,
+                                      g = gmin:gmax)
   cat("\nDone parallel code.")
   #parallel::stopCluster(cl)
 
@@ -528,8 +528,6 @@ mvplnMCMCclus <- function(dataset,
     } else if(length(1:(gmax - gmin + 1)) < gmax) {
       clustersize <- seq(gmin, gmax, 1)[g]
     }
-
-
 
     # save the final log-likelihood
     ll[g] <- unlist(tail(parallelRun[[g]]$allresults$loglikelihood, n = 1))
@@ -568,7 +566,7 @@ mvplnMCMCclus <- function(dataset,
 
 
 
-  final <- proc.time() - ptm
+  final <-  proc.time() - ptm
   RESULTS <- list(dataset = dataset,
                   nUnits = n,
                   nVariables = p,
@@ -604,12 +602,12 @@ calcLikelihood <- function(dataset,
   like <- matrix(NA, nrow = n, ncol = G)
   d <- ncol(dataset)
   like <- sapply(c(1:G), function(g) sapply(c(1:n), function(i) z[i, g] * (log(PI[g]) +
-                                                                             t(dataset[i, ]) %*% (thetaStan[[g]][i, ] + normFactors) -
-                                                                             sum(exp(thetaStan[[g]][i, ] + normFactors)) - sum(lfactorial(dataset[i, ])) -
-                                                                             d / 2 * log(2 * pi) - 1 / 2 * log(det(Sigma[((g - 1) * d + 1):(g * d), ])) -
-                                                                             0.5 * t(thetaStan[[g]][i, ] -
-                                                                                       M[g, ]) %*% solve(Sigma[((g - 1) * d + 1):(g * d), ])
-                                                                           %*% (thetaStan[[g]][i, ] - M[g, ])) ))
+          t(dataset[i, ]) %*% (thetaStan[[g]][i, ] + normFactors) -
+          sum(exp(thetaStan[[g]][i, ] + normFactors)) - sum(lfactorial(dataset[i, ])) -
+          d / 2 * log(2 * pi) - 1 / 2 * log(det(Sigma[((g - 1) * d + 1):(g * d), ])) -
+          0.5 * t(thetaStan[[g]][i, ] -
+          M[g, ]) %*% solve(Sigma[((g - 1) * d + 1):(g * d), ]) %*%
+            (thetaStan[[g]][i, ] - M[g, ])) ))
   loglike <- sum(rowSums(like))
   return(loglike)
   # Developed by Anjali Silva
@@ -636,14 +634,14 @@ parameterEstimation <- function(r,
 
   # update parameters
   thetaMat <- lapply(as.list(c(1:G)),
-                      function(g) lapply(as.list(c(1:n)),
-                                         function(o) as.matrix(fit[[g]])[, c(o,sapply(c(1:n),
-                                                                                      function(i) c(1:(d - 1)) * n + i)[, o]) ]) )
+                     function(g) lapply(as.list(c(1:n)),
+                                        function(o) as.matrix(fit[[g]])[, c(o,sapply(c(1:n),
+                                                                                     function(i) c(1:(d - 1)) * n + i)[, o]) ]) )
 
   thetaStan <- lapply(as.list(c(1:G)),
-                       function(g) t(sapply(c(1:n),
-                                            function(o) colMeans(as.matrix(fit[[g]])[, c(o, sapply(c(1:n),
-                                                                                                   function(i) c(1:(d-1))*n+i)[,o]) ]))) )
+                      function(g) t(sapply(c(1:n),
+                                           function(o) colMeans(as.matrix(fit[[g]])[, c(o, sapply(c(1:n),
+                                                                                                  function(i) c(1:(d-1))*n+i)[,o]) ]))) )
 
 
   # updating mu
@@ -655,19 +653,19 @@ parameterEstimation <- function(r,
 
   # updating phi
   EthetaPhi <- lapply(as.list(c(1:G)), function(g) lapply(as.list(c(1:n)),
-                                                            function(i) lapply(as.list(c(1:nrow(thetaMat[[g]][[i]]))),
-                                                                               function(e) ((matrix(thetaMat[[g]][[i]][e,], r, p, byrow = T)) - M[((g - 1) * r + 1):(g * r), ]) %*% solve(Omega[((g - 1) * p + 1):(g*p), ]) %*% t((matrix(thetaMat[[g]][[i]][e, ], r, p, byrow = T)) - M[((g - 1) * r + 1):(g * r), ]) ) ) )
+                                                          function(i) lapply(as.list(c(1:nrow(thetaMat[[g]][[i]]))),
+                                                                             function(e) ((matrix(thetaMat[[g]][[i]][e,], r, p, byrow = T)) - M[((g - 1) * r + 1):(g * r), ]) %*% solve(Omega[((g - 1) * p + 1):(g*p), ]) %*% t((matrix(thetaMat[[g]][[i]][e, ], r, p, byrow = T)) - M[((g - 1) * r + 1):(g * r), ]) ) ) )
   EthetaPhi2 <- lapply(as.list(c(1:G)), function(g) lapply(as.list(c(1:n)),
-                                                             function(i) z[i, g] * Reduce("+", EthetaPhi[[g]][[i]]) / ((0.5 * nIterations) * nChains) ) )
+                                                           function(i) z[i, g] * Reduce("+", EthetaPhi[[g]][[i]]) / ((0.5 * nIterations) * nChains) ) )
   Phi <- lapply(as.list(c(1:G)), function(g) (Reduce("+", EthetaPhi2[[g]]) / (p * sum(z[, g]))))
   Phi <- do.call(rbind, Phi)
 
   # updating omega
   EThetaOmega <- lapply(as.list(c(1:G)), function(g) lapply(as.list(c(1:n)),
-                                                              function(i) lapply(as.list(1:nrow(thetaMat[[g]][[i]])),
-                                                                                 function(e) t((matrix(thetaMat[[g]][[i]][e,], r, p, byrow = T)) - M[((g - 1) * r + 1):(g * r), ]) %*% solve(Phi[((g - 1) * r + 1):(g * r), ]) %*% ((matrix(thetaMat[[g]][[i]][e, ], r, p, byrow = T)) - M[((g - 1) * r + 1):(g * r), ]) ) ) )
+                                                            function(i) lapply(as.list(1:nrow(thetaMat[[g]][[i]])),
+                                                                               function(e) t((matrix(thetaMat[[g]][[i]][e,], r, p, byrow = T)) - M[((g - 1) * r + 1):(g * r), ]) %*% solve(Phi[((g - 1) * r + 1):(g * r), ]) %*% ((matrix(thetaMat[[g]][[i]][e, ], r, p, byrow = T)) - M[((g - 1) * r + 1):(g * r), ]) ) ) )
   EThetaOmega2 <- lapply(as.list(c(1:G)) ,function(g) lapply(as.list(c(1:n)),
-                                                               function(i)  z[i, g] * Reduce("+", EThetaOmega[[g]][[i]]) / ((0.5 * nIterations) * nChains) ) )
+                                                             function(i)  z[i, g] * Reduce("+", EThetaOmega[[g]][[i]]) / ((0.5 * nIterations) * nChains) ) )
   Omega <- lapply(as.list(c(1:G)), function(g) Reduce("+", EThetaOmega2[[g]]) / (r * sum(z[, g]))  )
   Omega <- do.call(rbind, Omega)
 
@@ -743,7 +741,7 @@ callingClustering <- function(n, r, p, d,
                               model,
                               VGAparameters = NA) {
 
-  ptmInner <- base::proc.time()
+  ptmInner <-  proc.time()
 
   for (gmodel in 1:(gmax - gmin + 1)) {
     if(length(1:(gmax - gmin + 1)) == gmax) {
@@ -755,14 +753,14 @@ callingClustering <- function(n, r, p, d,
     if(nInitIterations > 0) {
       initializeruns <- initializationRun(r = r,
                                           p = p,
+                                          dataset = dataset,
                                           gmodel = clustersize,
                                           mod = model,
-                                          dataset = dataset,
-                                          initMethod = initMethod,
-                                          nInitIterations = nInitIterations,
+                                          normFactors = normFactors,
                                           nChains = nChains,
                                           nIterations = nIterations,
-                                          normFactors = normFactors)
+                                          initMethod = initMethod,
+                                          nInitIterations = nInitIterations)
       allruns <- mvplnCluster(r = r,
                               p = p,
                               z = NA,
@@ -790,7 +788,7 @@ callingClustering <- function(n, r, p, d,
     }
   }
 
-  finalInner <- base::proc.time() - base::ptmInner
+  finalInner <-  proc.time() - ptmInner
   RESULTS <- list(gmin = gmin,
                   gmax = gmax,
                   initalizationMethod = initMethod,
@@ -826,8 +824,8 @@ initializationRun <- function(r,
 
     if (initMethod == "kmeans" | is.na(initMethod)) {
       z[[iterations]] <- mclust::unmap(
-                           stats::kmeans(x = log(dataset + 1 / 3),
-                           centers = gmodel)$cluster)
+        stats::kmeans(x = log(dataset + 1 / 3),
+                      centers = gmodel)$cluster)
     } else if (initMethod == "random") {
       if(gmodel == 1) { # generating z if g=1
         z[[iterations]] <- as.matrix(rep.int(1, times = n),
@@ -838,9 +836,9 @@ initializationRun <- function(r,
         while(! zConv) { # ensure that dimension of z is same as G (i.e.
           # if one column contains all 0s, then generate z again)
           z[[iterations]] <- t(stats::rmultinom(
-                                           n = n,
-                                           size = 1,
-                                           prob = rep(1 / gmodel, gmodel)))
+            n = n,
+            size = 1,
+            prob = rep(1 / gmodel, gmodel)))
           if(length(which(colSums(z[[iterations]]) > 0)) == gmodel) {
             zConv <- 1
           }
@@ -848,16 +846,16 @@ initializationRun <- function(r,
       }
     } else if (initMethod == "medoids") {
       z[[iterations]] <- mclust::unmap(cluster::pam(
-                                x = log(dataset + 1 / 3),
-                                k = gmodel)$cluster)
+        x = log(dataset + 1 / 3),
+        k = gmodel)$cluster)
     } else if (initMethod == "clara") {
       z[[iterations]] <- mclust::unmap(cluster::clara(
-                                x = log(dataset + 1 / 3),
-                                k = gmodel)$cluster)
+        x = log(dataset + 1 / 3),
+        k = gmodel)$cluster)
     } else if (initMethod == "fanny") {
       z[[iterations]] <- mclust::unmap(cluster::fanny(
-                                x = log(dataset + 1 / 3),
-                                k = gmodel)$cluster)
+        x = log(dataset + 1 / 3),
+        k = gmodel)$cluster)
     }
 
     init_runs[[iterations]] <- mvplnCluster(r = r,
@@ -898,7 +896,7 @@ mvplnCluster <- function(r, p, z,
 
   PhiAllOuter <- OmegaAllOuter <- MAllOuter <- SigmaAllOuter <- list()
   medianMuOuter <- medianSigmaOuter <- medianPhiOuter <-
-                                            medianOmegaOuter <- list()
+    medianOmegaOuter <- list()
   convOuter <- 0
   itOuter <- 2
   obs <- PI <- logL <- normMuOuter <- normSigmaOuter <- vector()
@@ -958,13 +956,13 @@ mvplnCluster <- function(r, p, z,
 
     # update parameters
     paras <- parameterEstimation(
-                            r = r,
-                            p = p,
-                            G = G,
-                            z = z,
-                            fit = stanresults$fitrstan,
-                            nIterations = stanresults$nIterations,
-                            nChains = nChains)
+      r = r,
+      p = p,
+      G = G,
+      z = z,
+      fit = stanresults$fitrstan,
+      nIterations = stanresults$nIterations,
+      nChains = nChains)
 
 
     MAllOuter[[itOuter]] <- paras$Mu
@@ -975,16 +973,16 @@ mvplnCluster <- function(r, p, z,
     thetaStan <- paras$theta
 
     vectorizedM <- t(sapply(c(1:G), function(g)
-                  ( MAllOuter[[itOuter]][((g - 1) * r + 1):(g * r), ]) ))
+      ( MAllOuter[[itOuter]][((g - 1) * r + 1):(g * r), ]) ))
 
     logL[itOuter] <- calcLikelihood(dataset = dataset,
-                                     z = z,
-                                     G = G,
-                                     PI = PI,
-                                     normFactors = normFactors,
-                                     M = vectorizedM,
-                                     Sigma = SigmaAllOuter[[itOuter]],
-                                     thetaStan = thetaStan)
+                                    z = z,
+                                    G = G,
+                                    PI = PI,
+                                    normFactors = normFactors,
+                                    M = vectorizedM,
+                                    Sigma = SigmaAllOuter[[itOuter]],
+                                    thetaStan = thetaStan)
     # plot(logL[-1], xlab="iteration", ylab=paste("Initialization logL value for",G) )
 
 
@@ -1038,7 +1036,7 @@ mvplnCluster <- function(r, p, z,
 
 
   results <- list(finalmu = MAllOuter[[itOuter]] +
-                  do.call("rbind", rep(list(matrix(normFactors, byrow = TRUE, ncol = p)), G)),
+                    do.call("rbind", rep(list(matrix(normFactors, byrow = TRUE, ncol = p)), G)),
                   finalsigma = SigmaAllOuter[[itOuter]],
                   finalphi = PhiAllOuter[[itOuter]],
                   finalomega = OmegaAllOuter[[itOuter]],

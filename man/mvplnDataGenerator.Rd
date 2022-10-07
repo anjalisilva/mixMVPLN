@@ -105,8 +105,8 @@ trueMall <- rbind(trueM1, trueM2)
 
 # Phi is a r x r matrix
 # Loading needed packages for generating data
-# install.packages("clusterGeneration")
-# library("clusterGeneration")
+if (!require(clusterGeneration)) install.packages("clusterGeneration")
+library("clusterGeneration")
 set.seed(1)
 truePhi1 <- matrix(rep(0, truer * truer), truer, truer)
 diag(truePhi1) <- diag(clusterGeneration::genPositiveDefMat(
@@ -134,7 +134,7 @@ trueOmega2 <- matrix(rep(0, truep * truep), truep, truep)
 diag(trueOmega2) <- diag(clusterGeneration::genPositiveDefMat(
                          "unifcorrmat",
                           dim = truep,
-                         mrangeVar = c(0.6, 0.9))$Sigma)
+                          rangeVar = c(0.6, 0.9))$Sigma)
 trueOmegaAll <- rbind(trueOmega1, trueOmega2)
 
 # Generated simulated data
@@ -145,15 +145,6 @@ sampleData <- mixMVPLN::mvplnDataGenerator(
                          mixingProportions = truePiG,
                          matrixMean = trueMall,
                          phi = truePhiall,
-                         omega = trueOmegaAll)
-
-sampleData <- mixMVPLN::mvplnDataGenerator(
-                         nOccasions = truer,
-                         nResponses = truep,
-                         nUnits = trueN,
-                         mixingProportions = c(0.79, 0.21),
-                         matrixMean = trueMall,
-                         phi = truePhiAll,
                          omega = trueOmegaAll)
 
 # Example 2

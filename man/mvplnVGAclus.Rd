@@ -111,7 +111,7 @@ trueMall <- rbind(trueM1, trueM2)
 
 # Phi is a r x r matrix
 # Loading needed packages for generating data
-# install.packages("clusterGeneration")
+if (!require(clusterGeneration)) install.packages("clusterGeneration")
 library("clusterGeneration")
 
 set.seed(1)

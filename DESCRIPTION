@@ -21,6 +21,7 @@ biocViews: Software, StatisticalMethod
 Imports: 
     coda,
     cluster,
+    clusterGeneration,
     edgeR,
     ggplot2,
     mclust,
