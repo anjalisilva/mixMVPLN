@@ -2,7 +2,6 @@
 
 export(mvplnDataGenerator)
 export(mvplnMCMCclus)
-export(mvplnVGAclus)
 export(mvplnVisualize)
 import(Rcpp)
 import(cluster)
