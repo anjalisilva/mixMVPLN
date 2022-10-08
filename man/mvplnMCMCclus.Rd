@@ -30,8 +30,8 @@ cluster membership of each Y_j matrix. If not available, leave as
 \item{gmin}{A positive integer specifying the minimum number of components
 to be considered in the clustering run.}
 
-\item{gmax}{A positive integer, >gmin, specifying the maximum number of
-components to be considered in the clustering run.}
+\item{gmax}{A positive integer, greater than or equal to gmin, specifying
+the maximum number of components to be considered in the clustering run.}
 
 \item{nChains}{A positive integer specifying the number of Markov chains.
 Default is 3, the recommended minimum number.}
@@ -40,11 +40,16 @@ Default is 3, the recommended minimum number.}
 for each MCMC chain (including warmup). The value should be greater than
 40. The upper limit will depend on size of dataset.}
 
-\item{initMethod}{An algorithm for initialization. Current options are
-"kmeans", "random", "medoids", "clara", or "fanny". Default is "kmeans".}
+\item{initMethod}{A method for initialization. Current options are
+"kmeans", "random", "medoids", "clara", or "fanny". If nInitIterations
+is set to >= 1, then this method will be used for initialization.
+Default is "kmeans".}
 
 \item{nInitIterations}{A positive integer or zero, specifying the number
-of initialization runs to be considered. Default is 0.}
+of initialization runs prior to clustering. The run with the highest
+loglikelihood is used to initialize values, if nInitIterations > 1.
+Default value is set to 0, in which case no initialization will
+be performed.}
 
 \item{normalize}{A string with options "Yes" or "No" specifying
 if normalization should be performed. Currently, normalization factors
@@ -110,28 +115,37 @@ trueMall <- rbind(trueM1, trueM2)
 
 # Phi is a r x r matrix
 # Loading needed packages for generating data
-if (!require(clusterGeneration)) install.packages("clusterGeneration")
-library("clusterGeneration")
+# if (!require(clusterGeneration)) install.packages("clusterGeneration")
+# library("clusterGeneration")
 
 # Covariance matrix containing variances and covariances between r occasions
-truePhi1 <- clusterGeneration::genPositiveDefMat("unifcorrmat",
-                                                  dim = truer,
-                                                  rangeVar = c(1, 1.7))$Sigma
+# truePhi1 <- clusterGeneration::genPositiveDefMat("unifcorrmat",
+#                                                   dim = truer,
+#                                                   rangeVar = c(1, 1.7))$Sigma
+truePhi1 <- matrix(c(1.075551, -0.488301, -0.488301, 1.362777), nrow = 2)
 truePhi1[1, 1] <- 1 # For identifiability issues
 
-truePhi2 <- clusterGeneration::genPositiveDefMat("unifcorrmat",
-                                                  dim = truer,
-                                                  rangeVar = c(0.7, 0.7))$Sigma
+# truePhi2 <- clusterGeneration::genPositiveDefMat("unifcorrmat",
+#                                                   dim = truer,
+#                                                   rangeVar = c(0.7, 0.7))$Sigma
+truePhi2 <- matrix(c(0.7000000, 0.6585887, 0.6585887, 0.7000000), nrow = 2)
 truePhi2[1, 1] <- 1 # For identifiability issues
 truePhiall <- rbind(truePhi1, truePhi2)
 
 # Omega is a p x p matrix
 # Covariance matrix containing variances and covariances between p responses
-trueOmega1 <- clusterGeneration::genPositiveDefMat("unifcorrmat", dim = truep,
-                                   rangeVar = c(1, 1.7))$Sigma
-
-trueOmega2 <- clusterGeneration::genPositiveDefMat("unifcorrmat", dim = truep,
-                                   rangeVar = c(0.7, 0.7))$Sigma
+# trueOmega1 <- clusterGeneration::genPositiveDefMat("unifcorrmat", dim = truep,
+#                                    rangeVar = c(1, 1.7))$Sigma
+trueOmega1 <- matrix(c(1.0526554, 1.0841910, -0.7976842,
+                       1.0841910,  1.1518811, -0.8068102,
+                       -0.7976842, -0.8068102,  1.4090578),
+                       nrow = 3)
+# trueOmega2 <- clusterGeneration::genPositiveDefMat("unifcorrmat", dim = truep,
+#                                    rangeVar = c(0.7, 0.7))$Sigma
+trueOmega2 <- matrix(c(0.7000000, 0.5513744, 0.4441598,
+                       0.5513744, 0.7000000, 0.4726577,
+                       0.4441598, 0.4726577, 0.7000000),
+                       nrow = 3)
 trueOmegaAll <- rbind(trueOmega1, trueOmega2)
 
 # Generated simulated data
@@ -157,6 +171,35 @@ clusteringResults <- mixMVPLN::mvplnMCMCclus(dataset = sampleData$dataset,
 
 }
 \references{
+Aitchison, J. and C. H. Ho (1989). The multivariate Poisson-log normal distribution.
+\emph{Biometrika} 76.
+
+Akaike, H. (1973). Information theory and an extension of the maximum likelihood
+principle. In \emph{Second International Symposium on Information Theory}, New York, NY,
+USA, pp. 267–281. Springer Verlag.
+
+Arlot, S., Brault, V., Baudry, J., Maugis, C., and Michel, B. (2016).
+capushe: CAlibrating Penalities Using Slope HEuristics. R package version 1.1.1.
+
+Biernacki, C., G. Celeux, and G. Govaert (2000). Assessing a mixture model for
+clustering with the integrated classification likelihood. \emph{IEEE Transactions
+on Pattern Analysis and Machine Intelligence} 22.
+
+Bozdogan, H. (1994). Mixture-model cluster analysis using model selection criteria
+and a new informational measure of complexity. In \emph{Proceedings of the First US/Japan
+Conference on the Frontiers of Statistical Modeling: An Informational Approach:
+Volume 2 Multivariate Statistical Modeling}, pp. 69–113. Dordrecht: Springer Netherlands.
+
+Robinson, M.D., and Oshlack, A. (2010). A scaling normalization method for differential
+expression analysis of RNA-seq data. \emph{Genome Biology} 11, R25.
+
+Schwarz, G. (1978). Estimating the dimension of a model. \emph{The Annals of Statistics}
+6.
+
+Silva, A. et al. (2019). A multivariate Poisson-log normal mixture model
+for clustering transcriptome sequencing data. \emph{BMC Bioinformatics} 20.
+\href{https://bmcbioinformatics.biomedcentral.com/articles/10.1186/s12859-019-2916-0}{Link}
+
 Silva, A. et al. (2018). Finite Mixtures of Matrix Variate Poisson-Log Normal Distributions
 for Three-Way Count Data. \href{https://arxiv.org/abs/1807.08380}{arXiv preprint arXiv:1807.08380}.
 }
