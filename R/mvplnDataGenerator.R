@@ -190,7 +190,6 @@
 #' @importFrom edgeR calcNormFactors
 #' @importFrom mclust map
 #' @importFrom mvtnorm rmvnorm
-#' @importFrom clusterGeneration genPositiveDefMat
 mvplnDataGenerator <- function(nOccasions,
                                nResponses,
                                nUnits,
