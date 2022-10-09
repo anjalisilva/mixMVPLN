@@ -85,7 +85,7 @@ set.seed(1234)
 trueG <- 2 # number of total G
 truer <- 2 # number of total occasions
 truep <- 3 # number of total responses
-trueN <- 100 # number of total units
+trueN <- 1000 # number of total units
 
 # Mu is a r x p matrix
 trueM1 <- matrix(rep(6, (truer * truep)),
@@ -167,7 +167,6 @@ trueM1 <- matrix(c(6, 5.5, 6, 6, 5.5, 6),
                  byrow = TRUE)
 trueMall <- rbind(trueM1)
 # Phi is a r x r matrix
-set.seed(1)
 # truePhi1 <- clusterGeneration::genPositiveDefMat(
 #                               "unifcorrmat",
 #                                dim = truer,
@@ -178,7 +177,6 @@ truePhi1[1, 1] <- 1 # for identifiability issues
 truePhiall <- rbind(truePhi1)
 
 # Omega is a p x p matrix
-set.seed(1)
 # trueOmega1 <- genPositiveDefMat(
 #                    "unifcorrmat",
 #                     dim = truep,
@@ -189,7 +187,6 @@ trueOmega1 <- matrix(c(1.1625581, 0.9157741, 0.8203499,
 trueOmegaAll <- rbind(trueOmega1)
 
 # Generated simulated data
-set.seed(1)
 sampleData2 <- mixMVPLN::mvplnDataGenerator(
                          nOccasions = truer,
                          nResponses = truep,
@@ -205,7 +202,7 @@ clusteringResults <- mixMVPLN::mvplnVGAclus(
                       membership = sampleData2$truemembership,
                       gmin = 1,
                       gmax = 2,
-                      initMethod = "kmeans",
+                      initMethod = "clara",
                       nInitIterations = 2,
                       normalize = "Yes")
 

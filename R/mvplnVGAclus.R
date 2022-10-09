@@ -180,7 +180,7 @@
 #'                       membership = sampleData2$truemembership,
 #'                       gmin = 1,
 #'                       gmax = 2,
-#'                       initMethod = "kmeans",
+#'                       initMethod = "clara",
 #'                       nInitIterations = 2,
 #'                       normalize = "Yes")
 #'
