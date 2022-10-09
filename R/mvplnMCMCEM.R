@@ -1,8 +1,8 @@
 #' Clustering Using mixtures of MVPLN via MCMC-EM
 #'
 #' Performs clustering using mixtures of matrix variate Poisson-log normal
-#' (MVPLN) via MCMC-EM with parallelization. Model selection can be done
-#' using AIC, AIC3, BIC and ICL.
+#' (MVPLN) via MCMC-EM with an option for parallelization. Model selection
+#' can be done using AIC, AIC3, BIC and ICL.
 #'
 #' @param dataset A list of length nUnits, containing Y_j matrices.
 #'    A matrix Y_j has size r x p, and the dataset will have 'j' such

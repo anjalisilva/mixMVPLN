@@ -78,6 +78,14 @@ Performs clustering using mixtures of matrix variate Poisson-log normal
 (MVPLN) via variational Gaussian approximations. Model selection can
 be done using AIC, AIC3, BIC and ICL.
 }
+\details{
+Starting values (argument: initMethod) and the number of
+    iterations for each MCMC chain (argument: nIterations) play an
+    important role in the successful operation of this algorithm.
+    Occasionally an error may result due to singular matrix. In that
+    case rerun the method and may set a different seed to ensure
+    a different set of initialization values.
+}
 \examples{
 \dontrun{
 # Example 1

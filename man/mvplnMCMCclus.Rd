@@ -89,8 +89,8 @@ Returns an S3 object of class mvplnParallel with results.
 }
 \description{
 Performs clustering using mixtures of matrix variate Poisson-log normal
-(MVPLN) via MCMC-EM with parallelization. Model selection can be done
-using AIC, AIC3, BIC and ICL.
+(MVPLN) via MCMC-EM with an option for parallelization. Model selection
+can be done using AIC, AIC3, BIC and ICL.
 }
 \examples{
 \dontrun{

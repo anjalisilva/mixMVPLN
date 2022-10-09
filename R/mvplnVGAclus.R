@@ -4,6 +4,13 @@
 #' (MVPLN) via variational Gaussian approximations. Model selection can
 #' be done using AIC, AIC3, BIC and ICL.
 #'
+#' @details Starting values (argument: initMethod) and the number of
+#'     iterations for each MCMC chain (argument: nIterations) play an
+#'     important role in the successful operation of this algorithm.
+#'     Occasionally an error may result due to singular matrix. In that
+#'     case rerun the method and may set a different seed to ensure
+#'     a different set of initialization values.
+#'
 #' @param dataset A list of length nUnits, containing Y_j matrices.
 #'    A matrix Y_j has size r x p, and the dataset will have 'j' such
 #'    matrices with j = 1,...,n. If a Y_j has all zeros, such Y_j will
@@ -609,7 +616,9 @@ mvplnVGAclus <- function(dataset,
 
     programclust <- mclust::map(zValue)
 
-    FinalGResults <- list(mu = mu,
+    FinalGResults <- list(mu = matrix(unlist(mu),
+                                      ncol = p,
+                                      byrow = TRUE),
                           sigma = sigma,
                           phi = finalPhi,
                           omega = finalOmega,
