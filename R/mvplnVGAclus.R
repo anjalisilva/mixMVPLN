@@ -62,7 +62,7 @@
 #' trueG <- 2 # number of total G
 #' truer <- 2 # number of total occasions
 #' truep <- 3 # number of total responses
-#' trueN <- 100 # number of total units
+#' trueN <- 1000 # number of total units
 #'
 #' # Mu is a r x p matrix
 #' trueM1 <- matrix(rep(6, (truer * truep)),
@@ -145,7 +145,6 @@
 #' trueMall <- rbind(trueM1)
 
 #' # Phi is a r x r matrix
-#' set.seed(1)
 #' # truePhi1 <- clusterGeneration::genPositiveDefMat(
 #' #                               "unifcorrmat",
 #' #                                dim = truer,
@@ -156,7 +155,6 @@
 #' truePhiall <- rbind(truePhi1)
 #'
 #' # Omega is a p x p matrix
-#' set.seed(1)
 #' # trueOmega1 <- genPositiveDefMat(
 #' #                    "unifcorrmat",
 #' #                     dim = truep,
@@ -167,7 +165,6 @@
 #' trueOmegaAll <- rbind(trueOmega1)
 #'
 #' # Generated simulated data
-#' set.seed(1)
 #' sampleData2 <- mixMVPLN::mvplnDataGenerator(
 #'                          nOccasions = truer,
 #'                          nResponses = truep,
@@ -430,12 +427,15 @@ mvplnVGAclus <- function(dataset,
     for (initIt in seq_along(1:nInitIterations)) {
        set.seed(initIt)
        outputInitialization[[initIt]] <- initializationRunVGA(
-                                                G,
-                                                dataset,
-                                                TwoDdataset,
-                                                r, p, d, n,
-                                                normFactors,
-                                                initMethod)
+                                                G = G,
+                                                dataset = dataset,
+                                                TwoDdataset = TwoDdataset,
+                                                r = r,
+                                                p = p,
+                                                d = d,
+                                                n = n,
+                                                normFactors = normFactors,
+                                                initMethod = initMethod)
        checklogL[initIt] <- outputInitialization[[initIt]]$finalLogLik
     }
 
@@ -562,14 +562,18 @@ mvplnVGAclus <- function(dataset,
                   log(det(isigma[[g]])) - d/2)
       }
 
-      loglik[it] <- sum(log(rowSums(FMatrix)))
+      # loglik[it] <- sum(log(rowSums(FMatrix)))
+      # if FMatrix values is 0, then log(0) = -Inf and logL error
+      rowSumsFMatrix <- rowSums(FMatrix)
+      if(any(rowSumsFMatrix == 0) == TRUE) {
+        zeroRows <- which(rowSumsFMatrix == 0)
+        rowSumsFMatrix[zeroRows] <- min(rowSumsFMatrix[-zeroRows])
+      }
+      loglik[it] <- sum(log(rowSumsFMatrix))
 
-      # Plotting
-      # if (it > 3) {
-      #   plot(loglik, type = "l")
-      # }
 
-      zValue <- FMatrix / rowSums(FMatrix)
+      zValue <- FMatrix / rowSumsFMatrix
+
       if (it <= 5) {
         zValue[zValue == "NaN"] <- 0
       }
@@ -917,13 +921,22 @@ initializationRunVGA <- function(G,
                                        log(det(isigma[[g]])) - d/2)
       }
 
-      loglik[it] <- sum(log(rowSums(FMatrix)))
+      # loglik[it] <- sum(log(rowSums(FMatrix)))
+      # if FMatrix values is 0, then log(0) = -Inf and logL error
+      rowSumsFMatrix <- rowSums(FMatrix)
+      if(any(rowSumsFMatrix == 0) == TRUE) {
+        zeroRows <- which(rowSumsFMatrix == 0)
+        rowSumsFMatrix[zeroRows] <- min(rowSumsFMatrix[-zeroRows])
+      }
+      loglik[it] <- sum(log(rowSumsFMatrix))
 
-      zValue <- FMatrix / rowSums(FMatrix)
+
+      zValue <- FMatrix / rowSumsFMatrix
       if (it <= 5) {
         zValue[zValue == "NaN"] <- 0
       }
 
+      # cat("\n Initialization loglik[it - 1] - loglik[it - 2]:", loglik[it - 1] - loglik[it - 2])
       if (it > 5) {
         # Aitkaine's stopping criterion
         if ((loglik[it - 1] - loglik[it - 2]) == 0) checks <- 1 else {
