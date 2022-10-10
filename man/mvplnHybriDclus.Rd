@@ -33,6 +33,13 @@ components to be considered in the clustering run.}
 \item{gmax}{A positive integer, >gmin, specifying the maximum number of
 components to be considered in the clustering run.}
 
+\item{nChains}{A positive integer specifying the number of Markov chains.
+Default is 3, the recommended minimum number.}
+
+\item{nIterations}{A positive integer specifying the number of iterations
+for each MCMC chain (including warmup). The value should be greater than
+40. The upper limit will depend on size of dataset.}
+
 \item{initMethod}{A method for initialization. Current options are
 "kmeans", "random", "medoids", "clara", or "fanny". If nInitIterations
 is set to >= 1, then this method will be used for initialization.
@@ -48,6 +55,11 @@ be performed.}
 if normalization should be performed. Currently, normalization
 factors are calculated using TMM method of edgeR package.
 Default is "Yes", for which normalization will be performed.}
+
+\item{numNodes}{A positive integer indicating the number of nodes to be
+used from the local machine to run the clustering algorithm. Else
+leave as NA, so default will be detected as
+parallel::makeCluster(parallel::detectCores() - 1).}
 }
 \value{
 Returns an S3 object of class mvplnParallel with results.
