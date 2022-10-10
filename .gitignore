@@ -10,7 +10,7 @@
 *.Rproj.user
 .Rproj.user
 inst/doc
-/ignoreFolder
-\ignoreFolder
+/inst/ignoreFolder
+\inst\ignoreFolder
 .DS_Store
 *.DS_Store
