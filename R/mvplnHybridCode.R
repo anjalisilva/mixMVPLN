@@ -23,6 +23,11 @@
 #'    components to be considered in the clustering run.
 #' @param gmax A positive integer, >gmin, specifying the maximum number of
 #'    components to be considered in the clustering run.
+#' @param nChains A positive integer specifying the number of Markov chains.
+#'    Default is 3, the recommended minimum number.
+#' @param nIterations A positive integer specifying the number of iterations
+#'    for each MCMC chain (including warmup). The value should be greater than
+#'    40. The upper limit will depend on size of dataset.
 #' @param initMethod A method for initialization. Current options are
 #'    "kmeans", "random", "medoids", "clara", or "fanny". If nInitIterations
 #'    is set to >= 1, then this method will be used for initialization.
@@ -36,6 +41,10 @@
 #'     if normalization should be performed. Currently, normalization
 #'     factors are calculated using TMM method of edgeR package.
 #'     Default is "Yes", for which normalization will be performed.
+#' @param numNodes A positive integer indicating the number of nodes to be
+#'     used from the local machine to run the clustering algorithm. Else
+#'     leave as NA, so default will be detected as
+#'     parallel::makeCluster(parallel::detectCores() - 1).
 #'
 #' @return Returns an S3 object of class mvplnParallel with results.
 #' \itemize{
@@ -66,7 +75,7 @@
 #' @examples
 #' \dontrun{
 #' # Example 1
-#' set.seed(1234)
+#' set.seed(12345)
 #' trueG <- 2 # number of total G
 #' truer <- 2 # number of total occasions
 #' truep <- 3 # number of total responses
@@ -245,15 +254,15 @@
 #' @importFrom utils tail
 #'
 mvplnHybriDclus <- function(dataset,
-                         membership = "none",
-                         gmin,
-                         gmax,
-                         nChains = 3,
-                         nIterations = 300,
-                         initMethod = "kmeans",
-                         nInitIterations = 0,
-                         normalize = "Yes",
-                         numNodes = NA) {
+                           membership = "none",
+                           gmin,
+                           gmax,
+                           nChains = 3,
+                           nIterations = 300,
+                           initMethod = "kmeans",
+                           nInitIterations = 0,
+                           normalize = "Yes",
+                           numNodes = NA) {
   ptm <- proc.time()
 
   mvplnVGAclusOutput <-  mvplnVGAclus(dataset = dataset,
@@ -276,8 +285,28 @@ mvplnHybriDclus <- function(dataset,
                             VGAparameters = mvplnVGAclusOutput$allResults)
 
   final <- proc.time() - ptm
+  RESULTS <- list(nUnits = mcmcEMhy,
+                  nVariables = mcmcEMhy,
+                  nOccassions = mcmcEMhy,
+                  normFactors = normFactors,
+                  gmin = gmin,
+                  gmax = gmax,
+                  initalizationMethod = initMethod,
+                  loglikelihood = mcmcEMhy,
+                  nParameters = mcmcEMhy,
+                  trueLabels = membership,
+                  ICL.all = mcmcEMhy,
+                  BIC.all = mcmcEMhy,
+                  AIC.all = mcmcEMhy,
+                  AIC3.all = mcmcEMhy,
+                  totalTime = final,
+                  mvplnVGAclusOutput = mvplnVGAclusOutput,
+                  mcmcEMOutput = mcmcEMhy)
 
-  return(mvplnMCMCclusOutput)
+
+  class(RESULTS) <- "mvplnHybriDclus"
+  return(RESULTS)
+
 }
 
 
