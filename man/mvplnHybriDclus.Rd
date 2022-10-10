@@ -105,7 +105,7 @@ Starting values (argument: initMethod) and the number of
 \examples{
 \dontrun{
 # Example 1
-set.seed(1234)
+set.seed(12345)
 trueG <- 2 # number of total G
 truer <- 2 # number of total occasions
 truep <- 3 # number of total responses

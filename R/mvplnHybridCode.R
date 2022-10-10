@@ -777,6 +777,7 @@ callingClusteringHybrid <- function(n, r, p, d,
       clustersize <- seq(gmin, gmax, 1)[gmodel]
     }
 
+    cat("\n Clustering for g =", clustersize, "\n")
    # if(nInitIterations == 0) {
       allruns <- mvplnClusterHybrid( r = r,
                                p = p,
@@ -880,7 +881,7 @@ mvplnClusterHybrid <- function(r, p,
 
     if(itOuter > 2) {
 
-      if (all(coda::heidel.diag(logL[- 1], eps = 0.1, pvalue = 0.05)[, c(1, 4)] == 1) || itOuter > 50) {
+      #if (all(coda::heidel.diag(logL[- 1], eps = 0.1, pvalue = 0.05)[, c(1, 4)] == 1) || itOuter > 50) {
         programclust <- vector()
         programclust <- map(z)
 
@@ -893,7 +894,7 @@ mvplnClusterHybrid <- function(r, p,
         }
 
         convOuter <- 1
-      }
+      #}
     }
 
 
