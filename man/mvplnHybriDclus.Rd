@@ -181,7 +181,7 @@ clusteringResults <- mixMVPLN::mvplnHybriDclus(
 trueG <- 1 # number of total G
 truer <- 2 # number of total occasions
 truep <- 3 # number of total responses
-trueN <- 1000 # number of total units
+trueN <- 100 # number of total units
 truePiG <- 1L # mixing proportion for G = 1
 
 # Mu is a r x p matrix

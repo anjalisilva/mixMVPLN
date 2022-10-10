@@ -151,7 +151,7 @@
 #' trueG <- 1 # number of total G
 #' truer <- 2 # number of total occasions
 #' truep <- 3 # number of total responses
-#' trueN <- 1000 # number of total units
+#' trueN <- 100 # number of total units
 #' truePiG <- 1L # mixing proportion for G = 1
 #'
 #' # Mu is a r x p matrix
@@ -285,23 +285,23 @@ mvplnHybriDclus <- function(dataset,
                             VGAparameters = mvplnVGAclusOutput$allResults)
 
   final <- proc.time() - ptm
-  RESULTS <- list(nUnits = mcmcEMhy,
-                  nVariables = mcmcEMhy,
-                  nOccassions = mcmcEMhy,
-                  normFactors = normFactors,
+  RESULTS <- list(nUnits = mcmcEMhy$nUnits,
+                  nVariables = mcmcEMhy$nVariables,
+                  nOccassions = mcmcEMhy$nOccassions,
+                  normFactors = mcmcEMhy$normFactors,
                   gmin = gmin,
                   gmax = gmax,
                   initalizationMethod = initMethod,
-                  loglikelihood = mcmcEMhy,
-                  nParameters = mcmcEMhy,
-                  trueLabels = membership,
-                  ICL.all = mcmcEMhy,
-                  BIC.all = mcmcEMhy,
-                  AIC.all = mcmcEMhy,
-                  AIC3.all = mcmcEMhy,
+                  loglikelihood = mcmcEMhy$loglikelihood,
+                  nParameters = mcmcEMhy$nParameters,
+                  trueLabels = mcmcEMhy$trueLabels,
+                  ICL.all = mcmcEMhy$ICL.all,
+                  BIC.all = mcmcEMhy$BIC.all,
+                  AIC.all = mcmcEMhy$AIC.all,
+                  AIC3.all = mcmcEMhy$AIC3.all,
                   totalTime = final,
-                  mvplnVGAclusOutput = mvplnVGAclusOutput,
-                  mcmcEMOutput = mcmcEMhy)
+                  mvplnVGAOutput = mvplnVGAclusOutput,
+                  mvplnMCMEMOutput = mcmcEMhy)
 
 
   class(RESULTS) <- "mvplnHybriDclus"
@@ -879,8 +879,8 @@ mvplnClusterHybrid <- function(r, p,
     # plot(logL[-1], xlab="iteration", ylab=paste("Initialization logL value for",G) )
 
 
-    if(itOuter > 2) {
-
+    if(itOuter == 2) {
+       cat("\n itOuter is", itOuter, "\n")
       #if (all(coda::heidel.diag(logL[- 1], eps = 0.1, pvalue = 0.05)[, c(1, 4)] == 1) || itOuter > 50) {
         programclust <- vector()
         programclust <- map(z)
