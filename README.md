@@ -236,6 +236,11 @@ A BibTeX entry for LaTeX users is
   Statistical Modeling*, pp. 69–113. Dordrecht: Springer
   Netherlands.](https://link.springer.com/chapter/10.1007/978-94-011-0800-3_3)
 
+- [Ghahramani, Z. and Beal, M. (1999). Variational inference for
+  bayesian mixtures of factor analysers. *Advances in neural information
+  processing systems*
+  12.](https://cse.buffalo.edu/faculty/mbeal/papers/nips99.pdf)
+
 - [Robinson, M.D., and Oshlack, A. (2010). A scaling normalization
   method for differential expression analysis of RNA-seq data. *Genome
   Biology* 11,
@@ -248,6 +253,11 @@ A BibTeX entry for LaTeX users is
   multivariate Poisson-log normal mixture model for clustering
   transcriptome sequencing data. *BMC
   Bioinformatics.*](https://pubmed.ncbi.nlm.nih.gov/31311497/)
+
+- [Wainwright, M. J. and Jordan, M. I. (2008). Graphical models,
+  exponential families, and variational inference. *Foundations and
+  Trends® in Machine Learning*
+  1.](https://onlinelibrary.wiley.com/doi/abs/10.1002/sta4.310)
 
 ## Maintainer
 

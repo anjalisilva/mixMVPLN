@@ -81,7 +81,6 @@ Three different frameworks for parameter estimation for the mixtures of MVPLN mo
 The MCMC-EM algorithm via Stan is used for parameter estimation. This method is employed in the function *mvplnMCMCclus*. Coarse grain parallelization is employed, such that when a range of components/clusters (g = 1,...,G) are considered, each component/cluster is run on a different processor. This can be performed because each component/cluster size is independent from another. All components/clusters in the range to be tested have been parallelized to run on a seperate core using the *parallel* R package. The number of cores used for clustering is can be user-specified or calculated using *parallel::detectCores() - 1*. To check the convergence of MCMC chains, the potential scale reduction factor and the effective number of samples are used. The Heidelberger and Welch’s convergence diagnostic (Heidelberger and Welch, 1983) is used to check the convergence of the MCMC-EM algorithm. 
 
 ### Variational-EM Framework for Parameter Estimation 
-
 MCMC-EM-based approach is computationally intensive; hence, we also provide a computationally efficient variational approximation framework for parameter estimation. This method is employed in the function *mvplnVGAclus*. Variational approximations (Wainwright et al., 2008) are approximate inference techniques in which a computationally convenient approximating density is used in place of a more complex but 'true' posterior density. The approximating density is obtained by minimizing the Kullback-Leibler (KL) divergence between the true and the approximating densities. A variational Gaussian approximations (VGAs) is used for parameter estimation, initially proposed for MPLN framework by [Subedi and Browne, 2020](https://doi.org/10.1002/sta4.310). The VGAs approach is computationally efficient, however, it does not guarantee an exact posterior (Ghahramani and Beal, 1999). 
 
 ### Hybrid Appraoch for Parameter Estimation 
@@ -139,11 +138,15 @@ A BibTeX entry for LaTeX users is
 
 - [Bozdogan, H. (1994). Mixture-model cluster analysis using model selection criteria and a new informational measure of complexity. In *Proceedings of the First US/Japan Conference on the Frontiers of Statistical Modeling: An Informational Approach: Volume 2 Multivariate Statistical Modeling*, pp. 69–113. Dordrecht: Springer Netherlands.](https://link.springer.com/chapter/10.1007/978-94-011-0800-3_3)
 
+- [Ghahramani, Z. and Beal, M. (1999). Variational inference for bayesian mixtures of factor analysers. *Advances in neural information processing systems* 12.](https://cse.buffalo.edu/faculty/mbeal/papers/nips99.pdf)
+
 - [Robinson, M.D., and Oshlack, A. (2010). A scaling normalization method for differential expression analysis of RNA-seq data. *Genome Biology* 11, R25.](https://genomebiology.biomedcentral.com/articles/10.1186/gb-2010-11-3-r25)
 
 - [Schwarz, G. (1978). Estimating the dimension of a model. *The Annals of Statistics* 6.](https://www.jstor.org/stable/2958889?seq=1)
 
 - [Silva, A., S. J. Rothstein, P. D. McNicholas, and S. Subedi (2019). A multivariate Poisson-log normal mixture model for clustering transcriptome sequencing data. *BMC Bioinformatics.*](https://pubmed.ncbi.nlm.nih.gov/31311497/)
+
+- [Wainwright, M. J. and Jordan, M. I. (2008). Graphical models, exponential families, and variational inference. *Foundations and Trends® in Machine Learning* 1.](https://onlinelibrary.wiley.com/doi/abs/10.1002/sta4.310)
 
 ## Maintainer
 
