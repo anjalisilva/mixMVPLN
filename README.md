@@ -25,7 +25,7 @@ count](https://img.shields.io/github/languages/count/anjalisilva/mixMVPLN)
 
 `mixMVPLN` is an R package for performing model-based clustering of
 three-way count data using mixtures of matrix variate Poisson-log normal
-(MVPLN) distributions ([Silva et al.,
+(mixMVPLN) distributions ([Silva et al.,
 2018](https://arxiv.org/abs/1807.08380)). Three different frameworks are
 available for parameter estimation of the mixtures of MVPLN models: 1)
 method based on Markov chain Monte Carlo expectation-maximization
@@ -80,11 +80,11 @@ An overview of the package is illustrated below:
 ### Introduction
 
 Two-way data is defined by units (the rows) and variables/responses (the
-columns). However, three-way data is defined by occasions (or layers;
-r), in addition to the units (n) and the variables/responses (p). For
-two-way data, each observation is represented as a vector, while for
-three-way data, each observation can be regarded as a matrix. The matrix
-variate distributions offer a natural way for modeling three-way data.
+columns). However, three-way data is defined by occasions/layers (r), in
+addition to the units (n) and the variables/responses (p). For two-way
+data, each observation is represented as a vector, while for three-way
+data, each observation can be regarded as a matrix. The matrix variate
+distributions offer a natural way for modeling three-way data.
 Extensions of matrix variate distributions in the context of mixture
 models have given rise to mixtures of matrix variate
 distributions,mwhich have been used to cluster three-way data
@@ -178,16 +178,11 @@ For tutorials, refer to the vignette:
 browseVignettes("mixMVPLN")
 ```
 
-or see:
+- A tour of mixMVPLN With Parameter Estimation via MCMC-EM
 
-- [A tour of mixMVPLN With Parameter Estimation via
-  MCMC-EM](https://github.com/anjalisilva/mixMVPLN/blob/master/vignettes/Introduction_mixMVPLN_MCMEM.md)
+- A tour of mixMVPLN With Parameter Estimation via VGA
 
-- [A tour of mixMVPLN With Parameter Estimation via
-  VGA](https://github.com/anjalisilva/mixMVPLN/blob/master/vignettes/Introduction_mixMVPLN_MCMEM.md)
-
-- [A tour of mixMVPLN With Parameter Estimation via Hybrid
-  Approach](https://github.com/anjalisilva/mixMVPLN/blob/master/vignettes/Introduction_mixMVPLN_MCMEM.md)
+- A tour of mixMVPLN With Parameter Estimation via Hybrid Approach
 
 ## Citation for Package
 
