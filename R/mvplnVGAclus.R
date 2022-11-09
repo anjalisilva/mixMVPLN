@@ -725,7 +725,7 @@ mvplnVGAclus <- function(dataset,
                     AIC3All = aic3,
                     totalTime = final)
 
-    class(RESULTS) <- "mvplnParallel"
+    class(RESULTS) <- "mvplnVGA"
     return(RESULTS)
 
 }
