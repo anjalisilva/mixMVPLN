@@ -117,8 +117,8 @@ simulatedMVData <- mixMVPLN::mvplnDataGenerator(nOccasions = truer,
 The generated dataset can be checked:
 
 ``` r
-length(simulatedMVData$dataset) # 50 units
-class(simulatedMVData$dataset) # list with length of 50
+length(simulatedMVData$dataset) # 100 units
+class(simulatedMVData$dataset) # list with length of 100
 typeof(simulatedMVData$dataset) # list
 summary(simulatedMVData$dataset) # summary of data
 dim(simulatedMVData$dataset[[1]]) # dimension of first unit is 2 x 3
