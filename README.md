@@ -190,63 +190,64 @@ browseVignettes("mixMVPLN")
 citation("mixMVPLN")
 ```
 
-Silva, A., S. J. Rothstein, P. D. McNicholas, and S. Subedi (2018).
-Finite mixtures of matrix-variate Poisson-log normal distributions for
-three-way count data. arXiv preprint arXiv:1807.08380.
+Silva, A., S. J. Rothstein, P. D. McNicholas, X. Qin, and S. Subedi
+(2022). Finite mixtures of matrix-variate Poisson-log normal
+distributions for three-way count data. arXiv preprint arXiv:1807.08380.
 
 ``` r
 A BibTeX entry for LaTeX users is
 
   @misc{,
     title = {Finite mixtures of matrix-variate Poisson-log normal distributions for three-way count data},
-    author = {A. Silva and S. J. Rothstein and P. D. McNicholas and S. Subedi},
+    author = {A. Silva and S. J. Rothstein and P. D. McNicholas, X. Qin and S. Subedi},
     note = {arXiv preprint arXiv:1206.4768},
-    year = {2018},
+    year = {2022},
     url = {https://arxiv.org/abs/1807.08380},
   }
 ```
 
 ## Package References
 
-[Silva, A., S. J. Rothstein, P. D. McNicholas, and S. Subedi (2018).
-Finite mixtures of matrix-variate Poisson-log normal distributions for
-three-way count data. arXiv preprint
-arXiv:1807.08380.](https://arxiv.org/abs/1807.08380)
+- [Silva, A., S. J. Rothstein, P. D. McNicholas, X. Qin, and S. Subedi
+  (2022). Finite mixtures of matrix-variate Poisson-log normal
+  distributions for three-way count data. arXiv preprint
+  arXiv:1807.08380.](https://arxiv.org/abs/1807.08380)
 
 ## Other References
 
-[Aitchison, J. and C. H. Ho (1989). The multivariate Poisson-log normal
-distribution. *Biometrika.*](https://www.jstor.org/stable/2336624?seq=1)
+- [Aitchison, J. and C. H. Ho (1989). The multivariate Poisson-log
+  normal distribution.
+  *Biometrika.*](https://www.jstor.org/stable/2336624?seq=1)
 
-[Akaike, H. (1973). Information theory and an extension of the maximum
-likelihood principle. In *Second International Symposium on Information
-Theory*, New York, NY, USA, pp. 267–281. Springer
-Verlag.](https://link.springer.com/chapter/10.1007/978-1-4612-1694-0_15)
+- [Akaike, H. (1973). Information theory and an extension of the maximum
+  likelihood principle. In *Second International Symposium on
+  Information Theory*, New York, NY, USA, pp. 267–281. Springer
+  Verlag.](https://link.springer.com/chapter/10.1007/978-1-4612-1694-0_15)
 
-[Biernacki, C., G. Celeux, and G. Govaert (2000). Assessing a mixture
-model for clustering with the integrated classification likelihood.
-*IEEE Transactions on Pattern Analysis and Machine Intelligence*
-22.](https://hal.inria.fr/inria-00073163/document)
+- [Biernacki, C., G. Celeux, and G. Govaert (2000). Assessing a mixture
+  model for clustering with the integrated classification likelihood.
+  *IEEE Transactions on Pattern Analysis and Machine Intelligence*
+  22.](https://hal.inria.fr/inria-00073163/document)
 
-[Bozdogan, H. (1994). Mixture-model cluster analysis using model
-selection criteria and a new informational measure of complexity. In
-*Proceedings of the First US/Japan Conference on the Frontiers of
-Statistical Modeling: An Informational Approach: Volume 2 Multivariate
-Statistical Modeling*, pp. 69–113. Dordrecht: Springer
-Netherlands.](https://link.springer.com/chapter/10.1007/978-94-011-0800-3_3)
+- [Bozdogan, H. (1994). Mixture-model cluster analysis using model
+  selection criteria and a new informational measure of complexity. In
+  *Proceedings of the First US/Japan Conference on the Frontiers of
+  Statistical Modeling: An Informational Approach: Volume 2 Multivariate
+  Statistical Modeling*, pp. 69–113. Dordrecht: Springer
+  Netherlands.](https://link.springer.com/chapter/10.1007/978-94-011-0800-3_3)
 
-[Robinson, M.D., and Oshlack, A. (2010). A scaling normalization method
-for differential expression analysis of RNA-seq data. *Genome Biology*
-11,
-R25.](https://genomebiology.biomedcentral.com/articles/10.1186/gb-2010-11-3-r25)
+- [Robinson, M.D., and Oshlack, A. (2010). A scaling normalization
+  method for differential expression analysis of RNA-seq data. *Genome
+  Biology* 11,
+  R25.](https://genomebiology.biomedcentral.com/articles/10.1186/gb-2010-11-3-r25)
 
-[Schwarz, G. (1978). Estimating the dimension of a model. *The Annals of
-Statistics* 6.](https://www.jstor.org/stable/2958889?seq=1)
+- [Schwarz, G. (1978). Estimating the dimension of a model. *The Annals
+  of Statistics* 6.](https://www.jstor.org/stable/2958889?seq=1)
 
-[Silva, A., S. J. Rothstein, P. D. McNicholas, and S. Subedi (2019). A
-multivariate Poisson-log normal mixture model for clustering
-transcriptome sequencing data. *BMC
-Bioinformatics.*](https://pubmed.ncbi.nlm.nih.gov/31311497/)
+- [Silva, A., S. J. Rothstein, P. D. McNicholas, and S. Subedi (2019). A
+  multivariate Poisson-log normal mixture model for clustering
+  transcriptome sequencing data. *BMC
+  Bioinformatics.*](https://pubmed.ncbi.nlm.nih.gov/31311497/)
 
 ## Maintainer
 
