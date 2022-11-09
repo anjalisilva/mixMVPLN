@@ -1,4 +1,4 @@
-context("Checking for parallel clustering performance")
+context("Checking MCMC-EM")
 library(mixMVPLN)
 
 test_that("Checking clustering results", {
@@ -52,7 +52,7 @@ test_that("Checking clustering results", {
                           0.4837924, 0.4089374, 0.7000000), nrow = 3)
   trueOmegaAll <- rbind(trueOmega1, trueOmega2)
 
-  simulatedMVdata <- mvplnDataGenerator(nOccasions = truer,
+  simulatedMVdata <- mixMVPLN::mvplnDataGenerator(nOccasions = truer,
                                         nResponses = truep,
                                         nUnits = trueN,
                                         mixingProportions = c(0.79, 0.21),
@@ -61,7 +61,7 @@ test_that("Checking clustering results", {
                                         omega = trueOmegaAll)
 
   # Clustering simulated matrix variate count data
-  clusteringResults <- mvplnMCMCclus(dataset = simulatedMVdata$dataset,
+  clusteringResults <- mixMVPLN::mvplnMCMCclus(dataset = simulatedMVdata$dataset,
                                        membership = simulatedMVdata$truemembership,
                                        gmin = 1,
                                        gmax = 1,
@@ -152,7 +152,7 @@ test_that("Data clustering error upon invalid user input", {
                         0.4837924, 0.4089374, 0.7000000), nrow = 3)
   trueOmegaAll <- rbind(trueOmega1, trueOmega2)
 
-  simulatedMVdata <- mvplnDataGenerator(nOccasions = truer,
+  simulatedMVdata <- mixMVPLN::mvplnDataGenerator(nOccasions = truer,
                                         nResponses = truep,
                                         nUnits = trueN,
                                         mixingProportions = c(0.79, 0.21),
