@@ -139,9 +139,10 @@ approximating density is used in place of a more complex but ‘true’
 posterior density. The approximating density is obtained by minimizing
 the Kullback-Leibler (KL) divergence between the true and the
 approximating densities. A variational Gaussian approximations (VGAs) is
-used for parameter estimation. The VGAs approach is computationally
-efficient, however, it does not guarantee an exact posterior (Ghahramani
-and Beal, 1999).
+used for parameter estimation, initially proposed for MPLN framework by
+[Subedi and Browne, 2020](https://doi.org/10.1002/sta4.310). The VGAs
+approach is computationally efficient, however, it does not guarantee an
+exact posterior (Ghahramani and Beal, 1999).
 
 ### Hybrid Appraoch for Parameter Estimation
 
@@ -161,9 +162,13 @@ Four model selection criteria are offered, which include the Akaike
 information criterion (AIC; Akaike, 1973), the Bayesian information
 criterion (BIC; Schwarz, 1978), a variation of the AIC used by Bozdogan
 (1994) called AIC3, and the integrated completed likelihood (ICL;
-Biernacki et al., 2000). Starting values (argument: *initMethod*) and
-the number of iterations for each chain (argument: *nInitIterations*)
-play an important role to the successful operation of this algorithm.
+Biernacki et al., 2000).
+
+Starting values (argument: *initMethod*) and the number of iterations
+for each chain (argument: *nInitIterations*) play an important role to
+the successful operation of this algorithm. There maybe issues with
+singularity, in which case altering starting values or initialization
+method may help.
 
 ## Tutorials
 
@@ -173,8 +178,16 @@ For tutorials, refer to the vignette:
 browseVignettes("mixMVPLN")
 ```
 
-or see [A tour of
-mixMVPLN](https://github.com/anjalisilva/mixMVPLN/blob/master/vignettes/Introduction_mixMVPLN_MCMEM.md).
+or see:
+
+- [A tour of mixMVPLN With Parameter Estimation via
+  MCMC-EM](https://github.com/anjalisilva/mixMVPLN/blob/master/vignettes/Introduction_mixMVPLN_MCMEM.md)
+
+- [A tour of mixMVPLN With Parameter Estimation via
+  VGA](https://github.com/anjalisilva/mixMVPLN/blob/master/vignettes/Introduction_mixMVPLN_MCMEM.md)
+
+- [A tour of mixMVPLN With Parameter Estimation via Hybrid
+  Approach](https://github.com/anjalisilva/mixMVPLN/blob/master/vignettes/Introduction_mixMVPLN_MCMEM.md)
 
 ## Citation for Package
 
