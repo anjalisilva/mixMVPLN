@@ -1,5 +1,5 @@
 ---
-title: "A Tour of mixMVPLN: Parameter Estimation via MCMC-EM"
+title: "A Tour of mixMVPLN: Parameter Estimation via Hybrid Appraoch"
 author: "Anjali Silva"
 date: "`r format(Sys.time(), '%d %b %Y')`"
 output: 
