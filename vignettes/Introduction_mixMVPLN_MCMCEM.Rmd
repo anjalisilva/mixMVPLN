@@ -1,5 +1,5 @@
 ---
-title: "A quick tour of mixMVPLN: Parameter Estimation via MCMC-EM"
+title: "A Tour of mixMVPLN: Parameter Estimation via MCMC-EM"
 author: "Anjali Silva"
 date: "`r format(Sys.time(), '%d %b %Y')`"
 output: 
@@ -138,7 +138,7 @@ Coarse grain parallelization is employed in *mixMVPLN::mvplnMCMCclus*, such that
 Below, clustering of *simulatedMVData$dataset* is performed for g = 1:2 with 300 iterations and *kmeans* initialization with 2 initialization runs. 
 
 ``` r
-clusteringResults <- mixMVPLN::mvplnClustering(
+clusteringResults <- mixMVPLN::mvplnMCMCclus(
                                      dataset = simulatedMVData$dataset,
                                      membership = simulatedMVData$truemembership,
                                      gmin = 1,
@@ -229,7 +229,7 @@ graphics::legend("top", inset = c(- 0.4, 0),
 
 - [Schwarz, G. (1978). Estimating the dimension of a model. *The Annals of Statistics* 6.](https://www.jstor.org/stable/2958889?seq=1)
 
-- [Silva, A., S. J. Rothstein, P. D. McNicholas, and S. Subedi (2018). Finite mixtures of matrix-variate Poisson-log normal distributions for three-way count data. arXiv preprint arXiv:1807.08380.](https://arxiv.org/abs/1807.08380)
+- - [Silva, A., S. J. Rothstein, P. D. McNicholas, X. Qin, and S. Subedi (2022). Finite mixtures of matrix-variate Poisson-log normal distributions for three-way count data. arXiv preprint arXiv:1807.08380.](https://arxiv.org/abs/1807.08380)
 
 ----
 

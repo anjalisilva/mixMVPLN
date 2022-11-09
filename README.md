@@ -178,11 +178,11 @@ For tutorials, refer to the vignette:
 browseVignettes("mixMVPLN")
 ```
 
-- A tour of mixMVPLN With Parameter Estimation via MCMC-EM
+- A Tour of mixMVPLN: Parameter Estimation via MCMC-EM”
 
-- A tour of mixMVPLN With Parameter Estimation via VGA
+- A Tour of mixMVPLN With Parameter Estimation via VGA
 
-- A tour of mixMVPLN With Parameter Estimation via Hybrid Approach
+- A Tour of mixMVPLN With Parameter Estimation via Hybrid Approach
 
 ## Citation for Package
 
