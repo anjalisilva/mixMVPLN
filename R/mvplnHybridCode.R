@@ -305,7 +305,7 @@ mvplnHybriDclus <- function(dataset,
                   mvplnMCMEMOutput = mcmcEMhy)
 
 
-  class(RESULTS) <- "mvplnHybriDclus"
+  class(RESULTS) <- "mvplnHybrid"
   return(RESULTS)
 
 }
