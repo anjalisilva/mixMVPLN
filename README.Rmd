@@ -87,7 +87,7 @@ For tutorials, refer to the vignette:
 browseVignettes("mixMVPLN")
 ```
 
-or see [A tour of mixMVPLN](https://github.com/anjalisilva/mixMVPLN/blob/master/vignettes/Introduction_mixMVPLN.md).
+or see [A tour of mixMVPLN](https://github.com/anjalisilva/mixMVPLN/blob/master/vignettes/Introduction_mixMVPLN_MCMEM.md).
   
 
 
@@ -142,4 +142,8 @@ A BibTeX entry for LaTeX users is
 
 ## Acknowledgments
 
-* This work was funded by Natural Sciences and Engineering Research Council of Canada, Queen Elizabeth II Graduate Scholarship, and Arthur Richmond Memorial Scholarship. This work was conducted at the University of Guelph, Ontario, Canada. 
+* This work was initially started at University of Guelph, Ontario, Canada and was funded by Ontario Graduate Fellowship (Silva), Queen Elizabeth II Graduate Scholarship (Silva), Arthur Richmond Memorial Scholarship (Silva), and Discovery Grant from Natural Sciences and Engineering Research Council of Canada (Dang).
+
+* Later work of Silva was conducted at the Princess Margaret Cancer Centre - University Health Network, Ontario, Canada and was supported by CIHR Postdoctoral Fellowship and resources received for Postgraduate Affiliation Program of Vector Institute. Later work of Dang was conducted at Carleton University, Ontario Canada and was supported by Canada Research Chair Program.
+
+* We acknowledge Steven J. Rothstein (UGuelph), Paul D. McNicholas (McMasterU), Xiaoke Qin (CarletonU) and Marcelo Ponce (UToronto) for their input.
