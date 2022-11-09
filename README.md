@@ -275,4 +275,4 @@ issues](https://github.com/anjalisilva/mixMVPLN/issues).
 
 - We acknowledge Steven J. Rothstein (UGuelph), Paul D. McNicholas
   (McMasterU), Xiaoke Qin (CarletonU) and Marcelo Ponce (UToronto) for
-  their input.
+  all their suggestions and contributions.

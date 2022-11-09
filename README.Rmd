@@ -162,4 +162,4 @@ A BibTeX entry for LaTeX users is
 
 * Later work of Silva was conducted at the Princess Margaret Cancer Centre - University Health Network, Ontario, Canada and was supported by CIHR Postdoctoral Fellowship and resources received for Postgraduate Affiliation Program of Vector Institute. Later work of Dang was conducted at Carleton University, Ontario Canada and was supported by Canada Research Chair Program.
 
-* We acknowledge Steven J. Rothstein (UGuelph), Paul D. McNicholas (McMasterU), Xiaoke Qin (CarletonU) and Marcelo Ponce (UToronto) for their input.
+* We acknowledge Steven J. Rothstein (UGuelph), Paul D. McNicholas (McMasterU), Xiaoke Qin (CarletonU) and Marcelo Ponce (UToronto) for all their suggestions and contributions.
