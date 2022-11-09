@@ -285,7 +285,8 @@ mvplnHybriDclus <- function(dataset,
                             VGAparameters = mvplnVGAclusOutput$allResults)
 
   final <- proc.time() - ptm
-  RESULTS <- list(nUnits = mcmcEMhy$nUnits,
+  RESULTS <- list(dataset = dataset,
+                  nUnits = mcmcEMhy$nUnits,
                   nVariables = mcmcEMhy$nVariables,
                   nOccassions = mcmcEMhy$nOccassions,
                   normFactors = mcmcEMhy$normFactors,
@@ -616,7 +617,7 @@ mvplnMCMCclusHybrid <- function(dataset,
                   AIC3.all = aic3,
                   totalTime = final)
 
-  class(RESULTS) <- "mvplnParallel"
+  class(RESULTS) <- "mvplnHybrid"
   return(RESULTS)
 }
 
