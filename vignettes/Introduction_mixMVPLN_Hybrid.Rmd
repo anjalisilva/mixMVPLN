@@ -63,7 +63,7 @@ set.seed(1234) # for reproducibility, setting seed
 trueG <- 2 # number of total components/clusters
 truer <- 2 # number of total occasions
 truep <- 3 # number of total responses
-truen <- 50 # number of total units
+truen <- 100 # number of total units
 
 
 # Mu is a r x p matrix
@@ -111,14 +111,15 @@ simulatedMVData <- mixMVPLN::mvplnDataGenerator(nOccasions = truer,
                                  matrixMean = trueMall,
                                  phi = truePhiAll,
                                  omega = trueOmegaAll)
+
 ```
 <br>
 
 The generated dataset can be checked:
 
 ``` r
-length(simulatedMVData$dataset) # 50 units
-class(simulatedMVData$dataset) # list with length of 50
+length(simulatedMVData$dataset) # 100 units
+class(simulatedMVData$dataset) # list with length of 100
 typeof(simulatedMVData$dataset) # list
 summary(simulatedMVData$dataset) # summary of data
 dim(simulatedMVData$dataset[[1]]) # dimension of first unit is 2 x 3
@@ -145,7 +146,7 @@ clusteringResults <- mixMVPLN::mvplnHybriDclus(
                                      nChains = 3,
                                      nIterations = 400,
                                      initMethod = "random",
-                                     nInitIterations = 1,
+                                     nInitIterations = 0,
                                      normalize = "Yes")
 ```
 
