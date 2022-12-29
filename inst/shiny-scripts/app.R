@@ -1,5 +1,4 @@
 library(shiny)
-library(shinyalert)
 
 # Define UI for random distribution app ----
 ui <- fluidPage(
@@ -33,11 +32,11 @@ ui <- fluidPage(
       br(),
 
       # input
-      tags$b("Instructions: Below, upload a three-way count dataset,
-              and enter or select values to perform cluster analysis.
-              Default values are shown. Then press 'Run'. Navigate
-              through the different tabs to the right to explore the
-              results."),
+      tags$b("Instructions: Below, upload a three-way count dataset
+              in rds format, and enter or select values to perform
+              cluster analysis. Default values are shown. Then press
+              'Run'. Navigate through the different tabs to the right
+              to explore the results."),
 
       # br() element to introduce extra vertical spacing ----
       br(),
@@ -53,11 +52,11 @@ ui <- fluidPage(
                    label = "Dataset 2 Details"),
       fileInput(inputId = "file1",
                 label = "Dataset: Select a three-way count dataset to analyze.
-                File should be in comma-separated value (.csv) format containing
+                File should be in single R object (.rds) format containing
                 three-way data of units (n), defined by occasions/layers (r) and
-                the variables/responses (p). You may download an example dataset
-                above and explore first.",
-                accept = c(".csv")),
+                the variables/responses (p) save as a list in R. You may
+                download an example dataset above and explore first.",
+                accept = c(".rds")),
       textInput(inputId = "ngmin",
                 label = "ngmin: Enter the minimum value of components or clusters
                 for clustering. This should be a positive integer.", "1"),
@@ -80,8 +79,8 @@ ui <- fluidPage(
                   label = 'Normalization: Select whether to perform normalization
                   or not. Currently, normalization is performed using
                   calculting normalization factors via TMM method of edgeR
-                   package (Robinson, et al., 2010). The option Yes is recommended
-                   for raw RNA sequencing count data.',
+                  package (Robinson, et al., 2010). The option Yes is recommended
+                  for raw RNA sequencing count data.',
                   choices = c("'Yes' ",
                               "'No' ")),
 
@@ -103,11 +102,6 @@ ui <- fluidPage(
 
       # Output: Tabet
       tabsetPanel(type = "tabs",
-                  tabPanel("Pairs Plot of Dataset",
-                           h3("Instructions: Enter values and click 'Run' at the bottom left side."),
-                           h3("Pairs Plot of Log-transformed Count Dataset:"),
-                           br(),
-                           plotOutput("pairsplot")),
                   tabPanel("Input Summary",
                            h3("Instructions: Enter values and click 'Run' at the bottom left side."),
                            h3("Summary of Count Dataset:"),
@@ -180,10 +174,7 @@ server <- function(input, output) {
   # Step I: save input csv as a reactive
   matrixInput <- reactive({
     if (! is.null(input$file1))
-      as.matrix(read.csv(input$file1$datapath,
-                         sep = ",",
-                         header = TRUE,
-                         row.names = 1))
+      as.list(readRDS(input$file1$datapath))
   })
 
 
@@ -199,34 +190,26 @@ server <- function(input, output) {
         initMethod = as.character(input$typeinitMethod),
         nInitIterations = as.numeric(input$nInitIterations),
         normalize = "Yes")
-
     })
   })
 
   # Textoutput
   output$textOut <- renderPrint({
     if (! is.null(startclustering))
-      summary(startclustering()$dataset)
+       summary(startclustering()$dataset)
   })
-
-  # Pairsplot
-  output$pairsplot <- renderPlot({
-    if (! is.null(startclustering))
-      pairs(startclustering()$dataset)
-  })
-
 
   # Step II: clustering
   output$clustering <- renderText({
     if (! is.null(startclustering))
 
-      aa <- paste("BIC model selected is:", startclustering()$BICresults$BICmodelselected, "\n")
+    aa <- paste("BIC model selected is:", startclustering()$BICAll$BICmodelselected, "\n")
 
-    bb <- paste("ICL model selected is:", startclustering()$ICLresults$ICLmodelselected, "\n")
+    bb <- paste("ICL model selected is:", startclustering()$ICLAll$ICLmodelselected, "\n")
 
-    cc <- paste("AIC model selected is:", startclustering()$AICresults$AICmodelselected, "\n")
+    cc <- paste("AIC model selected is:", startclustering()$AICAll$AICmodelselected, "\n")
 
-    dd <- paste("AIC3 model selected is:", startclustering()$AIC3results$AIC3modelselected, "\n")
+    dd <- paste("AIC3 model selected is:", startclustering()$AIC3All$AIC3modelselected, "\n")
     paste(aa, bb, cc, dd, sep = "\n")
   })
 
@@ -349,7 +332,7 @@ server <- function(input, output) {
   # plot heatmap - BIC
   heatmapPlottingBIC <- eventReactive(eventExpr = input$button2, {
     if (!is.null(startclustering))
-      mplnVisualizeHeatmap(dataset = matrixInput(),
+      MPLNClust::mplnVisualizeHeatmap(dataset = matrixInput(),
                            clusterMembershipVector =
                              as.numeric(startclustering()$BICresults$BICmodelSelectedLabels),
                            printPlot = FALSE)
@@ -366,14 +349,14 @@ server <- function(input, output) {
   barPlottingBIC <- eventReactive(eventExpr = input$button2, {
     if (!is.null(startclustering))
       if ((as.numeric(input$ngmax) - as.numeric(input$ngmin) + 1) == 1) {
-        mplnVisualizeBar(
+        MPLNClust::mplnVisualizeBar(
           dataset = matrixInput(),
           probabilities = as.matrix(startclustering()$allResults[[1]]$probaPost),
           clusterMembershipVector = as.numeric(startclustering()$BICresults$BICmodelSelectedLabels),
           printPlot = FALSE)
       } else {
         modelSelect <- which(seq(as.numeric(input$ngmin), as.numeric(input$ngmax), 1) == startclustering()$BICresults$BICmodelselected)
-        mplnVisualizeBar(
+        MPLNClust::mplnVisualizeBar(
           dataset = matrixInput(),
           probabilities = as.matrix(startclustering()$allResults[[as.numeric(modelSelect)]]$probaPost),
           clusterMembershipVector = as.numeric(startclustering()$BICresults$BICmodelSelectedLabels),
@@ -394,7 +377,7 @@ server <- function(input, output) {
   # plot heatmap - ICL
   heatmapPlottingICL <- eventReactive(eventExpr = input$button2, {
     if (!is.null(startclustering))
-      mplnVisualizeHeatmap(dataset = matrixInput(),
+      MPLNClust::mplnVisualizeHeatmap(dataset = matrixInput(),
                            clusterMembershipVector =
                              as.numeric(startclustering()$ICLresults$ICLmodelSelectedLabels),
                            printPlot = FALSE)
@@ -411,14 +394,14 @@ server <- function(input, output) {
   barPlottingICL <- eventReactive(eventExpr = input$button2, {
     if (!is.null(startclustering))
       if ((as.numeric(input$ngmax) - as.numeric(input$ngmin) + 1) == 1) {
-        mplnVisualizeBar(
+        MPLNClust::mplnVisualizeBar(
           dataset = matrixInput(),
           probabilities = as.matrix(startclustering()$allResults[[1]]$probaPost),
           clusterMembershipVector = as.numeric(startclustering()$ICLresults$ICLmodelSelectedLabels),
           printPlot = FALSE)
       } else {
         modelSelect <- which(seq(as.numeric(input$ngmin), as.numeric(input$ngmax), 1) == startclustering()$ICLresults$ICLmodelselected)
-        mplnVisualizeBar(
+        MPLNClust::mplnVisualizeBar(
           dataset = matrixInput(),
           probabilities = as.matrix(startclustering()$allResults[[as.numeric(modelSelect)]]$probaPost),
           clusterMembershipVector = as.numeric(startclustering()$ICLresults$ICLmodelSelectedLabels),
@@ -443,7 +426,7 @@ server <- function(input, output) {
   # plot heatmap - AIC
   heatmapPlottingAIC <- eventReactive(eventExpr = input$button2, {
     if (!is.null(startclustering))
-      mplnVisualizeHeatmap(dataset = matrixInput(),
+      MPLNClust::mplnVisualizeHeatmap(dataset = matrixInput(),
                            clusterMembershipVector =
                              as.numeric(startclustering()$AICresults$AICmodelSelectedLabels),
                            printPlot = FALSE)
@@ -460,14 +443,14 @@ server <- function(input, output) {
   barPlottingAIC <- eventReactive(eventExpr = input$button2, {
     if (!is.null(startclustering))
       if ((as.numeric(input$ngmax) - as.numeric(input$ngmin) + 1) == 1) {
-        mplnVisualizeBar(
+        MPLNClust::mplnVisualizeBar(
           dataset = matrixInput(),
           probabilities = as.matrix(startclustering()$allResults[[1]]$probaPost),
           clusterMembershipVector = as.numeric(startclustering()$AICresults$AICmodelSelectedLabels),
           printPlot = FALSE)
       } else {
         modelSelect <- which(seq(as.numeric(input$ngmin), as.numeric(input$ngmax), 1) == startclustering()$AICresults$AICmodelselected)
-        mplnVisualizeBar(
+        MPLNClust::mplnVisualizeBar(
           dataset = matrixInput(),
           probabilities = as.matrix(startclustering()$allResults[[as.numeric(modelSelect)]]$probaPost),
           clusterMembershipVector = as.numeric(startclustering()$AICresults$AICmodelSelectedLabels),
@@ -491,7 +474,7 @@ server <- function(input, output) {
   # plot heatmap - AIC3
   heatmapPlottingAIC3 <- eventReactive(eventExpr = input$button2, {
     if (!is.null(startclustering))
-      mplnVisualizeHeatmap(dataset = matrixInput(),
+      MPLNClust::mplnVisualizeHeatmap(dataset = matrixInput(),
                            clusterMembershipVector =
                              as.numeric(startclustering()$AIC3results$AIC3modelSelectedLabels),
                            printPlot = FALSE)
@@ -508,14 +491,14 @@ server <- function(input, output) {
   barPlottingAIC3 <- eventReactive(eventExpr = input$button2, {
     if (!is.null(startclustering))
       if ((as.numeric(input$ngmax) - as.numeric(input$ngmin) + 1) == 1) {
-        mplnVisualizeBar(
+        MPLNClust::mplnVisualizeBar(
           dataset = matrixInput(),
           probabilities = as.matrix(startclustering()$allResults[[1]]$probaPost),
           clusterMembershipVector = as.numeric(startclustering()$AIC3results$AIC3modelSelectedLabels),
           printPlot = FALSE)
       } else {
         modelSelect <- which(seq(as.numeric(input$ngmin), as.numeric(input$ngmax), 1) == startclustering()$AIC3results$AIC3modelselected)
-        mplnVisualizeBar(
+        MPLNClust::mplnVisualizeBar(
           dataset = matrixInput(),
           probabilities = as.matrix(startclustering()$allResults[[as.numeric(modelSelect)]]$probaPost),
           clusterMembershipVector = as.numeric(startclustering()$AIC3results$AIC3modelSelectedLabels),
@@ -533,7 +516,7 @@ server <- function(input, output) {
   # Alluvial plot
   alluvialPlotting <- eventReactive(eventExpr = input$button2, {
     if (!is.null(startclustering))
-      mplnVisualizeAlluvial(nObservations = nrow(matrixInput()),
+      MPLNClust::mplnVisualizeAlluvial(nObservations = nrow(matrixInput()),
                             firstGrouping =
                               as.numeric(startclustering()$BICresults$BICmodelSelectedLabels),
                             secondGrouping =
@@ -548,7 +531,7 @@ server <- function(input, output) {
 
   alluvialPlotting2 <- eventReactive(eventExpr = input$button2, {
     if (!is.null(startclustering))
-      mplnVisualizeAlluvial(nObservations = nrow(matrixInput()),
+      MPLNClust::mplnVisualizeAlluvial(nObservations = nrow(matrixInput()),
                             firstGrouping =
                               as.numeric(startclustering()$ICLresults$ICLmodelSelectedLabels),
                             secondGrouping =
@@ -563,7 +546,7 @@ server <- function(input, output) {
 
   alluvialPlotting3 <- eventReactive(eventExpr = input$button2, {
     if (!is.null(startclustering))
-      mplnVisualizeAlluvial(nObservations = nrow(matrixInput()),
+      MPLNClust::mplnVisualizeAlluvial(nObservations = nrow(matrixInput()),
                             firstGrouping =
                               as.numeric(startclustering()$AIC3results$AIC3modelSelectedLabels),
                             secondGrouping =
@@ -579,7 +562,7 @@ server <- function(input, output) {
 
   alluvialPlotting4 <- eventReactive(eventExpr = input$button2, {
     if (!is.null(startclustering))
-      mplnVisualizeAlluvial(nObservations = nrow(matrixInput()),
+      MPLNClust::mplnVisualizeAlluvial(nObservations = nrow(matrixInput()),
                             firstGrouping =
                               as.numeric(startclustering()$AICresults$AICmodelSelectedLabels),
                             secondGrouping =
