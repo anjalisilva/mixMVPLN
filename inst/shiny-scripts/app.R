@@ -1,4 +1,5 @@
 library(shiny)
+library(shinyalert)
 
 # Define UI for random distribution app ----
 ui <- fluidPage(
@@ -227,9 +228,95 @@ server <- function(input, output) {
   })
 
 
+  output$BICvalues <- renderPlot({
+    if (! is.null(startclustering))
+      if (length(startclustering()$loglikelihood) == 1) { # check if only one value
+        if(as.numeric(input$ngmax) == 1) { # check if only one value is because gmax = 1
+          plot(c(startclustering()$BICAll$allICLvalues), type = "p",
+               xlab = "G", ylab = "ICL value",
+               main = paste("G vs ICL value"))
+        } else { # check if only one value is because only one model is tested e.g., gmin = 4, gmax = 4
+          plot(c(rep(NA, as.numeric(input$ngmax) - 1), startclustering()$BICAll$allICLvalues),
+               type = "p", xlab = "G", ylab = "ICL value",
+               main = paste("G vs ICL value"))
+        }
+      } else { # ff more than one value
+        plot(x = c(as.numeric(input$ngmin):as.numeric(input$ngmax)),
+             y = startclustering()$BICAll$allICLvalues, type = "l",
+             lty = 2, xlab = "G", ylab = "ICL value",
+             main = paste("G vs ICL value"), xaxt="n")
+        axis(1, at = seq(as.numeric(input$ngmin), as.numeric(input$ngmax), by = 1))
+      }
+  })
 
 
+  output$AICvalues <- renderPlot({
+    if (! is.null(startclustering))
+      if (length(startclustering()$loglikelihood) == 1) { # check if only one value
+        if(as.numeric(input$ngmax) == 1) { # check if only one value is because gmax = 1
+          plot(c(startclustering()$AICAll$allICLvalues), type = "p",
+               xlab = "G", ylab = "ICL value",
+               main = paste("G vs ICL value"))
+        } else { # check if only one value is because only one model is tested e.g., gmin = 4, gmax = 4
+          plot(c(rep(NA, as.numeric(input$ngmax) - 1), startclustering()$AICAll$allICLvalues),
+               type = "p", xlab = "G", ylab = "ICL value",
+               main = paste("G vs ICL value"))
+        }
+      } else { # ff more than one value
+        plot(x = c(as.numeric(input$ngmin):as.numeric(input$ngmax)),
+             y = startclustering()$AICAll$allICLvalues, type = "l",
+             lty = 2, xlab = "G", ylab = "ICL value",
+             main = paste("G vs ICL value"), xaxt="n")
+        axis(1, at = seq(as.numeric(input$ngmin), as.numeric(input$ngmax), by = 1))
+      }
+  })
 
+
+  output$AIC3values <- renderPlot({
+    if (! is.null(startclustering))
+      if (length(startclustering()$loglikelihood) == 1) { # check if only one value
+        if(as.numeric(input$ngmax) == 1) { # check if only one value is because gmax = 1
+          plot(c(startclustering()$AIC3All$allICLvalues), type = "p",
+               xlab = "G", ylab = "ICL value",
+               main = paste("G vs ICL value"))
+        } else { # check if only one value is because only one model is tested e.g., gmin = 4, gmax = 4
+          plot(c(rep(NA, as.numeric(input$ngmax) - 1), startclustering()$AIC3All$allICLvalues),
+               type = "p", xlab = "G", ylab = "ICL value",
+               main = paste("G vs ICL value"))
+        }
+      } else { # ff more than one value
+        plot(x = c(as.numeric(input$ngmin):as.numeric(input$ngmax)),
+             y = startclustering()$AIC3All$allICLvalues, type = "l",
+             lty = 2, xlab = "G", ylab = "ICL value",
+             main = paste("G vs ICL value"), xaxt="n")
+        axis(1, at = seq(as.numeric(input$ngmin), as.numeric(input$ngmax), by = 1))
+      }
+  })
+
+
+  # plot bar - ICL
+  barPlottingICL <- eventReactive(eventExpr = input$button2, {
+    if (!is.null(startclustering))
+      if ((as.numeric(input$ngmax) - as.numeric(input$ngmin) + 1) == 1) {
+        MPLNClust::mplnVisualizeBar(
+          vectorObservations = 1:length(matrixInput()),
+          probabilities = as.matrix(startclustering()$allResults[[1]]$probaPost),
+          clusterMembershipVector = as.numeric(startclustering()$ICLAll$ICLmodelselectedLabels),
+          printPlot = FALSE)
+      } else {
+        modelSelect <- which(seq(as.numeric(input$ngmin), as.numeric(input$ngmax), 1) == startclustering()$ICLAll$ICLmodelselectedLabels)
+        MPLNClust::mplnVisualizeBar(
+          vectorObservations = 1:length(matrixInput()),
+          probabilities = as.matrix(startclustering()$allResults[[as.numeric(modelSelect)]]$probaPost),
+          clusterMembershipVector = as.numeric(startclustering()$ICLAll$ICLmodelselectedLabels),
+          printPlot = FALSE)
+      }
+  })
+
+  # plot bar - ICL
+  output$barPlotICL <- renderPlot({
+    barPlottingICL()
+  })
 
 
   # plot bar - BIC
@@ -257,30 +344,30 @@ server <- function(input, output) {
   })
 
 
-  # plot bar - ICL
-  barPlottingICL <- eventReactive(eventExpr = input$button2, {
+
+  # plot bar - AIC3
+  barPlottingAIC3 <- eventReactive(eventExpr = input$button2, {
     if (!is.null(startclustering))
       if ((as.numeric(input$ngmax) - as.numeric(input$ngmin) + 1) == 1) {
         MPLNClust::mplnVisualizeBar(
           vectorObservations = 1:length(matrixInput()),
           probabilities = as.matrix(startclustering()$allResults[[1]]$probaPost),
-          clusterMembershipVector = as.numeric(startclustering()$ICLAll$ICLmodelselectedLabels),
+          clusterMembershipVector = as.numeric(startclustering()$AIC3All$AIC3modelselectedLabels),
           printPlot = FALSE)
       } else {
-        modelSelect <- which(seq(as.numeric(input$ngmin), as.numeric(input$ngmax), 1) == startclustering()$ICLresults$ICLmodelselected)
+        modelSelect <- which(seq(as.numeric(input$ngmin), as.numeric(input$ngmax), 1) == startclustering()$AIC3All$AIC3modelselectedLabels)
         MPLNClust::mplnVisualizeBar(
           vectorObservations = 1:length(matrixInput()),
           probabilities = as.matrix(startclustering()$allResults[[as.numeric(modelSelect)]]$probaPost),
-          clusterMembershipVector = as.numeric(startclustering()$ICLAll$ICLmodelselectedLabels),
+          clusterMembershipVector = as.numeric(startclustering()$AIC3All$AIC3modelselectedLabels),
           printPlot = FALSE)
       }
   })
 
-  # plot bar - ICL
-  output$barPlotICL <- renderPlot({
-    barPlottingICL()
+  # plot bar - AIC3
+  output$barPlotAIC3 <- renderPlot({
+    barPlottingAIC3()
   })
-
 
 
   # plot bar - AIC
@@ -311,29 +398,6 @@ server <- function(input, output) {
 
 
 
-  # plot bar - AIC3
-  barPlottingAIC3 <- eventReactive(eventExpr = input$button2, {
-    if (!is.null(startclustering))
-      if ((as.numeric(input$ngmax) - as.numeric(input$ngmin) + 1) == 1) {
-        MPLNClust::mplnVisualizeBar(
-          vectorObservations = 1:length(matrixInput()),
-          probabilities = as.matrix(startclustering()$allResults[[1]]$probaPost),
-          clusterMembershipVector = as.numeric(startclustering()$AIC3All$AIC3modelselectedLabels),
-          printPlot = FALSE)
-      } else {
-        modelSelect <- which(seq(as.numeric(input$ngmin), as.numeric(input$ngmax), 1) == startclustering()$AIC3All$AIC3modelselected)
-        MPLNClust::mplnVisualizeBar(
-          vectorObservations = 1:length(matrixInput()),
-          probabilities = as.matrix(startclustering()$allResults[[as.numeric(modelSelect)]]$probaPost),
-          clusterMembershipVector = as.numeric(startclustering()$AIC3All$AIC3modelselectedLabels),
-          printPlot = FALSE)
-      }
-  })
-
-  # plot bar - AIC3
-  output$barPlotAIC3 <- renderPlot({
-    barPlottingAIC3()
-  })
 
 
 
