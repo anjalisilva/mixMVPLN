@@ -323,14 +323,14 @@ server <- function(input, output) {
     if (!is.null(startclustering))
       if ((as.numeric(input$ngmax) - as.numeric(input$ngmin) + 1) == 1) {
         MPLNClust::mplnVisualizeBar(
-          dataset = matrixInput(),
+          vectorObservations = 1:length(matrixInput()),
           probabilities = as.matrix(startclustering()$allResults[[1]]$probaPost),
           clusterMembershipVector = as.numeric(startclustering()$BICAll$BICmodelselectedLabels),
           printPlot = FALSE)
       } else {
         modelSelect <- which(seq(as.numeric(input$ngmin), as.numeric(input$ngmax), 1) == startclustering()$BICAll$BICmodelselectedLabels)
         MPLNClust::mplnVisualizeBar(
-          dataset = matrixInput(),
+          vectorObservations = 1:length(matrixInput()),
           probabilities = as.matrix(startclustering()$allResults[[as.numeric(modelSelect)]]$probaPost),
           clusterMembershipVector = as.numeric(startclustering()$BICAll$BICmodelselectedLabels),
           printPlot = FALSE)
@@ -348,14 +348,14 @@ server <- function(input, output) {
     if (!is.null(startclustering))
       if ((as.numeric(input$ngmax) - as.numeric(input$ngmin) + 1) == 1) {
         MPLNClust::mplnVisualizeBar(
-          dataset = matrixInput(),
+          vectorObservations = 1:length(matrixInput()),
           probabilities = as.matrix(startclustering()$allResults[[1]]$probaPost),
           clusterMembershipVector = as.numeric(startclustering()$ICLAll$ICLmodelselectedLabels),
           printPlot = FALSE)
       } else {
         modelSelect <- which(seq(as.numeric(input$ngmin), as.numeric(input$ngmax), 1) == startclustering()$ICLresults$ICLmodelselected)
         MPLNClust::mplnVisualizeBar(
-          dataset = matrixInput(),
+          vectorObservations = 1:length(matrixInput()),
           probabilities = as.matrix(startclustering()$allResults[[as.numeric(modelSelect)]]$probaPost),
           clusterMembershipVector = as.numeric(startclustering()$ICLAll$ICLmodelselectedLabels),
           printPlot = FALSE)
@@ -374,14 +374,14 @@ server <- function(input, output) {
     if (!is.null(startclustering))
       if ((as.numeric(input$ngmax) - as.numeric(input$ngmin) + 1) == 1) {
         MPLNClust::mplnVisualizeBar(
-          dataset = matrixInput(),
+          vectorObservations = 1:length(matrixInput()),
           probabilities = as.matrix(startclustering()$allResults[[1]]$probaPost),
           clusterMembershipVector = as.numeric(startclustering()$AICAll$AICmodelselectedLabels),
           printPlot = FALSE)
       } else {
         modelSelect <- which(seq(as.numeric(input$ngmin), as.numeric(input$ngmax), 1) == startclustering()$AICAll$AICmodelselectedLabels)
         MPLNClust::mplnVisualizeBar(
-          dataset = matrixInput(),
+          vectorObservations = 1:length(matrixInput()),
           probabilities = as.matrix(startclustering()$allResults[[as.numeric(modelSelect)]]$probaPost),
           clusterMembershipVector = as.numeric(startclustering()$AICAll$AICmodelselectedLabels),
           printPlot = FALSE)
@@ -402,14 +402,14 @@ server <- function(input, output) {
     if (!is.null(startclustering))
       if ((as.numeric(input$ngmax) - as.numeric(input$ngmin) + 1) == 1) {
         MPLNClust::mplnVisualizeBar(
-          dataset = matrixInput(),
+          vectorObservations = 1:length(matrixInput()),
           probabilities = as.matrix(startclustering()$allResults[[1]]$probaPost),
           clusterMembershipVector = as.numeric(startclustering()$AIC3All$AIC3modelselectedLabels),
           printPlot = FALSE)
       } else {
         modelSelect <- which(seq(as.numeric(input$ngmin), as.numeric(input$ngmax), 1) == startclustering()$AIC3All$AIC3modelselected)
         MPLNClust::mplnVisualizeBar(
-          dataset = matrixInput(),
+          vectorObservations = 1:length(matrixInput()),
           probabilities = as.matrix(startclustering()$allResults[[as.numeric(modelSelect)]]$probaPost),
           clusterMembershipVector = as.numeric(startclustering()$AIC3All$AIC3modelselectedLabels),
           printPlot = FALSE)
