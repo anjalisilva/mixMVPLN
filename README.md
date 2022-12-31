@@ -46,6 +46,12 @@ devtools::install_github("anjalisilva/mixMVPLN", build_vignettes = TRUE)
 library("mixMVPLN")
 ```
 
+To run the Shiny app:
+
+``` r
+# Under construction
+```
+
 ## Overview
 
 To list all functions available in the package:
