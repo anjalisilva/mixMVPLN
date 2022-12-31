@@ -49,7 +49,7 @@ library("mixMVPLN")
 To run the Shiny app:
 
 ``` r
-# Under construction
+mixMVPLN::runmixMVPLN()
 ```
 
 ## Overview
