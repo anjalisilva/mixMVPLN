@@ -47,9 +47,6 @@ ui <- fluidPage(
       uiOutput("tab2"),
       actionButton(inputId = "data1",
                    label = "Dataset 1 Details"),
-      uiOutput("tab1"),
-      actionButton(inputId = "data2",
-                   label = "Dataset 2 Details"),
       fileInput(inputId = "file1",
                 label = "Dataset: Select a three-way count dataset to analyze.
                 File should be in single R object (.rds) format containing
@@ -205,45 +202,24 @@ server <- function(input, output) {
 
   # Step III: visualize
 
-  # plot logL
-  output$logL <- renderPlot({
-    if (! is.null(startclustering))
 
-      if (length(startclustering()$logLikelihood) == 1) { # check if only one value
-        if(as.numeric(input$ngmax) == 1) { # check if only one value is because gmax = 1
-          plot(c(startclustering()$logLikelihood), type = "p",
-               xlab = "G", ylab = "logL",
-               main = paste("G vs log-likelihood"))
-        } else { # check if only one value is because only one model is tested e.g., gmin = 4, gmax = 4
-          plot(c(rep(NA, as.numeric(input$ngmax) - 1), startclustering()$logLikelihood),
-               type = "p", xlab = "G", ylab = "logL",
-               main = paste("G vs log-likelihood"))
-        }
-      } else { # ff more than one value
-        plot(x = c(as.numeric(input$ngmin):as.numeric(input$ngmax)),
-             y = startclustering()$logLikelihood, type = "l",
-             lty = 2, xlab = "G", ylab = "logL",
-             main = paste("G vs log-likelihood"), xaxt="n")
-        axis(1, at = seq(as.numeric(input$ngmin), as.numeric(input$ngmax), by = 1))
-      }
-  })
 
   # plot ICL value
   output$ICLvalues <- renderPlot({
     if (! is.null(startclustering))
-      if (length(startclustering()$logLikelihood) == 1) { # check if only one value
+      if (length(startclustering()$loglikelihood) == 1) { # check if only one value
         if(as.numeric(input$ngmax) == 1) { # check if only one value is because gmax = 1
-          plot(c(startclustering()$ICLresults$allICLvalues), type = "p",
+          plot(c(startclustering()$ICLAll$allICLvalues), type = "p",
                xlab = "G", ylab = "ICL value",
                main = paste("G vs ICL value"))
         } else { # check if only one value is because only one model is tested e.g., gmin = 4, gmax = 4
-          plot(c(rep(NA, as.numeric(input$ngmax) - 1), startclustering()$ICLresults$allICLvalues),
+          plot(c(rep(NA, as.numeric(input$ngmax) - 1), startclustering()$ICLAll$allICLvalues),
                type = "p", xlab = "G", ylab = "ICL value",
                main = paste("G vs ICL value"))
         }
       } else { # ff more than one value
         plot(x = c(as.numeric(input$ngmin):as.numeric(input$ngmax)),
-             y = startclustering()$ICLresults$allICLvalues, type = "l",
+             y = startclustering()$ICLAll$allICLvalues, type = "l",
              lty = 2, xlab = "G", ylab = "ICL value",
              main = paste("G vs ICL value"), xaxt="n")
         axis(1, at = seq(as.numeric(input$ngmin), as.numeric(input$ngmax), by = 1))
@@ -251,71 +227,9 @@ server <- function(input, output) {
   })
 
 
-  # plot BIC value
-  output$BICvalues <- renderPlot({
-    if (! is.null(startclustering))
-      if (length(startclustering()$logLikelihood) == 1) { # check if only one value
-        if(as.numeric(input$ngmax) == 1) { # check if only one value is because gmax = 1
-          plot(c(startclustering()$BICAll$allBICvalues), type = "p",
-               xlab = "G", ylab = "BIC value",
-               main = paste("G vs BIC value"))
-        } else { # check if only one value is because only one model is tested e.g., gmin = 4, gmax = 4
-          plot(c(rep(NA, as.numeric(input$ngmax) - 1), startclustering()$BICAll$allBICvalues),
-               type = "p", xlab = "G", ylab = "BIC value",
-               main = paste("G vs BIC value"))
-        }
-      } else { # ff more than one value
-        plot(x = c(as.numeric(input$ngmin):as.numeric(input$ngmax)),
-             y = startclustering()$BICAll$allBICvalues, type = "l",
-             lty = 2, xlab = "G", ylab = "BIC value",
-             main = paste("G vs BIC value"), xaxt="n")
-        axis(1, at = seq(as.numeric(input$ngmin), as.numeric(input$ngmax), by = 1))
-      }
-  })
 
-  # plot AIC value
-  output$AICvalues <- renderPlot({
-    if (! is.null(startclustering))
-      if (length(startclustering()$logLikelihood) == 1) { # check if only one value
-        if(as.numeric(input$ngmax) == 1) { # check if only one value is because gmax = 1
-          plot(c(startclustering()$AICAll$allAICvalues), type = "p",
-               xlab = "G", ylab = "AIC value",
-               main = paste("G vs AIC value"))
-        } else { # check if only one value is because only one model is tested e.g., gmin = 4, gmax = 4
-          plot(c(rep(NA, as.numeric(input$ngmax) - 1), startclustering()$AICAll$allAICvalues),
-               type = "p", xlab = "G", ylab = "AIC value",
-               main = paste("G vs AIC value"))
-        }
-      } else { # ff more than one value
-        plot(x = c(as.numeric(input$ngmin):as.numeric(input$ngmax)),
-             y = startclustering()$AICAll$allAICvalues, type = "l",
-             lty = 2, xlab = "G", ylab = "AIC value",
-             main = paste("G vs AIC value"), xaxt="n")
-        axis(1, at = seq(as.numeric(input$ngmin), as.numeric(input$ngmax), by = 1))
-      }
-  })
 
-  # plot AIC3 value
-  output$AIC3values <- renderPlot({
-    if (! is.null(startclustering))
-      if (length(startclustering()$logLikelihood) == 1) { # check if only one value
-        if(as.numeric(input$ngmax) == 1) { # check if only one value is because gmax = 1
-          plot(c(startclustering()$AIC3All$allAIC3values), type = "p",
-               xlab = "G", ylab = "AIC3 value",
-               main = paste("G vs AIC3 value"))
-        } else { # check if only one value is because only one model is tested e.g., gmin = 4, gmax = 4
-          plot(c(rep(NA, as.numeric(input$ngmax) - 1), startclustering()$AIC3All$allAIC3values),
-               type = "p", xlab = "G", ylab = "AIC3 value",
-               main = paste("G vs AIC3 value"))
-        }
-      } else { # ff more than one value
-        plot(x = c(as.numeric(input$ngmin):as.numeric(input$ngmax)),
-             y = startclustering()$AIC3All$allAIC3values, type = "l",
-             lty = 2, xlab = "G", ylab = "AIC3 value",
-             main = paste("G vs AIC3 value"), xaxt="n")
-        axis(1, at = seq(as.numeric(input$ngmin), as.numeric(input$ngmax), by = 1))
-      }
-  })
+
 
 
   # plot bar - BIC
@@ -507,20 +421,7 @@ server <- function(input, output) {
 
 
   # URLs for downloading data
-  url1 <- a("Example Dataset 2", href="https://raw.githubusercontent.com/anjalisilva/TestingPackage/master/inst/extdata/GeneCountsData2.csv")
-  output$tab1 <- renderUI({
-    tagList("Download:", url1)
-  })
-
-  observeEvent(input$data2, {
-    # Show a modal when the button is pressed
-    shinyalert(title = "Example Dataset 2",
-               text = "An RNAseq experiment conductd using bean plants from 2016 in Canada. This dataset has n = 30 genes along rows and d = 3 conditions or samples along columns. Data was generated at the University of Guelph, Canada in 2016. To save the file (from Chrome), click on link, then right click, select 'Save As...' and then save as a .csv file.
-               Citation: Silva, A. (2020) TestingPackage: An Example R Package For BCB410H. Unpublished. URL https://github.com/anjalisilva/TestingPackage",
-               type = "info")
-  })
-
-  url2 <- a("Example Dataset 1", href="https://drive.google.com/file/d/1jMBTPpsBwaigjR3mO49AMYDxzjVnNiAv/view?usp=sharing")
+  url2 <- a("Example Dataset 1", href="https://drive.google.com/file/d/1Hbk6hH9QQ-3yR5YkgHCIUtlWkGWS5ipS/view?usp=sharing")
   output$tab2 <- renderUI({
     tagList("Download:", url2)
   })
