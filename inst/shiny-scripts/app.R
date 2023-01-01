@@ -75,8 +75,8 @@ ui <- fluidPage(
                 This should be a positive integer.", "1"),
       selectInput(inputId = 'typenormalize',
                   label = 'Normalization: Select whether to perform normalization
-                  or not. Currently, normalization is performed using
-                  calculting normalization factors via TMM method of edgeR
+                  or not. Currently, normalization is performed by
+                  calculating normalization factors via TMM method of edgeR
                   package (Robinson, et al., 2010). The option Yes is recommended
                   for raw RNA sequencing count data.',
                   choices = c("'Yes' ",
