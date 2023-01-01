@@ -176,6 +176,21 @@ the successful operation of this algorithm. There maybe issues with
 singularity, in which case altering starting values or initialization
 method may help.
 
+## Shiny App
+
+The Shiny app employing hybrid approach (that combines the MCMC-EM-based
+approach and the VGAs) could be run and results could be visualized:
+
+``` r
+mixMVPLN::runmixMVPLN()
+```
+
+<div style="text-align:center">
+
+<img src="inst/extdata/Overview_mixMVPLN.png" width="800" height="450"/>
+
+<div style="text-align:left">
+
 ## Tutorials
 
 For tutorials, refer to the vignette:
