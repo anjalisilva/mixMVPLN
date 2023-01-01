@@ -29,6 +29,7 @@ Imports:
     reshape,
     rstan (>= 2.18.1),
     parallel,
+    shiny,
     utils
 Suggests: 
     testthat,
