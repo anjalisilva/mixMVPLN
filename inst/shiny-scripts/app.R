@@ -104,7 +104,7 @@ ui <- fluidPage(
                            h3("Instructions: Enter values and click 'Run' at the bottom left side."),
                            h3("Summary of Count Dataset:"),
                            br(),
-                           verbatimTextOutput("textOut")),
+                           verbatimTextOutput('textOut')),
                   tabPanel("Cluster Results",
                            h3("Instructions: Enter values and click 'Run' at the bottom left side."),
                            h3("Summary of Clustering Results:"),
@@ -182,10 +182,18 @@ server <- function(input, output) {
   })
 
   # Textoutput
-  output$textOut <- renderPrint({
+  output$textOut <- renderText({
     if (! is.null(startclustering))
-      summary(startclustering()$dataset)
-  })
+
+      a1 <- paste("Number of occasions/layers (r):", nrow(startclustering()$dataset[[1]]), "\n")
+
+      a2 <- paste("Number of variables/responses (p):", ncol(startclustering()$dataset[[1]]), "\n")
+
+      a3 <- paste("Number of units (n):", length(startclustering()$dataset), "\n")
+
+      paste(a1, a2, a3, sep = "\n")
+ })
+
 
   # Step II: clustering
   output$clustering <- renderText({
@@ -213,10 +221,12 @@ server <- function(input, output) {
           plot(c(startclustering()$ICLAll$allICLvalues), type = "p",
                xlab = "G", ylab = "ICL value",
                main = paste("G vs ICL value"))
+          axis(1, at = seq(as.numeric(0), as.numeric(input$ngmax), by = 1))
         } else { # check if only one value is because only one model is tested e.g., gmin = 4, gmax = 4
           plot(c(rep(NA, as.numeric(input$ngmax) - 1), startclustering()$ICLAll$allICLvalues),
                type = "p", xlab = "G", ylab = "ICL value",
                main = paste("G vs ICL value"))
+          axis(1, at = seq(as.numeric(0), as.numeric(input$ngmax), by = 1))
         }
       } else { # ff more than one value
         plot(x = c(as.numeric(input$ngmin):as.numeric(input$ngmax)),
@@ -235,10 +245,12 @@ server <- function(input, output) {
           plot(c(startclustering()$BICAll$allICLvalues), type = "p",
                xlab = "G", ylab = "ICL value",
                main = paste("G vs ICL value"))
+          axis(1, at = seq(as.numeric(0), as.numeric(input$ngmax), by = 1))
         } else { # check if only one value is because only one model is tested e.g., gmin = 4, gmax = 4
           plot(c(rep(NA, as.numeric(input$ngmax) - 1), startclustering()$BICAll$allICLvalues),
                type = "p", xlab = "G", ylab = "ICL value",
                main = paste("G vs ICL value"))
+          axis(1, at = seq(as.numeric(0), as.numeric(input$ngmax), by = 1))
         }
       } else { # ff more than one value
         plot(x = c(as.numeric(input$ngmin):as.numeric(input$ngmax)),
@@ -257,10 +269,12 @@ server <- function(input, output) {
           plot(c(startclustering()$AICAll$allICLvalues), type = "p",
                xlab = "G", ylab = "ICL value",
                main = paste("G vs ICL value"))
+          axis(1, at = seq(as.numeric(0), as.numeric(input$ngmax), by = 1))
         } else { # check if only one value is because only one model is tested e.g., gmin = 4, gmax = 4
           plot(c(rep(NA, as.numeric(input$ngmax) - 1), startclustering()$AICAll$allICLvalues),
                type = "p", xlab = "G", ylab = "ICL value",
                main = paste("G vs ICL value"))
+          axis(1, at = seq(as.numeric(0), as.numeric(input$ngmax), by = 1))
         }
       } else { # ff more than one value
         plot(x = c(as.numeric(input$ngmin):as.numeric(input$ngmax)),
@@ -279,10 +293,12 @@ server <- function(input, output) {
           plot(c(startclustering()$AIC3All$allICLvalues), type = "p",
                xlab = "G", ylab = "ICL value",
                main = paste("G vs ICL value"))
+          axis(1, at = seq(as.numeric(0), as.numeric(input$ngmax), by = 1))
         } else { # check if only one value is because only one model is tested e.g., gmin = 4, gmax = 4
           plot(c(rep(NA, as.numeric(input$ngmax) - 1), startclustering()$AIC3All$allICLvalues),
                type = "p", xlab = "G", ylab = "ICL value",
                main = paste("G vs ICL value"))
+          axis(1, at = seq(as.numeric(0), as.numeric(input$ngmax), by = 1))
         }
       } else { # ff more than one value
         plot(x = c(as.numeric(input$ngmin):as.numeric(input$ngmax)),
@@ -304,7 +320,7 @@ server <- function(input, output) {
           clusterMembershipVector = as.numeric(startclustering()$ICLAll$ICLmodelselectedLabels),
           printPlot = FALSE)
       } else {
-        modelSelect <- which(seq(as.numeric(input$ngmin), as.numeric(input$ngmax), 1) == startclustering()$ICLAll$ICLmodelselectedLabels)
+        modelSelect <- which(seq(as.numeric(input$ngmin), as.numeric(input$ngmax), 1) == startclustering()$ICLAll$ICLmodelselected)
         MPLNClust::mplnVisualizeBar(
           vectorObservations = 1:length(matrixInput()),
           probabilities = as.matrix(startclustering()$allResults[[as.numeric(modelSelect)]]$probaPost),
@@ -329,7 +345,7 @@ server <- function(input, output) {
           clusterMembershipVector = as.numeric(startclustering()$BICAll$BICmodelselectedLabels),
           printPlot = FALSE)
       } else {
-        modelSelect <- which(seq(as.numeric(input$ngmin), as.numeric(input$ngmax), 1) == startclustering()$BICAll$BICmodelselectedLabels)
+        modelSelect <- which(seq(as.numeric(input$ngmin), as.numeric(input$ngmax), 1) == startclustering()$BICAll$BICmodelselected)
         MPLNClust::mplnVisualizeBar(
           vectorObservations = 1:length(matrixInput()),
           probabilities = as.matrix(startclustering()$allResults[[as.numeric(modelSelect)]]$probaPost),
@@ -355,7 +371,7 @@ server <- function(input, output) {
           clusterMembershipVector = as.numeric(startclustering()$AIC3All$AIC3modelselectedLabels),
           printPlot = FALSE)
       } else {
-        modelSelect <- which(seq(as.numeric(input$ngmin), as.numeric(input$ngmax), 1) == startclustering()$AIC3All$AIC3modelselectedLabels)
+        modelSelect <- which(seq(as.numeric(input$ngmin), as.numeric(input$ngmax), 1) == startclustering()$AIC3All$AIC3modelselected)
         MPLNClust::mplnVisualizeBar(
           vectorObservations = 1:length(matrixInput()),
           probabilities = as.matrix(startclustering()$allResults[[as.numeric(modelSelect)]]$probaPost),
@@ -380,7 +396,7 @@ server <- function(input, output) {
           clusterMembershipVector = as.numeric(startclustering()$AICAll$AICmodelselectedLabels),
           printPlot = FALSE)
       } else {
-        modelSelect <- which(seq(as.numeric(input$ngmin), as.numeric(input$ngmax), 1) == startclustering()$AICAll$AICmodelselectedLabels)
+        modelSelect <- which(seq(as.numeric(input$ngmin), as.numeric(input$ngmax), 1) == startclustering()$AICAll$AICmodelselected)
         MPLNClust::mplnVisualizeBar(
           vectorObservations = 1:length(matrixInput()),
           probabilities = as.matrix(startclustering()$allResults[[as.numeric(modelSelect)]]$probaPost),
@@ -485,9 +501,9 @@ server <- function(input, output) {
 
 
   # URLs for downloading data
-  url2 <- a("Example Dataset 1", href="https://drive.google.com/file/d/1Hbk6hH9QQ-3yR5YkgHCIUtlWkGWS5ipS/view?usp=sharing")
+  url2 <- a("Download Example Dataset 1", href="https://drive.google.com/file/d/1Hbk6hH9QQ-3yR5YkgHCIUtlWkGWS5ipS/view?usp=sharing")
   output$tab2 <- renderUI({
-    tagList("Download:", url2)
+    tagList("Dataset:", url2)
   })
 
   observeEvent(input$data1, {
