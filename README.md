@@ -27,13 +27,13 @@ count](https://img.shields.io/github/languages/count/anjalisilva/mixMVPLN)
 three-way count data using mixtures of matrix variate Poisson-log normal
 (mixMVPLN) distributions ([Silva et al.,
 2022](https://arxiv.org/abs/1807.08380)). Three different frameworks are
-available for parameter estimation of the mixtures of MVPLN models: 1)
+available for parameter estimation of the mixMVPLN models: 1)
 method based on Markov chain Monte Carlo expectation-maximization
 algorithm (MCMC-EM), 2) method based on variational Gaussian
 approximations (VGAs), and 3) a hybrid approach that combines both the
 variational approximation-based approach and MCMC-EM-based approach.
 Information criteria (AIC, BIC, AIC3 and ICL) are offered for model
-selection. Also included is a function for simulating data from MVPLN
+selection. Also included is a function for simulating data from mixMVPLN
 model.
 
 ## Installation
@@ -61,8 +61,8 @@ ls("package:mixMVPLN")
 ```
 
 `mixMVPLN` contains 5 functions. For the purpose of generating
-simulation data via mixtures of MVPLN: *mvplnDataGenerator*. For
-carrying out clustering of count data using mixtures of MVPLN via 1)
+simulation data via mixMVPLN: *mvplnDataGenerator*. For
+carrying out clustering of count data using mixMVPLN via 1)
 method based on MCMC-EM with parallelization: *mvplnMCMCclus*; 2) method
 based on VGAs: *mvplnVGAclus*; and 3) the hybrid approach that combines
 both the VGAs and MCMC-EM-based approach: *mvplnHybriDclus*. For
@@ -293,8 +293,8 @@ issues](https://github.com/anjalisilva/mixMVPLN/issues).
 ## Acknowledgments
 
 - This work was initially started at University of Guelph, Ontario,
-  Canada and was funded by Ontario Graduate Fellowship (Silva), Queen
-  Elizabeth II Graduate Scholarship (Silva), Arthur Richmond Memorial
+  Canada and was funded over the years by Ontario Graduate Fellowship (Silva), 
+  Queen Elizabeth II Graduate Scholarship (Silva), Arthur Richmond Memorial
   Scholarship (Silva), and Discovery Grant from Natural Sciences and
   Engineering Research Council of Canada (Dang).
 
@@ -302,7 +302,7 @@ issues](https://github.com/anjalisilva/mixMVPLN/issues).
   Centre - University Health Network, Ontario, Canada and was supported
   by CIHR Postdoctoral Fellowship and resources received for
   Postgraduate Affiliation Program of Vector Institute. Later work of
-  Dang was conducted at Carleton University, Ontario Canada and was
+  Dang was conducted at Carleton University, Ontario, Canada and was
   supported by Canada Research Chair Program.
 
 - We acknowledge Steven J. Rothstein (UGuelph), Paul D. McNicholas
