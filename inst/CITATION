@@ -1,12 +1,16 @@
 citHeader("To cite mixMVPLN in publications use:")
 
 citEntry(
-  entry    = "misc",
-  title    = "Finite mixtures of matrix-variate Poisson-log normal distributions for three-way count data",
-  author   = "A. Silva and S. J. Rothstein and P. D. McNicholas, X. Qin and S. Subedi",
-  note = "arXiv preprint arXiv:1206.4768",
-  year = {2022},
-  url      = "https://arxiv.org/abs/1807.08380",
-  textVersion = paste("Silva, A., S. J. Rothstein, P. D. McNicholas, X. Qin and S. Subedi (2022). Finite mixtures of matrix-variate Poisson-log normal distributions for three-way count data. arXiv preprint arXiv:1807.08380. URL https://arxiv.org/abs/1807.08380"
+  entry    = "Article",
+  title    = "Finite Mixtures of Matrix Variate Poisson-Log Normal Distributions for Three-Way Count Data",
+  author   = "A. Silva and X. Qin and S. J. Rothstein and P. D. McNicholas and S. Subedi",
+journal  = "Bioinformatics",
+  year     = "2023",
+  volume   = "",
+  number   = "",
+  pages    = "",
+  url      = "https://academic.oup.com/bioinformatics/advance-article/doi/10.1093/bioinformatics/btad167/7108770?login=false",
+
+  textVersion = paste("Silva, A., X. Qin, S. J. Rothstein, P. D. McNicholas, and S. Subedi (2023). Finite Mixtures of Matrix Variate Poisson-Log Normal Distributions for Three-Way Count Data. *Bioinformatics*. URL https://academic.oup.com/bioinformatics/advance-article/doi/10.1093/bioinformatics/btad167/7108770?login=false"
   )
 )
