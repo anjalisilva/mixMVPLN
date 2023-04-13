@@ -84,7 +84,7 @@ An overview of the package is illustrated below:
 ### Introduction
 Two-way data is defined by units (the rows) and variables/responses (the columns). However, three-way data is defined by occasions/layers (r), in addition to the units (n) and the variables/responses (p). For two-way data, each observation is represented as a vector, while for three-way data, each observation can be regarded as a matrix. The matrix variate distributions offer a natural way for modeling three-way data. Extensions of matrix variate distributions in the context of mixture models have given rise to mixtures of matrix variate distributions,mwhich have been used to cluster three-way data 
 
-The multivariate Poisson-log normal (MPLN) distribution was proposed in 1989 ([Aitchison and Ho, 1989](https://www.jstor.org/stable/2336624?seq=1)). A multivariate Poisson-log normal mixture model for clustering of discrete/count data was proposed by [Silva et al., 2019](https://pubmed.ncbi.nlm.nih.gov/31311497/). Here, this work is extended. The MPLN distribution was extended in the three-way context to, first, propose the matrix variate Poisson-log normal (MVPLN) distribution for three-way count data. The MVPLN distributions can account for both the correlations between variables (p) and the correlations between occasions (r), as two different covariance matrices are used for the two modes. Next, the MVPLN distribution was extended in the mixture context and resulted the mixtures of matrix variate Poisson-log normal (mixMVPLN) distributions for clustering three-way count data [Silva et al., 2023](https://academic.oup.com/bioinformatics/advance-article/doi/10.1093/bioinformatics/btad167/7108770?login=false). 
+The multivariate Poisson-log normal (MPLN) distribution was proposed in 1989 ([Aitchison and Ho, 1989](https://www.jstor.org/stable/2336624?seq=1)). A multivariate Poisson-log normal mixture model for clustering of discrete/count data was proposed by [Silva et al., 2019](https://pubmed.ncbi.nlm.nih.gov/31311497/). Here, this work is extended. The MPLN distribution was extended in the three-way context to, first, propose the matrix variate Poisson-log normal (MVPLN) distribution for three-way count data. The MVPLN distributions can account for both the correlations between variables (p) and the correlations between occasions (r), as two different covariance matrices are used for the two modes. Next, the MVPLN distribution was extended in the mixture context and resulted the mixtures of matrix variate Poisson-log normal (mixMVPLN) distributions for clustering three-way count data as presented in [Silva et al., 2023](https://academic.oup.com/bioinformatics/advance-article/doi/10.1093/bioinformatics/btad167/7108770?login=false). 
 
 Three different frameworks for parameter estimation for the mixtures of MVPLN models are proposed: one based on Markov chain Monte Carlo expectation-maximization (MCMC-EM) algorithm, one based on variational Gaussian approximations (VGAs), and third based on a hybrid approach that combines VGAs with MCMC-EM. 
 
@@ -102,6 +102,8 @@ A hybrid approach was proposed that combines the MCMC-EM-based approach and the 
 Four model selection criteria are offered, which include the Akaike information criterion (AIC; Akaike, 1973), the Bayesian information criterion (BIC; Schwarz, 1978), a variation of the AIC used by Bozdogan (1994) called AIC3, and the integrated completed likelihood (ICL; Biernacki et al., 2000). 
 
 Starting values (argument: *initMethod*) and the number of iterations for each chain (argument: *nInitIterations*) play an important role to the successful operation of this algorithm. There maybe issues with singularity, in which case altering starting values or initialization method may help.  
+
+Clustering results could be visualized as a barplot of probabilities.  
   
 ## Shiny App  
 
@@ -135,23 +137,26 @@ browseVignettes("mixMVPLN")
 ``` r
 citation("mixMVPLN")
 ```
-Silva, A., S. J. Rothstein, P. D. McNicholas, X. Qin, and S. Subedi (2022). Finite mixtures of matrix-variate Poisson-log normal distributions for three-way count data. arXiv preprint arXiv:1807.08380.
+Silva, A., X. Qin, S. J. Rothstein, P. D. McNicholas, and S. Subedi (2023). Finite mixtures of matrix-variate Poisson-log normal distributions for three-way count data. *Bioinformatics*.
 ``` r
 A BibTeX entry for LaTeX users is
 
-  @misc{,
+  @Article{,
     title = {Finite mixtures of matrix-variate Poisson-log normal distributions for three-way count data},
-    author = {A. Silva and S. J. Rothstein and P. D. McNicholas, X. Qin and S. Subedi},
-    note = {arXiv preprint arXiv:1206.4768},
-    year = {2022},
-    url = {https://arxiv.org/abs/1807.08380},
+    author = {A. Silva and X. Qin and S. J. Rothstein and P. D. McNicholas and S. Subedi},
+    journal = {Bioinformatics},
+    year = {2023},
+    volume = {},
+    number = {},
+    pages = {},
+    url = {https://academic.oup.com/bioinformatics/advance-article/doi/10.1093/bioinformatics/btad167/7108770?login=false},
   }
 ```
 
 
 ## Package References
 
-- [Silva, A., X. Qin, S. J. Rothstein, P. D. McNicholas, and S. Subedi (2023). Finite mixtures of matrix-variate Poisson-log normal distributions for three-way count data. *Bioinformatics* ](https://academic.oup.com/bioinformatics/advance-article/doi/10.1093/bioinformatics/btad167/7108770)
+- [Silva, A., X. Qin, S. J. Rothstein, P. D. McNicholas, and S. Subedi (2023). Finite mixtures of matrix-variate Poisson-log normal distributions for three-way count data. *Bioinformatics*. ](https://academic.oup.com/bioinformatics/advance-article/doi/10.1093/bioinformatics/btad167/7108770)
 
 ## Other References
 
