@@ -14,7 +14,7 @@ knitr::opts_chunk$set(
 ```
 
 # mixMVPLN
-Mixtures of Matrix Variate Poisson-log Normal Model for Clustering Three-way Count Data
+Finite Mixtures of Matrix Variate Poisson-log Normal Model for Clustering Three-way Count Data
 
 <!-- badges: start -->
 <!-- https://www.codefactor.io/repository/github/anjalisilva/mixmvpln/issues -->
@@ -32,7 +32,7 @@ count](https://img.shields.io/github/languages/count/anjalisilva/mixMVPLN)
 <!-- badges: end -->
 
 ## Description
-`mixMVPLN` is an R package for performing model-based clustering of three-way count data using mixtures of matrix variate Poisson-log normal (mixMVPLN) distributions ([Silva et al., 2022](https://arxiv.org/abs/1807.08380)). Three different frameworks are available for parameter estimation of the mixtures of MVPLN models: 1) method based on Markov chain Monte Carlo expectation-maximization algorithm (MCMC-EM), 2) method based on variational Gaussian approximations (VGAs), and 3) a hybrid approach that combines both the variational approximation-based approach and MCMC-EM-based approach. Information criteria (AIC, BIC, AIC3 and ICL) are offered for model selection. Also included is a function for simulating data from MVPLN model.
+`mixMVPLN` is an R package for performing model-based clustering of three-way count data using mixtures of matrix variate Poisson-log normal (mixMVPLN) distributions ([Silva et al., 2023](https://academic.oup.com/bioinformatics/advance-article/doi/10.1093/bioinformatics/btad167/7108770?login=false). Three different frameworks are available for parameter estimation of the mixtures of MVPLN models: 1) method based on Markov chain Monte Carlo expectation-maximization algorithm (MCMC-EM), 2) method based on variational Gaussian approximations (VGAs), and 3) a hybrid approach that combines both the variational approximation-based approach and MCMC-EM-based approach. Information criteria (AIC, BIC, AIC3 and ICL) are used for model selection. Also included are functions for simulating data from MVPLN model and visualization of clustered results.
 
 ## Installation
 
@@ -58,8 +58,13 @@ To list all functions available in the package:
 ls("package:mixMVPLN")
 ```
 
-`mixMVPLN` contains 5 functions. For the purpose of generating simulation data via mixtures of MVPLN: *mvplnDataGenerator*. For carrying out clustering of count data using mixtures of MVPLN via 1) method based on MCMC-EM with parallelization: *mvplnMCMCclus*; 2) method based on VGAs: *mvplnVGAclus*; and 3) the hybrid approach that combines both the VGAs and MCMC-EM-based approach: *mvplnHybriDclus*. For visualization of clustering results, there is the: *mvplnVisualize*.  
+`mixMVPLN` contains 5 functions:
 
+1. *mvplnDataGenerator* for the purpose of generating simulation data via mixMVPLN
+2. *mvplnMCMCclus* for clustering of count data using mixMVPLN via method based on MCMC-EM with parallelization
+3. *mvplnVGAclus* for clustering of count data using mixMVPLN via method based on VGAs
+4. *mvplnHybriDclus* for clustering of count data using mixMVPLN via the hybrid approach that combines both the VGAs and MCMC-EM-based approach
+5. *mvplnVisualize* for visualization of clustering results as a barplot of probabilities  
 
 An overview of the package is illustrated below:
 
@@ -79,7 +84,7 @@ An overview of the package is illustrated below:
 ### Introduction
 Two-way data is defined by units (the rows) and variables/responses (the columns). However, three-way data is defined by occasions/layers (r), in addition to the units (n) and the variables/responses (p). For two-way data, each observation is represented as a vector, while for three-way data, each observation can be regarded as a matrix. The matrix variate distributions offer a natural way for modeling three-way data. Extensions of matrix variate distributions in the context of mixture models have given rise to mixtures of matrix variate distributions,mwhich have been used to cluster three-way data 
 
-The multivariate Poisson-log normal (MPLN) distribution was proposed in 1989 ([Aitchison and Ho, 1989](https://www.jstor.org/stable/2336624?seq=1)). A multivariate Poisson-log normal mixture model for clustering of discrete/count data was proposed by [Silva et al., 2019](https://pubmed.ncbi.nlm.nih.gov/31311497/). Here, this work is extended. The MPLN distribution was extended in the three-way context to, first, propose the matrix variate Poisson-log normal (MVPLN) distribution for three-way count data. The MVPLN distributions can account for both the correlations between variables (p) and the correlations between occasions (r), as two different covariance matrices are used for the two modes. Next, the MVPLN distribution was extended in the mixture context and resulted the mixtures of matrix variate Poisson-log normal (mixMVPLN) distributions for clustering three-way count data [Silva et al., 2022](https://arxiv.org/abs/1807.08380). 
+The multivariate Poisson-log normal (MPLN) distribution was proposed in 1989 ([Aitchison and Ho, 1989](https://www.jstor.org/stable/2336624?seq=1)). A multivariate Poisson-log normal mixture model for clustering of discrete/count data was proposed by [Silva et al., 2019](https://pubmed.ncbi.nlm.nih.gov/31311497/). Here, this work is extended. The MPLN distribution was extended in the three-way context to, first, propose the matrix variate Poisson-log normal (MVPLN) distribution for three-way count data. The MVPLN distributions can account for both the correlations between variables (p) and the correlations between occasions (r), as two different covariance matrices are used for the two modes. Next, the MVPLN distribution was extended in the mixture context and resulted the mixtures of matrix variate Poisson-log normal (mixMVPLN) distributions for clustering three-way count data [Silva et al., 2023](https://academic.oup.com/bioinformatics/advance-article/doi/10.1093/bioinformatics/btad167/7108770?login=false). 
 
 Three different frameworks for parameter estimation for the mixtures of MVPLN models are proposed: one based on Markov chain Monte Carlo expectation-maximization (MCMC-EM) algorithm, one based on variational Gaussian approximations (VGAs), and third based on a hybrid approach that combines VGAs with MCMC-EM. 
 
@@ -146,7 +151,7 @@ A BibTeX entry for LaTeX users is
 
 ## Package References
 
-- [Silva, A., S. J. Rothstein, P. D. McNicholas, X. Qin, and S. Subedi (2022). Finite mixtures of matrix-variate Poisson-log normal distributions for three-way count data. arXiv preprint arXiv:1807.08380.](https://arxiv.org/abs/1807.08380)
+- [Silva, A., X. Qin, S. J. Rothstein, P. D. McNicholas, and S. Subedi (2023). Finite mixtures of matrix-variate Poisson-log normal distributions for three-way count data. *Bioinformatics* ](https://academic.oup.com/bioinformatics/advance-article/doi/10.1093/bioinformatics/btad167/7108770)
 
 ## Other References
 
