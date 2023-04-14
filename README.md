@@ -24,8 +24,8 @@ count](https://img.shields.io/github/languages/count/anjalisilva/mixMVPLN)
 ## Description
 
 `mixMVPLN` is an R package for performing model-based clustering of
-three-way count data using mixtures of matrix variate Poisson-log normal
-(mixMVPLN) distributions ([Silva et al.,
+three-way count data using finite mixtures of matrix variate Poisson-log
+normal (mixMVPLN) distributions ([Silva et al.,
 2023](https://academic.oup.com/bioinformatics/advance-article/doi/10.1093/bioinformatics/btad167/7108770?login=false)).
 Three different frameworks are available for parameter estimation of the
 mixMVPLN models: 1) method based on Markov chain Monte Carlo
@@ -62,16 +62,16 @@ ls("package:mixMVPLN")
 
 `mixMVPLN` contains 5 functions:
 
-1.  *mvplnDataGenerator* for the purpose of generating simulation data
-    via mixMVPLN
-2.  *mvplnMCMCclus* for clustering of count data using mixMVPLN via
+1.  ***mvplnDataGenerator*** for the purpose of generating simulation
+    data via mixMVPLN
+2.  ***mvplnMCMCclus*** for clustering of count data using mixMVPLN via
     method based on MCMC-EM with parallelization
-3.  *mvplnVGAclus* for clustering of count data using mixMVPLN via
+3.  ***mvplnVGAclus*** for clustering of count data using mixMVPLN via
     method based on VGAs
-4.  *mvplnHybriDclus* for clustering of count data using mixMVPLN via
-    the hybrid approach that combines both the VGAs and MCMC-EM-based
-    approach
-5.  *mvplnVisualize* for visualization of clustering results as a
+4.  ***mvplnHybriDclus*** for clustering of count data using mixMVPLN
+    via the hybrid approach that combines both the VGAs and
+    MCMC-EM-based approach
+5.  ***mvplnVisualize*** for visualization of clustering results as a
     barplot of probabilities
 
 An overview of the package is illustrated below:
