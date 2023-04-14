@@ -190,7 +190,57 @@
 #'                       initMethod = "clara",
 #'                       nInitIterations = 2,
 #'                       normalize = "Yes")
+#' # Example 3
+#' # mixture of six independent Poisson distributions with G = 2
+#' set.seed(23456)
+#' totalSet <- 1
+#' data <- list()
+#' for (i in 1:totalSet) {
+#'  N <- 1000# biological samples e.g. genes
+#'  d <- 6 # dimensionality e.g. conditions*replicates = total samples
+#'  G <- 2
 #'
+#'  piG <- c(0.45, 0.55) # mixing proportions
+#'
+#'  tmu1 <- c(1000, 1500, 1500, 1000, 1500, 1000)
+#'  tmu2 <- c(1000, 1000, 1000, 1500, 1000, 1200)
+#'  z <- t(rmultinom(n = N, size = 1, prob = piG))
+#'  para <- list()
+#'  para[[1]] <- NULL # for pi
+#'  para[[2]] <- list() # for mu
+#'  para[[3]] <- list() # for Z
+#'  names(para) <- c("pi", "mu", "Z")
+#'
+#'  para[[1]] <- piG
+#'  para[[2]] <- list(tmu1, tmu2)
+#'  para[[3]] <- z
+#'
+#'  Y <- matrix(0, ncol = d, nrow = N)
+#'
+#'  for (g in 1:G) {
+#'   obs <- which(para[[3]][, g] == 1)
+#'   for (j in 1:d) {
+#'    Y[obs, j] <- rpois(length(obs), para[[2]][[g]][j])
+#'   }
+#'  }
+#'
+#'  Y_mat <- list()
+#'  for (obs in 1:N) {
+#'   Y_mat[[obs]] <- matrix(Y[obs, ], nrow = 2, byrow = TRUE)
+#'  }
+#'
+#'  data[[i]] <- list()
+#'  data[[i]][[1]] <- para
+#'  data[[i]][[2]] <- Y
+#'  data[[i]][[3]] <- Y_mat
+#' }
+#' outputExample3 <- mvplnVGAclus(dataset = data[[1]][[3]],
+#'                                membership = "none",
+#'                                gmin = 1,
+#'                                gmax = 3,
+#'                                initMethod = "kmeans",
+#'                                nInitIterations = 1,
+#'                                normalize = "Yes")
 #' }
 #'
 #' @author {Anjali Silva, \email{anjali@alumni.uoguelph.ca}, Sanjeena Dang,
