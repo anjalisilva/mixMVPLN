@@ -234,11 +234,101 @@ clusteringResults <- mixMVPLN::mvplnHybriDclus(
 
 # Example 3
 # mixture of six independent Poisson distributions with G = 2
-# Under construction
+set.seed(23456)
+totalSet <- 1 # Number of datasets
+data <- list()
+for (i in 1:totalSet) {
+ N <- 1000 # biological samples e.g. genes
+ d <- 6 # dimensionality e.g. conditions*replicates = total samples
+ G <- 2
+
+ piG <- c(0.45, 0.55) # mixing proportions
+
+ tmu1 <- c(1000, 1500, 1500, 1000, 1500, 1000)
+ tmu2 <- c(1000, 1000, 1000, 1500, 1000, 1200)
+ z <- t(rmultinom(n = N, size = 1, prob = piG))
+ para <- list()
+ para[[1]] <- NULL # for pi
+ para[[2]] <- list() # for mu
+ para[[3]] <- list() # for Z
+ names(para) <- c("pi", "mu", "Z")
+
+ para[[1]] <- piG
+ para[[2]] <- list(tmu1, tmu2)
+ para[[3]] <- z
+
+ Y <- matrix(0, ncol = d, nrow = N)
+
+ for (g in 1:G) {
+  obs <- which(para[[3]][, g] == 1)
+  for (j in 1:d) {
+   Y[obs, j] <- rpois(length(obs), para[[2]][[g]][j])
+  }
+ }
+
+ Y_mat <- list()
+ for (obs in 1:N) {
+  Y_mat[[obs]] <- matrix(Y[obs, ], nrow = 2, byrow = TRUE)
+ }
+
+ data[[i]] <- list()
+ data[[i]][[1]] <- para
+ data[[i]][[2]] <- Y
+ data[[i]][[3]] <- Y_mat
+}
+outputExample3 <- mvplnHybriDclus (dataset= data[[1]][[3]],
+                           membership = "none",
+                           gmin = 1,
+                           gmax = 2,
+                           nChains = 3,
+                           nIterations = 300,
+                           initMethod = "kmeans",
+                           nInitIterations = 1,
+                           normalize = "Yes",
+                           numNodes = NA)
 
 # Example 4
 # mixture of six independent negative binomial distributions with G = 2
-# Under construction
+set.seed(23456)
+N1 <- 2000 # biological samples e.g. genes
+d1 <- 6 # dimensionality e.g. conditions*replicates = total samples
+piG1 <- c(0.79, 0.21) # mixing proportions for G=2
+trueMu1 <- rep(c(1000, 500), 3)
+trueMu2 <- sample(c(1000, 500), 6, replace=TRUE)
+trueMu <- list(trueMu1, trueMu2)
+
+z <- t(rmultinom(N1, size = 1, piG1))
+
+nG <- vector("list", length = length(piG1))
+dataNB <- matrix(NA, ncol = d1, nrow = N1)
+
+for (i in 1:length(piG1)) { # This code is not generalized, for G = 2 only
+  nG[[i]] <- which(z[, i] == 1)
+  for (j in 1:d1) {
+    dataNB[nG[[i]], j]<-rnbinom(n = length(nG[[i]]),
+                                mu = trueMu[[i]][j],
+                                size = 100)
+  }
+}
+
+dataNBmat <- list()
+for (obs in 1:N1) {
+  dataNBmat[[obs]] <- matrix(dataNB[obs,],
+                             nrow = 2,
+                             byrow = TRUE)
+}
+
+outputExample4 <- mvplnHybriDclus(dataset= dataNBmat,
+                           membership = "none",
+                           gmin = 1,
+                           gmax = 2,
+                           nChains = 3,
+                           nIterations = 300,
+                           initMethod = "kmeans",
+                           nInitIterations = 1,
+                           normalize = "Yes",
+                           numNodes = NA)
+
 }
 
 }
