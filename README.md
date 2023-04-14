@@ -34,7 +34,7 @@ variational Gaussian approximations (VGAs), and 3) a hybrid approach
 that combines both the variational approximation-based approach and
 MCMC-EM-based approach. Information criteria (AIC, BIC, AIC3 and ICL)
 are used for model selection. Also included are functions for simulating
-data from MVPLN model and visualization of clustered results.
+data from mixMVPLN model and visualization of clustered results.
 
 ## Installation
 
@@ -78,7 +78,7 @@ An overview of the package is illustrated below:
 
 <div style="text-align:center">
 
-<img src="inst/extdata/Overview_mixMVPLN.png" width="800" height="450"/>
+<img src="inst/extdata/Overview_mixMVPLN.png" width="800" height="400"/>
 
 <div style="text-align:left">
 
