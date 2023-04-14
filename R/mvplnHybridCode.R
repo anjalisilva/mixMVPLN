@@ -206,10 +206,10 @@
 #' # Example 3
 #' # mixture of six independent Poisson distributions with G = 2
 #' set.seed(23456)
-#' totalSet <- 1
+#' totalSet <- 1 # Number of datasets
 #' data <- list()
 #' for (i in 1:totalSet) {
-#'  N <- 1000# biological samples e.g. genes
+#'  N <- 1000 # biological samples e.g. genes
 #'  d <- 6 # dimensionality e.g. conditions*replicates = total samples
 #'  G <- 2
 #'
@@ -250,7 +250,7 @@
 #' outputExample3 <- mvplnHybriDclus (dataset= data[[1]][[3]],
 #'                            membership = "none",
 #'                            gmin = 1,
-#'                            gmax = 1,
+#'                            gmax = 2,
 #'                            nChains = 3,
 #'                            nIterations = 300,
 #'                            initMethod = "kmeans",
@@ -260,7 +260,46 @@
 #'
 #' # Example 4
 #' # mixture of six independent negative binomial distributions with G = 2
-#' # Under construction
+#' set.seed(23456)
+#' N1 <- 2000 # biological samples e.g. genes
+#' d1 <- 6 # dimensionality e.g. conditions*replicates = total samples
+#' piG1 <- c(0.79, 0.21) # mixing proportions for G=2
+#' trueMu1 <- rep(c(1000, 500), 3)
+#' trueMu2 <- sample(c(1000, 500), 6, replace=TRUE)
+#' trueMu <- list(trueMu1, trueMu2)
+#'
+#' z <- t(rmultinom(N1, size = 1, piG1))
+#'
+#' nG <- vector("list", length = length(piG1))
+#' dataNB <- matrix(NA, ncol = d1, nrow = N1)
+#'
+#' for (i in 1:length(piG1)) { # This code is not generalized, for G = 2 only
+#'   nG[[i]] <- which(z[, i] == 1)
+#'   for (j in 1:d1) {
+#'     dataNB[nG[[i]], j]<-rnbinom(n = length(nG[[i]]),
+#'                                 mu = trueMu[[i]][j],
+#'                                 size = 100)
+#'   }
+#' }
+#'
+#' dataNBmat <- list()
+#' for (obs in 1:N1) {
+#'   dataNBmat[[obs]] <- matrix(dataNB[obs,],
+#'                              nrow = 2,
+#'                              byrow = TRUE)
+#' }
+#'
+#' outputExample4 <- mvplnHybriDclus(dataset= dataNBmat,
+#'                            membership = "none",
+#'                            gmin = 1,
+#'                            gmax = 2,
+#'                            nChains = 3,
+#'                            nIterations = 300,
+#'                            initMethod = "kmeans",
+#'                            nInitIterations = 1,
+#'                            normalize = "Yes",
+#'                            numNodes = NA)
+#'
 #' }
 #'
 #' @author {Anjali Silva, \email{anjali@alumni.uoguelph.ca}, Sanjeena Dang,
