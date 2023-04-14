@@ -105,6 +105,7 @@ Starting values (argument: initMethod) and the number of
 \examples{
 \dontrun{
 # Example 1
+# mixtures of MVPLN with G = 2
 set.seed(12345)
 trueG <- 2 # number of total G
 truer <- 2 # number of total occasions
@@ -178,6 +179,7 @@ clusteringResults <- mixMVPLN::mvplnHybriDclus(
                       normalize = "Yes")
 
 # Example 2
+#' mixture of MVPLN with G = 1
 trueG <- 1 # number of total G
 truer <- 2 # number of total occasions
 truep <- 3 # number of total responses
@@ -230,6 +232,13 @@ clusteringResults <- mixMVPLN::mvplnHybriDclus(
                       nInitIterations = 2,
                       normalize = "Yes")
 
+# Example 3
+# mixture of six independent Poisson distributions with G = 2
+# Under construction
+
+# Example 4
+# mixture of six independent negative binomial distributions with G = 2
+# Under construction
 }
 
 }
