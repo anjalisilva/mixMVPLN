@@ -26,9 +26,9 @@ count](https://img.shields.io/github/languages/count/anjalisilva/mixMVPLN)
 `mixMVPLN` is an R package for performing model-based clustering of
 three-way count data using mixtures of matrix variate Poisson-log normal
 (mixMVPLN) distributions ([Silva et al.,
-2023](https://academic.oup.com/bioinformatics/advance-article/doi/10.1093/bioinformatics/btad167/7108770?login=false).
+2023](https://academic.oup.com/bioinformatics/advance-article/doi/10.1093/bioinformatics/btad167/7108770?login=false)).
 Three different frameworks are available for parameter estimation of the
-mixtures of MVPLN models: 1) method based on Markov chain Monte Carlo
+mixMVPLN models: 1) method based on Markov chain Monte Carlo
 expectation-maximization algorithm (MCMC-EM), 2) method based on
 variational Gaussian approximations (VGAs), and 3) a hybrid approach
 that combines both the variational approximation-based approach and
