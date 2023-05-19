@@ -6,11 +6,11 @@ citEntry(
   author   = "A. Silva and X. Qin and S. J. Rothstein and P. D. McNicholas and S. Subedi",
 journal  = "Bioinformatics",
   year     = "2023",
-  volume   = "",
-  number   = "",
+  volume   = "39",
+  number   = "5",
   pages    = "",
   url      = "https://academic.oup.com/bioinformatics/advance-article/doi/10.1093/bioinformatics/btad167/7108770?login=false",
 
-  textVersion = paste("Silva, A., X. Qin, S. J. Rothstein, P. D. McNicholas, and S. Subedi (2023). Finite Mixtures of Matrix Variate Poisson-Log Normal Distributions for Three-Way Count Data. *Bioinformatics*. URL https://academic.oup.com/bioinformatics/advance-article/doi/10.1093/bioinformatics/btad167/7108770?login=false"
+  textVersion = paste("Silva, A., X. Qin, S. J. Rothstein, P. D. McNicholas, and S. Subedi (2023). Finite Mixtures of Matrix Variate Poisson-Log Normal Distributions for Three-Way Count Data. *Bioinformatics* 39(5). URL https://academic.oup.com/bioinformatics/advance-article/doi/10.1093/bioinformatics/btad167/7108770?login=false"
   )
 )
