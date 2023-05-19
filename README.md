@@ -228,7 +228,7 @@ citation("mixMVPLN")
 
 Silva, A., X. Qin, S. J. Rothstein, P. D. McNicholas, and S. Subedi
 (2023). Finite mixtures of matrix-variate Poisson-log normal
-distributions for three-way count data. *Bioinformatics* 39(5).
+distributions for three-way count data. *Bioinformatics*. 39(5).
 
 ``` r
 A BibTeX entry for LaTeX users is
@@ -249,8 +249,8 @@ A BibTeX entry for LaTeX users is
 
 - [Silva, A., X. Qin, S. J. Rothstein, P. D. McNicholas, and S. Subedi
   (2023). Finite mixtures of matrix-variate Poisson-log normal
-  distributions for three-way count data. *Bioinformatics*
-  39(5).](https://academic.oup.com/bioinformatics/advance-article/doi/10.1093/bioinformatics/btad167/7108770)
+  distributions for three-way count data.
+  *Bioinformatics*.](https://academic.oup.com/bioinformatics/advance-article/doi/10.1093/bioinformatics/btad167/7108770)
 
 ## Other References
 
