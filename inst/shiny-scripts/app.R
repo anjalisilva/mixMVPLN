@@ -1,5 +1,5 @@
-library(shiny)
-library(shinyalert)
+require(shiny)
+require(shinyalert)
 
 # Define UI for random distribution app ----
 ui <- fluidPage(
