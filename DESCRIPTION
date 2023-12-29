@@ -14,7 +14,7 @@ Description: Performs model-based clustering using mixtures of matrix variate Po
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 7.2.2
+RoxygenNote: 7.2.3
 Depends: R (>= 3.4.0),
          Rcpp (>= 0.12.0)
 biocViews: Software, StatisticalMethod         
@@ -34,7 +34,8 @@ Imports:
 Suggests: 
     testthat,
     knitr,
-    rmarkdown
+    rmarkdown,
+    shinyalert
 VignetteBuilder: knitr
 LinkingTo: 
     StanHeaders (>= 2.18.0),
