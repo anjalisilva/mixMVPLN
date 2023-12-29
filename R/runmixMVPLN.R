@@ -50,11 +50,9 @@
 #'
 #' @export
 #' @importFrom shiny runApp
-#' @import shinyalert
 runmixMVPLN <- function() {
   appDir <- system.file("shiny-scripts",
                         package = "mixMVPLN")
-  shinyalert::closeAlert(num=0,id=NULL)
   shiny::runApp(appDir, display.mode = "normal")
   return()
 }

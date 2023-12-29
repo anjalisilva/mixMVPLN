@@ -30,12 +30,12 @@ Imports:
     rstan (>= 2.18.1),
     parallel,
     shiny,
-    utils,
-    shinyalert
+    utils
 Suggests: 
     testthat,
     knitr,
     rmarkdown,
+    shinyalert
 VignetteBuilder: knitr
 LinkingTo: 
     StanHeaders (>= 2.18.0),
